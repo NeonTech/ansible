@@ -1,0 +1,5 @@
+# ansible-vault --vault-password-file
+vault-password-file
+
+# Decrypted SSH Private Keys
+.ssh
