@@ -1,0 +1,10 @@
+- name: Deploy chrony.conf
+  ansible.builtin.copy:
+    src: roles/ntpservers/files/chrony.conf
+    dest: /etc/chrony/chrony.conf
+    owner: root
+    group: root
+    mode: "0644" # -rw-r--r--
+  notify:
+    - Restart chronyd
+    - Commit changed files on Alpine Linux

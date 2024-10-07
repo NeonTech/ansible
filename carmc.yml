@@ -1,0 +1,5 @@
+- name: Critical ARM Cluster (CARMC)
+  hosts: carmc
+  roles:
+    - common
+    - ntpservers
