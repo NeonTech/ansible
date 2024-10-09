@@ -2,6 +2,20 @@
 
 set -o errexit -o nounset
 
+if [ ! -d ./ssh ]; then
+    echo "ssh directory not found: re-execute in root of the repository"
+    exit 1
+fi
+
+if [ ! -f ./vault-password-file ]; then
+    echo "ansible-vault Password:"
+    stty -echo
+    read -r ANSIBLE_VAULT_PASSWORD
+    stty echo
+    echo
+    echo "$ANSIBLE_VAULT_PASSWORD" >./vault-password-file
+fi
+
 mkdir -p ./.ssh
 chmod 700 ./ssh ./.ssh
 chmod 600 ./vault-password-file

@@ -1,0 +1,18 @@
+- name: Lock root password
+  ansible.builtin.user:
+    name: root
+    password_lock: true
+  notify:
+    - Commit changed files on Alpine Linux
+
+- name: Update repository indexes on Alpine Linux
+  when: ansible_os_family == "Alpine"
+  community.general.apk:
+    update_cache: true
+
+- name: Upgrade all installed packages to their latest version on Alpine Linux
+  when: ansible_os_family == "Alpine"
+  community.general.apk:
+    upgrade: true
+  notify:
+    - Commit changed files on Alpine Linux

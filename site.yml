@@ -1,0 +1,2 @@
+- name: Critical ARM Cluster (CARMC)
+  import_playbook: carmc.yml
