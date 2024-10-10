@@ -9,9 +9,9 @@
         state: installed
 
 - name: Deploy chrony.conf
-  ansible.builtin.copy:
-    src: roles/ntpservers/files/chrony.conf
-    dest: /etc/chrony/chrony.conf
+  ansible.builtin.template:
+    src: roles/chrony/templates/chrony.conf.j2
+    dest: "{{ chrony_conf }}"
     owner: root
     group: root
     mode: "0644" # -rw-r--r--

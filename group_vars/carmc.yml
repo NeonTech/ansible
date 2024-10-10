@@ -1,0 +1,4 @@
+chrony_conf: /etc/chrony/chrony.conf
+chrony_allows:
+  - 0.0.0.0/0
+  - ::/0

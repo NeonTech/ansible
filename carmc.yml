@@ -2,4 +2,4 @@
   hosts: carmc
   roles:
     - common
-    - ntpservers
+    - chrony

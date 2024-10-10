@@ -1,0 +1,47 @@
+# The server directive specifies an NTP server which can be used as a time
+# source. The client-server relationship is strictly hierarchical: a client
+# might synchronise its system time to that of the server, but the server's
+# system time will never be influenced by that of a client.
+{% for server in chrony_servers %}
+server {{ server }}
+{% endfor %}
+
+# The driftfile directive allows a file to be specified into which chronyd can
+# store the rate information. Two parameters are recorded in the file. The first
+# is the rate at which the system clock gains or loses time, expressed in parts
+# per million, with gains positive. Therefore, a value of 100.0 indicates that
+# when the system clock has advanced by a second, it has gained 100 microseconds
+# in reality (so the true time has only advanced by 999900 microseconds). The
+# second is an estimate of the error bound around the first value in which the
+# true rate actually lies.
+driftfile {{ chrony_driftfile }}
+
+# This directive forces chronyd to step the system clock if the adjustment is
+# larger than a threshold value, but only if there were no more clock updates
+# since chronyd was started than the specified limit. A negative value disables
+# the limit.
+makestep {{ chrony_makestep_threshold }} {{ chrony_makestep_updates }}
+
+# The rtcsync directive enables a mode where the system time is periodically
+# copied to the RTC and chronyd does not try to track its drift. This directive
+# cannot be used with the rtcfile directive.
+rtcsync
+
+# The allow directive is used to designate a particular subnet from which NTP
+# clients are allowed to access the computer as an NTP server. It also controls
+# access of NTS-KE clients when NTS is enabled on the server.
+{% for allow in chrony_allows %}
+allow {{ allow }}
+{% endfor %}
+
+# This directive specifies a directory where chronyd operating as an NTS server
+# can save the keys which encrypt NTS cookies provided to clients. The keys are
+# saved to a single file named ntskeys. When chronyd is restarted, reloading the
+# keys allows the clients to continue using old cookies and avoids a storm of
+# NTS-KE requests. By default, the server does not save the keys.
+ntsdumpdir {{ chrony_ntsdumpdir }}
+
+# This directive specifies the directory for writing log files enabled by the
+# log directive. If the directory does not exist, it will be created
+# automatically.
+logdir {{ chrony_logdir }}
