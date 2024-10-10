@@ -5,14 +5,18 @@
   notify:
     - Commit changed files on Alpine Linux
 
-- name: Update repository indexes on Alpine Linux
-  when: ansible_os_family == "Alpine"
-  community.general.apk:
-    update_cache: true
+- name: Update repositories
+  block:
+    - name: Update repository indexes on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        update_cache: true
 
-- name: Upgrade all installed packages to their latest version on Alpine Linux
-  when: ansible_os_family == "Alpine"
-  community.general.apk:
-    upgrade: true
+- name: Upgrade packages
   notify:
     - Commit changed files on Alpine Linux
+  block:
+    - name: Upgrade all installed packages to their latest version on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        upgrade: true

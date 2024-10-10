@@ -1,3 +1,13 @@
+- name: Install chrony
+  notify:
+    - Commit changed files on Alpine Linux
+  block:
+    - name: Install chrony on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        name: chrony
+        state: installed
+
 - name: Deploy chrony.conf
   ansible.builtin.copy:
     src: roles/ntpservers/files/chrony.conf
