@@ -1,6 +1,6 @@
 - name: Install chrony
   notify:
-    - Commit changed files on Alpine Linux
+    - Commit
   block:
     - name: Install chrony on Alpine Linux
       when: ansible_os_family == "Alpine"
@@ -17,4 +17,36 @@
     mode: "0644" # -rw-r--r--
   notify:
     - Restart chronyd
-    - Commit changed files on Alpine Linux
+    - Commit
+
+- name: Start and enable chronyd
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true
+  notify:
+    - Commit
+
+- name: Save NTP iptables rules
+  notify:
+    - Save iptables
+  block:
+    # NTP Server
+    - name: Accept incoming NTP connections (IPv4)
+      when: chrony_allows | length > 0
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: 123
+        jump: ACCEPT
+        ip_version: ipv4
+        state: present
+    - name: Accept incoming NTP connections (IPv6)
+      when: chrony_allows | length > 0
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: udp
+        destination_port: 123
+        jump: ACCEPT
+        ip_version: ipv6
+        state: present

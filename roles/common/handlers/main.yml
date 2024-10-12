@@ -1,4 +1,2 @@
-- name: Commit changed files on Alpine Linux
-  when: ansible_os_family == "Alpine"
-  community.general.lbu:
-    commit: true
+- name: Commit
+  ansible.builtin.include_tasks: roles/common/tasks/commit.yml

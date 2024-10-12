@@ -1,0 +1,108 @@
+- name: Install iptables
+  notify:
+    - Commit
+  block:
+    - name: Install iptables on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        name: iptables
+        state: installed
+
+- name: Save common iptables rules
+  notify:
+    - Save iptables
+  block:
+    # loopback
+    - name: Accept incoming loopback (lo) connections (IPv4)
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+        ip_version: ipv4
+        state: present
+    - name: Accept incoming loopback (lo) connections (IPv6)
+      ansible.builtin.iptables:
+        chain: INPUT
+        in_interface: lo
+        jump: ACCEPT
+        ip_version: ipv6
+        state: present
+    # ESTABLISHED/RELATED
+    - name: Accept incoming established and related connections (IPv4)
+      ansible.builtin.iptables:
+        chain: INPUT
+        ctstate: [ESTABLISHED, RELATED]
+        jump: ACCEPT
+        ip_version: ipv4
+        state: present
+    - name: Accept incoming established and related connections (IPv6)
+      ansible.builtin.iptables:
+        chain: INPUT
+        ctstate: [ESTABLISHED, RELATED]
+        jump: ACCEPT
+        ip_version: ipv6
+        state: present
+    # SSH Server
+    - name: Accept incoming SSH connections (IPv4)
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 22
+        jump: ACCEPT
+        ip_version: ipv4
+        state: present
+    - name: Accept incoming SSH connections (IPv6)
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 22
+        jump: ACCEPT
+        ip_version: ipv6
+        state: present
+    # Danger Zone! https://www.youtube.com/watch?v=siwpn14IE7E
+    # By default, drop all connections
+    - name: Drop incoming connections (IPv4)
+      ansible.builtin.iptables:
+        chain: INPUT
+        policy: DROP
+        ip_version: ipv4
+    - name: Drop incoming connections (IPv6)
+      ansible.builtin.iptables:
+        chain: INPUT
+        policy: DROP
+        ip_version: ipv6
+    - name: Drop forwarding connections (IPv4)
+      ansible.builtin.iptables:
+        chain: FORWARD
+        policy: DROP
+        ip_version: ipv4
+    - name: Drop forwarding connections (IPv6)
+      ansible.builtin.iptables:
+        chain: FORWARD
+        policy: DROP
+        ip_version: ipv6
+    - name: Drop outgoing connections (IPv4)
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        policy: ACCEPT # TODO: DROP
+        ip_version: ipv4
+    - name: Drop outgoing connections (IPv6)
+      ansible.builtin.iptables:
+        chain: OUTPUT
+        policy: ACCEPT # TODO: DROP
+        ip_version: ipv6
+
+- name: Start and enable iptables
+  notify:
+    - Commit
+  block:
+    - name: Start and enable iptables (IPv4)
+      ansible.builtin.service:
+        name: iptables
+        state: started
+        enabled: true
+    - name: Start ane enable iptables (IPv6)
+      ansible.builtin.service:
+        name: ip6tables
+        state: started
+        enabled: true

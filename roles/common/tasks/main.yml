@@ -2,8 +2,9 @@
   ansible.builtin.user:
     name: root
     password_lock: true
+    state: present
   notify:
-    - Commit changed files on Alpine Linux
+    - Commit
 
 - name: Update repositories
   block:
@@ -14,7 +15,7 @@
 
 - name: Upgrade packages
   notify:
-    - Commit changed files on Alpine Linux
+    - Commit
   block:
     - name: Upgrade all installed packages to their latest version on Alpine Linux
       when: ansible_os_family == "Alpine"
