@@ -1,2 +1,0 @@
-- name: Save iptables
-  ansible.builtin.include_tasks: roles/iptables/tasks/save_iptables.yml

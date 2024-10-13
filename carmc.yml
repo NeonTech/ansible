@@ -2,5 +2,4 @@
   hosts: carmc
   roles:
     - common
-    - iptables
     - chrony

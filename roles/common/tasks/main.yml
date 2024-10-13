@@ -1,8 +1,8 @@
-- name: Lock root password
-  ansible.builtin.user:
-    name: root
-    password_lock: true
-    state: present
+- name: Prohibit root password
+  ansible.builtin.replace:
+    path: /etc/shadow
+    regexp: "^root:.*$"
+    replace: "root:prohibit_password::0:::::"
   notify:
     - Commit
 
