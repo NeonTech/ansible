@@ -1,0 +1,109 @@
+- name: Install required packages
+  notify:
+    - Commit
+  block:
+    - name: Install required packages on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        name:
+          - docker-rootless-extras
+          - docker-cli-compose
+        state: installed
+
+- name: Configure cgroups
+  notify:
+    - Commit
+  block:
+    - name: Mount cgroups version 2 on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      ansible.builtin.replace:
+        path: /etc/rc.conf
+        regexp: ^.*rc_cgroup_mode=\".*\".*$
+        replace: rc_cgroup_mode="unified"
+    - name: Start and enable cgroups
+      ansible.builtin.service:
+        name: cgroups
+        state: started
+        enabled: true
+
+- name: Create user
+  ansible.builtin.user:
+    name: "{{ docker_rootless_username }}"
+    password: "!"
+    comment: Docker Rootless
+    state: present
+  register: docker_rootless_user
+  notify:
+    - Commit
+
+- name: Create working directory
+  ansible.builtin.file:
+    path: "{{ docker_rootless_user.home }}/.docker"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # drwxr-xr-x
+    state: directory
+  notify:
+    - Commit
+
+- name: Deploy .profile
+  ansible.builtin.copy:
+    src: roles/docker_rootless/files/.profile
+    dest: "{{ docker_rootless_user.home }}/.profile"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # -rwxr-xr-x
+  notify:
+    - Commit
+
+- name: Add subordinate user IDs
+  ansible.builtin.lineinfile:
+    path: /etc/subuid
+    regexp: ^{{ docker_rootless_user.name }}:\d*:\d*$
+    line: "{{ docker_rootless_user.name }}:{{ docker_rootless_subuid }}:65536"
+    state: present
+  notify:
+    - Commit
+
+- name: Add subordinate group IDs
+  ansible.builtin.lineinfile:
+    path: /etc/subgid
+    regexp: ^{{ docker_rootless_user.name }}:\d*:\d*$
+    line: "{{ docker_rootless_user.name }}:{{ docker_rootless_subgid }}:65536"
+    state: present
+  notify:
+    - Commit
+
+- name: Deploy docker-rootless
+  ansible.builtin.template:
+    src: roles/docker_rootless/templates/docker-rootless.j2
+    dest: /etc/init.d/docker-rootless
+    owner: root
+    group: root
+    mode: "0755" # -rwxr-xr-x
+  notify:
+    - Commit
+
+- name: Start and enable docker-rootless
+  ansible.builtin.service:
+    name: docker-rootless
+    state: started
+    enabled: true
+  notify:
+    - Commit
+
+- name: Allow routing ping packets
+  ansible.posix.sysctl:
+    name: net.ipv4.ping_group_range
+    value: 0 2147483647
+    state: present
+  notify:
+    - Commit
+
+- name: Allow exposing privileged ports
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_unprivileged_port_start
+    value: "0"
+    state: present
+  notify:
+    - Commit

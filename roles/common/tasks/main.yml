@@ -1,4 +1,4 @@
-- name: Prohibit root password
+- name: Prohibit password with root
   ansible.builtin.replace:
     path: /etc/shadow
     regexp: "^root:.*$"

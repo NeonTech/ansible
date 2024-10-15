@@ -1,8 +1,8 @@
-- name: Install chrony
+- name: Install required packages
   notify:
     - Commit
   block:
-    - name: Install chrony on Alpine Linux
+    - name: Install required packages on Alpine Linux
       when: ansible_os_family == "Alpine"
       community.general.apk:
         name: chrony
