@@ -3,7 +3,7 @@
 name=$RC_SVCNAME
 description="Docker Application Container Engine (Rootless)"
 supervisor="supervise-daemon"
-supervise_daemon_args="-e HOME=\"{{ docker_rootless_user.home }}\" -e XDG_RUNTIME_DIR=\"{{ docker_rootless_user.home }}/.docker\""
+supervise_daemon_args="-e HOME=\"{{ docker_rootless_user.home }}\" -e XDG_RUNTIME_DIR=\"/run/user/{{ docker_rootless_user.uid }}\""
 command="/usr/bin/dockerd-rootless"
 command_args=""
 command_user="{{ docker_rootless_user.name }}"
@@ -12,4 +12,16 @@ reload() {
     ebegin "Reloading $RC_SVCNAME"
     /bin/kill -s HUP \$MAINPID
     eend $?
+}
+
+start_pre() {
+    checkpath --directory \
+        --owner root:root \
+        --mode 0775 \
+        /run/user
+
+    checkpath --directory \
+        --owner {{ docker_rootless_user.name }}:{{ docker_rootless_user.name }} \
+        --mode 0775 \
+        /run/user/{{ docker_rootless_user.uid }}
 }

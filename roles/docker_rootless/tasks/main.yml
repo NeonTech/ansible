@@ -36,19 +36,9 @@
   notify:
     - Commit
 
-- name: Create working directory
-  ansible.builtin.file:
-    path: "{{ docker_rootless_user.home }}/.docker"
-    owner: "{{ docker_rootless_user.name }}"
-    group: "{{ docker_rootless_user.name }}"
-    mode: "0755" # drwxr-xr-x
-    state: directory
-  notify:
-    - Commit
-
 - name: Deploy .profile
-  ansible.builtin.copy:
-    src: roles/docker_rootless/files/.profile
+  ansible.builtin.template:
+    src: roles/docker_rootless/templates/.profile.j2
     dest: "{{ docker_rootless_user.home }}/.profile"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
