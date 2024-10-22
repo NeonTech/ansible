@@ -3,3 +3,6 @@ vault-password-file
 
 # Decrypted SSH Private Keys
 .ssh
+
+# Visual Studio Code
+.vscode
