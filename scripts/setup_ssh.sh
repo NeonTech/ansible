@@ -7,17 +7,19 @@ if [ ! -d ./ssh ]; then
     exit 1
 fi
 
+mkdir -p ./.ssh
+chmod 700 ./ssh ./.ssh
+
 if [ ! -f ./vault-password-file ]; then
-    echo "ansible-vault Password:"
+    echo "What is the ansible-vault password?"
     stty -echo
     read -r ANSIBLE_VAULT_PASSWORD
     stty echo
-    echo
     echo "$ANSIBLE_VAULT_PASSWORD" >./vault-password-file
+    unset ANSIBLE_VAULT_PASSWORD
+    echo
 fi
 
-mkdir -p ./.ssh
-chmod 700 ./ssh ./.ssh
 chmod 600 ./vault-password-file
 
 for file in ./ssh/*; do

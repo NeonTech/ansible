@@ -6,7 +6,7 @@ Inventory and automation of NeonTech infrastructure using [Ansible playbooks](ht
 
 1. Clone the repository: `git clone https://github.com/NeonTech/ansible-playbooks.git`
 2. Set the working directory as the root of the repository: `cd ./ansible-playbooks`
-3. Decrypt the Ansible vaults in `./ssh` and copy their values to `./.ssh`: `./setup-ssh.sh`
+3. Decrypt the Ansible vaults in `./ssh` and copy their values to `./.ssh`: `./scripts/setup_ssh.sh`
 4. Run `ansible all --inventory production --module-name ansible.builtin.ping` to test connections to hosts.
 
 Playbooks can now be executed: `ansible-playbook --inventory production --vault-password-file vault-password-file site.yml`
