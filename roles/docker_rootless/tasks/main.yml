@@ -65,14 +65,17 @@
     - Commit
 
 - name: Deploy docker-rootless
-  ansible.builtin.template:
-    src: roles/docker_rootless/templates/docker-rootless.j2
-    dest: /etc/init.d/docker-rootless
-    owner: root
-    group: root
-    mode: "0755" # -rwxr-xr-x
   notify:
     - Commit
+  block:
+    - name: Deploy OpenRC docker-rootless
+      when: ansible_os_family == "Alpine"
+      ansible.builtin.template:
+        src: roles/docker_rootless/templates/docker-rootless.openrc.j2
+        dest: /etc/init.d/docker-rootless
+        owner: root
+        group: root
+        mode: "0755" # -rwxr-xr-x
 
 - name: Start and enable docker-rootless
   ansible.builtin.service:

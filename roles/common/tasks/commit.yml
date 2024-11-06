@@ -2,3 +2,4 @@
   when: ansible_os_family == "Alpine"
   community.general.lbu:
     commit: true
+    include: /etc/init.d
