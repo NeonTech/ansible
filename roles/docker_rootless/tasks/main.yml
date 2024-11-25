@@ -1,6 +1,4 @@
 - name: Install required packages
-  notify:
-    - Commit
   block:
     - name: Install required packages on Alpine Linux
       when: ansible_os_family == "Alpine"
@@ -11,8 +9,6 @@
         state: installed
 
 - name: Configure cgroups
-  notify:
-    - Commit
   block:
     - name: Mount cgroups version 2 on Alpine Linux
       when: ansible_os_family == "Alpine"
@@ -33,8 +29,6 @@
     comment: Docker Rootless
     state: present
   register: docker_rootless_user
-  notify:
-    - Commit
 
 - name: Deploy .profile
   ansible.builtin.template:
@@ -43,8 +37,6 @@
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # -rwxr-xr-x
-  notify:
-    - Commit
 
 - name: Add subordinate user IDs
   ansible.builtin.lineinfile:
@@ -52,8 +44,6 @@
     regexp: ^{{ docker_rootless_user.name }}:\d*:\d*$
     line: "{{ docker_rootless_user.name }}:{{ docker_rootless_subuid }}:65536"
     state: present
-  notify:
-    - Commit
 
 - name: Add subordinate group IDs
   ansible.builtin.lineinfile:
@@ -61,12 +51,8 @@
     regexp: ^{{ docker_rootless_user.name }}:\d*:\d*$
     line: "{{ docker_rootless_user.name }}:{{ docker_rootless_subgid }}:65536"
     state: present
-  notify:
-    - Commit
 
 - name: Deploy docker-rootless
-  notify:
-    - Commit
   block:
     - name: Deploy OpenRC docker-rootless
       when: ansible_os_family == "Alpine"
@@ -82,21 +68,15 @@
     name: docker-rootless
     state: started
     enabled: true
-  notify:
-    - Commit
 
 - name: Allow routing ping packets
   ansible.posix.sysctl:
     name: net.ipv4.ping_group_range
     value: 0 2147483647
     state: present
-  notify:
-    - Commit
 
 - name: Allow exposing privileged ports
   ansible.posix.sysctl:
     name: net.ipv4.ip_unprivileged_port_start
     value: "0"
     state: present
-  notify:
-    - Commit

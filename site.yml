@@ -1,2 +1,13 @@
-- name: Critical ARM Cluster (CARMC)
-  import_playbook: carmc.yml
+- name: Network Time Protocol (NTP) Servers
+  import_playbook: ntp_servers.yml
+
+- name: Commit changed files
+  hosts: all
+  tasks:
+    - name: Commit changed files on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.lbu:
+        commit: true
+        include:
+          # Required for docker_rootless
+          - /etc/init.d

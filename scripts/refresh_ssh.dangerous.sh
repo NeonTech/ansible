@@ -32,8 +32,8 @@ for file in ./ssh/*; do
     ssh-copy-id -f -i "$new_file" -o "IdentityFile ./.ssh/$filename" "$user@$host"
     # Remove old SSH public key from host
     ssh -i "$new_file" "$user@$host" "sed -i '\|$(xargs -a "$file.pub")|d' ~/.ssh/authorized_keys"
-    # Commit changes on host
-    ssh -i "$new_file" "$user@$host" 'lbu commit -d || true'
+    # Commit changed files on host
+    ssh -i "$new_file" "$user@$host" 'if [ -n "$(command -v lbu)" ]; then lbu commit -d; fi'
     # Encrypt new SSH private key
     ansible-vault encrypt --vault-password-file ./vault-password-file "$new_file"
     # Remove old SSH public/private key pair

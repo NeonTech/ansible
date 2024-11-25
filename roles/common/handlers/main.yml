@@ -1,2 +1,0 @@
-- name: Commit
-  ansible.builtin.include_tasks: roles/common/tasks/commit.yml

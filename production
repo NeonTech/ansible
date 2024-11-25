@@ -1,5 +1,8 @@
-[carmc]
-carmc1
-carmc2
-carmc3
-carmc4
+[critical]
+critical001
+critical002
+critical003
+critical004
+
+[ntp_servers:children]
+critical

@@ -1,6 +1,4 @@
 - name: Install required packages
-  notify:
-    - Commit
   block:
     - name: Install required packages on Alpine Linux
       when: ansible_os_family == "Alpine"
@@ -17,12 +15,9 @@
     mode: "0644" # -rw-r--r--
   notify:
     - Restart chronyd
-    - Commit
 
 - name: Start and enable chronyd
   ansible.builtin.service:
     name: chronyd
     state: started
     enabled: true
-  notify:
-    - Commit

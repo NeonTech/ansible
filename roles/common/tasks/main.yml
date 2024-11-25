@@ -1,10 +1,8 @@
 - name: Prohibit password with root
   ansible.builtin.replace:
     path: /etc/shadow
-    regexp: "^root:.*$"
+    regexp: ^root:.*$
     replace: "root:prohibit_password::0:::::"
-  notify:
-    - Commit
 
 - name: Update repositories
   block:
@@ -14,8 +12,6 @@
         update_cache: true
 
 - name: Upgrade packages
-  notify:
-    - Commit
   block:
     - name: Upgrade all installed packages to their latest version on Alpine Linux
       when: ansible_os_family == "Alpine"
