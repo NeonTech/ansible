@@ -1,10 +1,9 @@
-[critical]
+[ntp_clients]
 prod-critical1-pi1
 prod-critical1-pi2
-prod-critical1-pi3
 prod-critical2-pi1
 prod-critical2-pi2
-prod-critical2-pi3
 
-[ntp_servers:children]
-critical
+[ntp_servers]
+prod-critical1-pi3
+prod-critical2-pi3

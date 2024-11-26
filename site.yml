@@ -1,5 +1,8 @@
+- name: Network Time Protocol (NTP) Clients
+  ansible.builtin.import_playbook: ntp_clients.yml
+
 - name: Network Time Protocol (NTP) Servers
-  import_playbook: ntp_servers.yml
+  ansible.builtin.import_playbook: ntp_servers.yml
 
 - name: Commit changed files
   hosts: all
