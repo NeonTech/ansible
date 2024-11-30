@@ -1,0 +1,5 @@
+- name: Network Time Protocol (NTP)
+  hosts: ntp
+  roles:
+    - common
+    - chrony

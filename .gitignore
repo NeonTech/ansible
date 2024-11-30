@@ -4,5 +4,8 @@ vault-password-file
 # Decrypted SSH Private Keys
 .ssh
 
+# Python
+.venv
+
 # Visual Studio Code
 .vscode
