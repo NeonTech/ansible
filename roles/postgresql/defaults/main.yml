@@ -5,6 +5,5 @@ postgresql_repmgr_database: repmgr
 postgresql_repmgr_username: repmgr
 postgresql_repmgr_node_id: 1
 postgresql_repmgr_node_name: postgresql
-postgresql_repmgr_node_network_name: postgresql
 postgresql_repmgr_primary_host: postgresql
 postgresql_repmgr_partner_nodes: [postgresql]

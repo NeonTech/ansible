@@ -12,7 +12,7 @@ services:
       REPMGR_USERNAME: {{ postgresql_repmgr_username }}
       REPMGR_PASSWORD_FILE: /run/secrets/repmgr-password
       REPMGR_NODE_NAME: {{ postgresql_repmgr_node_name }}-{{ postgresql_repmgr_node_id }}
-      REPMGR_NODE_NETWORK_NAME: {{ postgresql_repmgr_node_network_name }}
+      REPMGR_NODE_NETWORK_NAME: postgresql
       REPMGR_PRIMARY_HOST: {{ postgresql_repmgr_primary_host }}
       REPMGR_PARTNER_NODES: {{  postgresql_repmgr_partner_nodes | join(",") }}
     secrets:
