@@ -7,3 +7,4 @@ postgresql_repmgr_node_id: 1
 postgresql_repmgr_node_name: postgresql
 postgresql_repmgr_primary_host: postgresql
 postgresql_repmgr_partner_nodes: [postgresql]
+postgresql_repmgr_primary_visibility_consensus: false

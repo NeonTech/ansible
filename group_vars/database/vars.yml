@@ -8,3 +8,4 @@ postgresql_repmgr_partner_nodes:
   - postgresql2.service.neontech.dev
   - postgresql3.service.neontech.dev
   - postgresql4.service.neontech.dev
+postgresql_repmgr_primary_visibility_consensus: true
