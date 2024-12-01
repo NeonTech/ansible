@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: bitnami/mysql@{{ mysql_docker_version }}
+    container_name: mysql
+    restart: always
+    stop_grace_period: 1m
+    environment:
+      MYSQL_ROOT_USER: {{ mysql_root_username }}
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/root-password
+      MYSQL_MASTER_HOST: {{ mysql_master_host }}
+      MYSQL_MASTER_ROOT_USER: {{ mysql_root_username }}
+      MYSQL_MASTER_ROOT_PASSWORD_FILE: /run/secrets/root-password
+      MYSQL_REPLICATION_USER: {{ mysql_replication_username }}
+      MYSQL_REPLICATION_PASSWORD_FILE: /run/secrets/replication-password
+      MYSQL_REPLICATION_MODE: {{ mysql_replication_mode }}
+      MYSQL_EXTRA_FLAGS: {{ mysql_flags | join(",") }}
+    secrets:
+      - root-password
+      - replication-password
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql:/bitnami/mysql/data
+
+secrets:
+  root-password:
+    file: ./root-password
+  replication-password:
+    file: ./replication-password
+
+networks:
+  default:
+    name: mysql
+
+volumes:
+  mysql:
+    name: mysql

@@ -1,6 +1,6 @@
 - name: Create stack directory
   ansible.builtin.file:
-    path: "{{ docker_rootless_user.home }}/stacks/postgresql"
+    path: "{{ docker_rootless_user.home }}/stacks/mysql"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # -rwxr-xr-x
@@ -8,36 +8,36 @@
 
 - name: Deploy stack.yml
   ansible.builtin.template:
-    src: roles/postgresql/templates/stack.yml.j2
-    dest: "{{ docker_rootless_user.home }}/stacks/postgresql/stack.yml"
+    src: roles/mysql/templates/stack.yml.j2
+    dest: "{{ docker_rootless_user.home }}/stacks/mysql/stack.yml"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # -rwxr-xr-x
 
-- name: Deploy postgresql-password
+- name: Deploy root-password
   ansible.builtin.template:
-    src: roles/postgresql/templates/postgresql-password.j2
-    dest: "{{ docker_rootless_user.home }}/stacks/postgresql/postgresql-password"
+    src: roles/mysql/templates/root-password.j2
+    dest: "{{ docker_rootless_user.home }}/stacks/mysql/root-password"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
 
-- name: Deploy repmgr-password
+- name: Deploy replication-password
   ansible.builtin.template:
-    src: roles/postgresql/templates/repmgr-password.j2
-    dest: "{{ docker_rootless_user.home }}/stacks/postgresql/repmgr-password"
+    src: roles/mysql/templates/replication-password.j2
+    dest: "{{ docker_rootless_user.home }}/stacks/mysql/replication-password"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
 
-- name: Create and start PostgreSQL
+- name: Create and start MySQL
   become: true
   become_user: "{{ docker_rootless_user.name }}"
   environment:
     XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
     DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
   community.docker.docker_compose_v2:
-    project_src: "{{ docker_rootless_user.home }}/stacks/postgresql"
+    project_src: "{{ docker_rootless_user.home }}/stacks/mysql"
     files: [stack.yml]
-    project_name: postgresql
+    project_name: mysql
     state: present

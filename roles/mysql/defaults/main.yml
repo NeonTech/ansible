@@ -1,0 +1,6 @@
+mysql_docker_version: sha256:0c61a2f3861cddc96610eb3b92dea4f07471a21f5423d18df03dc476dc22e9e4 # 9.0.1
+mysql_flags: []
+mysql_root_username: root
+mysql_replication_username: replication
+mysql_master_host: mysql
+mysql_replication_mode: master
