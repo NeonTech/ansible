@@ -1,8 +1,10 @@
 postgresql_docker_version: sha256:3682359d2b7f66dc93033372a7d323dcc01f2194e49d0c6bb7732bae14b855de # 17.2.0
 postgresql_database: postgresql
 postgresql_username: postgresql
+# postgresql_password
 postgresql_repmgr_database: repmgr
 postgresql_repmgr_username: repmgr
+# postgresql_repmgr_password
 postgresql_repmgr_node_id: 1
 postgresql_repmgr_node_name: postgresql
 postgresql_repmgr_primary_host: postgresql

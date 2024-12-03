@@ -1,0 +1,35 @@
+- name: Create stack directory
+  ansible.builtin.file:
+    path: "{{ docker_rootless_user.home }}/stacks/redis"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # -rwxr-xr-x
+    state: directory
+
+- name: Deploy stack.yml
+  ansible.builtin.template:
+    src: roles/redis/templates/stack.yml.j2
+    dest: "{{ docker_rootless_user.home }}/stacks/redis/stack.yml"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # -rwxr-xr-x
+
+- name: Deploy redis-password
+  ansible.builtin.template:
+    src: roles/redis/templates/redis-password.j2
+    dest: "{{ docker_rootless_user.home }}/stacks/redis/redis-password"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
+
+- name: Create and start Redis
+  become: true
+  become_user: "{{ docker_rootless_user.name }}"
+  environment:
+    XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
+    DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_rootless_user.home }}/stacks/redis"
+    files: [stack.yml]
+    project_name: redis
+    state: present

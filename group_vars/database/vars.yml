@@ -1,7 +1,10 @@
+# MySQL
 mysql_flags: [--max-connections=1000]
 mysql_root_password: "{{ vault_mysql_root_password }}"
 mysql_replication_password: "{{ vault_mysql_replication_password }}"
 mysql_master_host: mysql.service.neontech.dev
+
+# PostgreSQL
 postgresql_database: postgres
 postgresql_username: postgres
 postgresql_password: "{{ vault_postgresql_password }}"
@@ -13,3 +16,8 @@ postgresql_repmgr_partner_nodes:
   - postgresql3.service.neontech.dev
   - postgresql4.service.neontech.dev
 postgresql_repmgr_primary_visibility_consensus: true
+
+# Redis
+redis_password: "{{ vault_redis_password }}"
+redis_master_host: redis.service.neontech.dev
+redis_replication_host: "{{ inventory_hostname }}.host.neontech.dev"
