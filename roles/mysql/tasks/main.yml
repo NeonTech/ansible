@@ -12,7 +12,7 @@
     dest: "{{ docker_rootless_user.home }}/stacks/mysql/stack.yml"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0755" # -rwxr-xr-x
+    mode: "0644" # -rw-r--r--
 
 - name: Deploy root-password
   ansible.builtin.template:
