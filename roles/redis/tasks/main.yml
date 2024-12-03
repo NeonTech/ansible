@@ -22,6 +22,14 @@
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
 
+- name: Deploy users.acl
+  ansible.builtin.template:
+    src: roles/redis/templates/users.acl.j2
+    dest: "{{ docker_rootless_user.home }}/stacks/redis/users.acl"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
+
 - name: Create and start Redis
   become: true
   become_user: "{{ docker_rootless_user.name }}"

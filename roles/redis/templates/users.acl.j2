@@ -1,0 +1,1 @@
+user default on #{{ redis_password | hash("sha256") }} +psync +replconf +ping
