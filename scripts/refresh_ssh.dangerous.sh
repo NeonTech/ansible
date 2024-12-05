@@ -9,6 +9,9 @@ setup_ssh() {
 setup_ssh
 
 for file in ./ssh/*; do
+    if [ "$(basename "$file")" = "known_hosts" ]; then
+        continue
+    fi
     if [ "${file##*.}" = "pub" ]; then
         continue
     fi

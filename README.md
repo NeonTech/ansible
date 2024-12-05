@@ -18,8 +18,8 @@ Inventory and automation of NeonTech infrastructure using [Ansible](https://www.
 
 4. Test connections to hosts:
 
-   `ansible all --inventory production.ini --module-name ansible.builtin.ping`
+   `ansible all --inventory ./production.ini --vault-password-file ./vault-password-file --module-name ansible.builtin.ping`
 
 5. Run the `site.yml` playbook to deploy **_everything_**:
 
-   `ansible-playbook --inventory production.ini --vault-password-file vault-password-file site.yml`
+   `ansible-playbook --inventory ./production.ini --vault-password-file ./vault-password-file site.yml`

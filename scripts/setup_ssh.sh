@@ -14,15 +14,19 @@ if [ ! -f ./vault-password-file ]; then
     echo "What is the ansible-vault password?"
     stty -echo
     read -r ANSIBLE_VAULT_PASSWORD
-    stty echo
-    echo "$ANSIBLE_VAULT_PASSWORD" >./vault-password-file
+    printf "%s" "$ANSIBLE_VAULT_PASSWORD" >./vault-password-file
     unset ANSIBLE_VAULT_PASSWORD
+    stty echo
     echo
 fi
 
 chmod 600 ./vault-password-file
 
 for file in ./ssh/*; do
+    if [ "$(basename "$file")" = "known_hosts" ]; then
+        chmod 600 "$file"
+        continue
+    fi
     if [ "${file##*.}" = "pub" ]; then
         chmod 644 "$file"
         continue
