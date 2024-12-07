@@ -1,0 +1,11 @@
+- name: Restart Redis
+  become: true
+  become_user: "{{ docker_rootless_user.name }}"
+  environment:
+    XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
+    DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
+  community.docker.docker_compose_v2:
+    project_src: "{{ docker_rootless_user.home }}/stacks/redis"
+    files: [stack.yml]
+    project_name: redis
+    state: restarted

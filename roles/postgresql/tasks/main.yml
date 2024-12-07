@@ -21,6 +21,8 @@
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
+  notify:
+    - Restart PostgreSQL
 
 - name: Deploy repmgr-password
   ansible.builtin.template:
@@ -29,6 +31,8 @@
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
+  notify:
+    - Restart PostgreSQL
 
 - name: Create and start PostgreSQL
   become: true

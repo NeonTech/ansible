@@ -1,1 +1,2 @@
 user default on #{{ redis_password | hash("sha256") }} +psync +replconf +ping
+user administrator on #{{ redis_administrator_password | hash("sha256") }} allcommands allkeys allchannels

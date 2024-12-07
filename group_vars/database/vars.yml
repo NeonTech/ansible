@@ -18,6 +18,7 @@ postgresql_repmgr_partner_nodes:
 postgresql_repmgr_primary_visibility_consensus: true
 
 # Redis
-redis_password: "{{ vault_redis_password }}"
 redis_master_host: redis.service.neontech.dev
 redis_replication_host: "{{ inventory_hostname }}.host.neontech.dev"
+redis_password: "{{ vault_redis_password }}"
+redis_administrator_password: "{{ vault_redis_administrator_password }}"
