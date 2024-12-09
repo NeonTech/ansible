@@ -1,0 +1,5 @@
+- name: Certificate Authority (CA)
+  hosts: ca
+  roles:
+    - common
+    - stepca

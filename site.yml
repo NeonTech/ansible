@@ -4,6 +4,9 @@
 - name: Database
   ansible.builtin.import_playbook: database.yml
 
+- name: Certificate Authority (CA)
+  ansible.builtin.import_playbook: ca.yml
+
 - name: Commit changed files
   hosts: all
   tasks:

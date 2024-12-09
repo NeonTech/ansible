@@ -1,0 +1,123 @@
+- name: Create user
+  ansible.builtin.user:
+    name: "{{ stepca_username }}"
+    password: "!"
+    comment: Step CA
+    state: present
+  register: stepca_user
+
+- name: Register installation state
+  ansible.builtin.file:
+    path: "{{ stepca_user.home }}/.local/bin/step-ca"
+    state: file
+  ignore_errors: true
+  register: stepca
+
+- name: Install
+  when: stepca.failed
+  become: true
+  become_user: "{{ stepca_user.name }}"
+  block:
+    - name: Install required packages for build
+      become: false # "sudo"
+      block:
+        - name: Install required packages for build on Alpine Linux
+          when: ansible_os_family == "Alpine"
+          community.general.apk:
+            name:
+              - go
+              - pcsc-lite-dev
+              - gcc
+              - make
+              - pkgconf
+              - curl
+              - musl-dev
+            state: installed
+    - name: Create build directory
+      ansible.builtin.file:
+        path: "{{ stepca_user.home }}/step-ca"
+        owner: "{{ stepca_user.name }}"
+        group: "{{ stepca_user.name }}"
+        mode: "0700" # drwx------
+        state: directory
+      register: stepca_build_dir
+    - name: Download sources
+      ansible.builtin.get_url:
+        url: https://github.com/smallstep/certificates/releases/download/v{{ stepca_version }}/step-ca_{{ stepca_version }}.tar.gz
+        dest: "{{ stepca_build_dir.path }}/step-ca.tar.gz"
+        owner: "{{ stepca_user.name }}"
+        group: "{{ stepca_user.name }}"
+        mode: "0600" # -rw-------
+    - name: Unarchive sources
+      ansible.builtin.command:
+        chdir: "{{ stepca_build_dir.path }}"
+        # e(x)tract, (v)erbose, g(z)ip, (f)ile
+        cmd: tar -xvzf step-ca.tar.gz
+      register: stepca_build_tar
+      changed_when: stepca_build_tar.rc == 0
+      failed_when: stepca_build_tar.rc != 0
+      tags:
+        # TODO Use unarchive module
+        - skip_ansible_lint
+    - name: Bootstrap
+      community.general.make:
+        chdir: "{{ stepca_build_dir.path }}"
+        target: bootstrap
+    - name: Build
+      community.general.make:
+        chdir: "{{ stepca_build_dir.path }}"
+        target: build
+        params:
+          GO_ENVS: CGO_ENABLED=1
+    - name: Create install directory
+      ansible.builtin.file:
+        path: "{{ stepca.path | dirname }}"
+        owner: "{{ stepca_user.name }}"
+        group: "{{ stepca_user.name }}"
+        mode: "2711" # drwx--s--x
+        state: directory
+    - name: Install
+      ansible.builtin.copy:
+        remote_src: true
+        src: "{{ stepca_build_dir.path }}/bin/step-ca"
+        dest: "{{ stepca.path }}"
+        owner: "{{ stepca_user.name }}"
+        group: "{{ stepca_user.name }}"
+        mode: "2711" # drwx--s--x
+    - name: Delete build directory
+      ansible.builtin.file:
+        path: "{{ stepca_build_dir.path }}"
+        state: absent
+    - name: Reboot
+      become: false # "sudo"
+      ansible.builtin.reboot:
+
+- name: Recreate user
+  ansible.builtin.user:
+    name: "{{ stepca_user.name }}"
+    password: "!"
+    comment: "{{ stepca_user.comment }}"
+    state: present
+  register: stepca_user
+
+- name: Install required packages
+  block:
+    - name: Install required packages on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        name: yubikey-manager
+        state: installed
+
+- name: Enable pcscd
+  ansible.builtin.service:
+    name: pcscd
+    state: started
+    enabled: true
+
+- name: Deploy .profile
+  ansible.builtin.template:
+    src: roles/stepca/templates/.profile.j2
+    dest: "{{ stepca_user.home }}/.profile"
+    owner: "{{ stepca_user.name }}"
+    group: "{{ stepca_user.name }}"
+    mode: "0755" # -rwxr-xr-x

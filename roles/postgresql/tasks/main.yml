@@ -3,7 +3,7 @@
     path: "{{ docker_rootless_user.home }}/stacks/postgresql"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0755" # -rwxr-xr-x
+    mode: "0755" # drwxr-xr-x
     state: directory
 
 - name: Deploy stack.yml
