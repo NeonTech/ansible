@@ -8,3 +8,9 @@ ansible_ssh_args: -o UserKnownHostsFile=./ssh/known_hosts
 ansible_ssh_user: root
 ansible_ssh_host: "{{ inventory_hostname }}.host.neontech.dev"
 ansible_ssh_private_key_file: ./.ssh/{{ inventory_hostname }}_{{ ansible_ssh_user }}_ed25519
+
+# Hosts
+ca_host: ca.service.neontech.dev
+mysql_host: mysql.service.neontech.dev
+postgresql_host: postgresql.service.neontech.dev
+redis_host: redis.service.neontech.dev

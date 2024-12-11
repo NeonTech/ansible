@@ -6,7 +6,7 @@
     state: present
   register: stepca_user
 
-- name: Register installation state
+- name: Register bin state
   ansible.builtin.file:
     path: "{{ stepca_user.home }}/.local/bin/step-ca"
     state: file
@@ -35,7 +35,7 @@
             state: installed
     - name: Create build directory
       ansible.builtin.file:
-        path: "{{ stepca_user.home }}/step-ca"
+        path: "{{ stepca_user.home }}/src"
         owner: "{{ stepca_user.name }}"
         group: "{{ stepca_user.name }}"
         mode: "0700" # drwx------
@@ -100,19 +100,40 @@
     state: present
   register: stepca_user
 
-- name: Install required packages
-  block:
-    - name: Install required packages on Alpine Linux
-      when: ansible_os_family == "Alpine"
-      community.general.apk:
-        name: yubikey-manager
-        state: installed
+- name: Create data directory
+  ansible.builtin.file:
+    path: "{{ stepca_user.home }}/.local/share/step-ca"
+    owner: "{{ stepca_user.name }}"
+    group: "{{ stepca_user.name }}"
+    mode: "2711" # drwx--s--x
+    state: directory
+  register: stepca_data
 
-- name: Enable pcscd
-  ansible.builtin.service:
-    name: pcscd
-    state: started
-    enabled: true
+- name: Deploy data
+  ansible.builtin.copy:
+    src: "roles/stepca/files/"
+    dest: "{{ stepca_data.path }}/"
+    owner: "{{ stepca_user.name }}"
+    group: "{{ stepca_user.name }}"
+    mode: "0600" # -rw-----
+    directory_mode: "0700" # drwx------
+
+- name: Create config directory
+  ansible.builtin.file:
+    path: "{{ stepca_data.path }}/config"
+    owner: "{{ stepca_user.name }}"
+    group: "{{ stepca_user.name }}"
+    mode: "0700" # drwx------
+    state: directory
+  register: stepca_config
+
+- name: Deploy ca.json
+  ansible.builtin.template:
+    src: "roles/stepca/templates/ca.json.j2"
+    dest: "{{ stepca_config.path }}/ca.json"
+    owner: "{{ stepca_user.name }}"
+    group: "{{ stepca_user.name }}"
+    mode: "0600" # -rw-------
 
 - name: Deploy .profile
   ansible.builtin.template:
@@ -121,3 +142,35 @@
     owner: "{{ stepca_user.name }}"
     group: "{{ stepca_user.name }}"
     mode: "0755" # -rwxr-xr-x
+
+- name: Install required packages
+  block:
+    - name: Install required packages on Alpine Linux
+      when: ansible_os_family == "Alpine"
+      community.general.apk:
+        name:
+          - yubikey-manager
+        state: installed
+
+- name: Start and enable pcscd
+  ansible.builtin.service:
+    name: pcscd
+    state: started
+    enabled: true
+
+- name: Deploy step-ca
+  block:
+    - name: Deploy OpenRC step-ca
+      when: ansible_os_family == "Alpine"
+      ansible.builtin.template:
+        src: roles/stepca/templates/step-ca.openrc.j2
+        dest: /etc/init.d/step-ca
+        owner: root
+        group: root
+        mode: "0755" # -rwxr-xr-x
+
+- name: Start and enable step-ca
+  ansible.builtin.service:
+    name: step-ca
+    state: started
+    enabled: true

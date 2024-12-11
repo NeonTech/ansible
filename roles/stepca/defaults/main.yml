@@ -1,2 +1,12 @@
 stepca_version: 0.28.1
 stepca_username: stepca
+stepca_dns_names: [localhost]
+stepca_port: 8443
+stepca_postgresql_host: postgresql
+stepca_postgresql_port: 5432
+stepca_postgresql_database: stepca
+stepca_postgresql_username: stepca
+# stepca_yubikey_root_slot: 82
+stepca_yubikey_intermediate_slot: 83
+stepca_yubikey_ssh_host_slot: 84
+stepca_yubikey_ssh_user_slot: 85

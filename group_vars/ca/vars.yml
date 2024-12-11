@@ -1,0 +1,7 @@
+stepca_dns_names:
+  - ca.service.neontech.dev
+  - ca1.service.neontech.dev
+  - ca2.service.neontech.dev
+stepca_postgresql_host: "{{ postgresql_host }}"
+stepca_postgresql_password: "{{ vault_stepca_postgresql_password }}"
+stepca_yubikey_pin: "{{ vault_stepca_yubikey_pin }}"

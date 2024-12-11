@@ -1,1 +1,2 @@
-export PATH=$PATH:{{ stepca_user.home }}/.local/bin
+export PATH=$PATH:{{ stepca.path | dirname }}
+export STEPPATH={{ stepca_data.path }}
