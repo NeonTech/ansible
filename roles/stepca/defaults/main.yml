@@ -6,7 +6,8 @@ stepca_postgresql_host: postgresql
 stepca_postgresql_port: 5432
 stepca_postgresql_database: stepca
 stepca_postgresql_username: stepca
-# stepca_yubikey_root_slot: 82
+stepca_postgresql_password: "{{ mandatory(msg='default secret') }}"
+stepca_yubikey_pin: "{{ mandatory(msg='default secret') }}"
 stepca_yubikey_intermediate_slot: 83
 stepca_yubikey_ssh_host_slot: 84
 stepca_yubikey_ssh_user_slot: 85

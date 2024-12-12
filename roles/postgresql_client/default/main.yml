@@ -1,0 +1,8 @@
+postgresql_client_login_host: postgresql
+postgresql_client_login_port: 5432
+postgresql_client_login_username: postgresql
+postgresql_client_login_password: "{{ mandatory(msg='default secret') }}"
+postgresql_client_login_database: postgresql
+postgresql_client_username: postgresql
+postgresql_client_password: "{{ mandatory(msg='default secret') }}"
+postgresql_client_database: postgresql

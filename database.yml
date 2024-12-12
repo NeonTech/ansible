@@ -1,7 +1,0 @@
-- name: Database
-  hosts: database
-  roles:
-    - common
-    - mysql
-    - postgresql
-    - redis

@@ -1,2 +1,0 @@
-mysql_replication_mode: master
-redis_replication_mode: master

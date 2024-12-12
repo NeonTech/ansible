@@ -1,0 +1,39 @@
+services:
+  postgresql:
+    image: bitnami/postgresql-repmgr@{{ postgresql_server_docker_version }}
+    container_name: postgresql
+    restart: always
+    stop_grace_period: 1m
+    environment:
+      POSTGRESQL_DATABASE: {{ postgresql_server_database }}
+      POSTGRESQL_USERNAME: {{ postgresql_server_username }}
+      POSTGRESQL_PASSWORD_FILE: /run/secrets/postgresql-password
+      REPMGR_DATABASE: {{ postgresql_server_repmgr_database }}
+      REPMGR_USERNAME: {{ postgresql_server_repmgr_username }}
+      REPMGR_PASSWORD_FILE: /run/secrets/repmgr-password
+      REPMGR_NODE_NAME: {{ postgresql_server_repmgr_node_name }}-{{ postgresql_server_repmgr_node_id }}
+      REPMGR_NODE_NETWORK_NAME: postgresql
+      REPMGR_PRIMARY_HOST: {{ postgresql_server_repmgr_primary_host }}
+      REPMGR_PARTNER_NODES: {{  postgresql_server_repmgr_partner_nodes | join(",") }}
+      REPMGR_PRIMARY_VISIBILITY_CONSENSUS: {{ postgresql_server_repmgr_primary_visibility_consensus }}
+    secrets:
+      - postgresql-password
+      - repmgr-password
+    ports:
+      - 5432:5432
+    volumes:
+      - postgresql:/bitnami/postgresql
+
+secrets:
+  postgresql-password:
+    file: ./postgresql-password
+  repmgr-password:
+    file: ./repmgr-password
+
+networks:
+  default:
+    name: postgresql
+
+volumes:
+  postgresql:
+    name: postgresql

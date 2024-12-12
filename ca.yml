@@ -1,5 +1,4 @@
-- name: Certificate Authority (CA)
+- name: Setup Certificate Authority (CA)
   hosts: ca
   roles:
-    - common
     - stepca

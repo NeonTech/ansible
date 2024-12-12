@@ -1,19 +1,14 @@
-- name: Network Time Protocol (NTP)
+- name: Initialize
+  ansible.builtin.import_playbook: initialize.yml
+
+- name: Setup Network Time Protocol (NTP)
   ansible.builtin.import_playbook: ntp.yml
 
-- name: Database
-  ansible.builtin.import_playbook: database.yml
+- name: Setup database servers
+  ansible.builtin.import_playbook: database_servers.yml
 
-- name: Certificate Authority (CA)
+- name: Setup Certificate Authority (CA)
   ansible.builtin.import_playbook: ca.yml
 
-- name: Commit changed files
-  hosts: all
-  tasks:
-    - name: Commit changed files on Alpine Linux
-      when: ansible_os_family == "Alpine"
-      community.general.lbu:
-        commit: true
-        include:
-          # Required for docker_rootless
-          - /etc/init.d
+- name: Commit
+  ansible.builtin.import_playbook: commit.yml

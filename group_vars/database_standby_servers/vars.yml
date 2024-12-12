@@ -1,0 +1,2 @@
+mysql_server_replication_mode: slave
+redis_server_replication_mode: slave

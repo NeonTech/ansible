@@ -1,0 +1,6 @@
+- name: Setup database servers
+  hosts: database_servers
+  roles:
+    - mysql_server
+    - postgresql_server
+    - redis_server

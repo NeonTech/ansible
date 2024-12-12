@@ -1,0 +1,6 @@
+redis_server_docker_version: sha256:05dce21160902eb9ffb1d8c6371ee71f30ab5a323277ca9db479181ec25c53fc # 7.4.1
+redis_server_password: "{{ mandatory(msg='default secret') }}"
+redis_server_administrator_password: "{{ mandatory(msg='default secret') }}"
+redis_server_replication_mode: master
+redis_server_master_host: redis
+redis_server_replication_host: redis

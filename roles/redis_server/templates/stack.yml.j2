@@ -1,0 +1,35 @@
+services:
+  redis:
+    image: bitnami/redis@{{ redis_server_docker_version }}
+    container_name: redis
+    restart: always
+    stop_grace_period: 1m
+    environment:
+      # ACL includes password
+      ALLOW_EMPTY_PASSWORD: yes
+      REDIS_ACLFILE: /run/secrets/users.acl
+      REDIS_REPLICATION_MODE: {{ redis_server_replication_mode }}
+      REDIS_MASTER_HOST: {{ redis_server_master_host }}
+      REDIS_MASTER_PASSWORD_FILE: /run/secrets/redis-password
+      REDIS_REPLICA_IP: {{ redis_server_replication_host }}
+    secrets:
+      - redis-password
+      - users.acl
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/bitnami/redis/data
+
+secrets:
+  redis-password:
+    file: ./redis-password
+  users.acl:
+    file: ./users.acl
+
+networks:
+  default:
+    name: redis
+
+volumes:
+  redis:
+    name: redis
