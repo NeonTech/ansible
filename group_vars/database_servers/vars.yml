@@ -6,7 +6,6 @@ mysql_server_master_host: "{{ mysql_server_host }}"
 
 # PostgreSQL
 postgresql_server_repmgr_password: "{{ vault_postgresql_server_repmgr_password }}"
-postgresql_server_repmgr_primary_host: "{{ postgresql_server_host }}"
 postgresql_server_repmgr_partner_nodes:
   - postgresql1.service.neontech.dev
   - postgresql2.service.neontech.dev

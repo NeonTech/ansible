@@ -16,6 +16,7 @@ services:
       REPMGR_PRIMARY_HOST: {{ postgresql_server_repmgr_primary_host }}
       REPMGR_PARTNER_NODES: {{  postgresql_server_repmgr_partner_nodes | join(",") }}
       REPMGR_PRIMARY_VISIBILITY_CONSENSUS: {{ postgresql_server_repmgr_primary_visibility_consensus }}
+      REPMGR_FAILOVER: manual # TODO automatic
     secrets:
       - postgresql-password
       - repmgr-password

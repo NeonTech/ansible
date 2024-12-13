@@ -18,9 +18,9 @@
   ansible.builtin.template:
     src: roles/redis_server/templates/redis-password.j2
     dest: "{{ docker_rootless_user.home }}/stacks/redis/redis-password"
-    owner: "{{ docker_rootless_user.name }}"
+    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+    mode: "0600" # -rw-------
   notify:
     - Restart Redis
 
@@ -28,9 +28,9 @@
   ansible.builtin.template:
     src: roles/redis_server/templates/users.acl.j2
     dest: "{{ docker_rootless_user.home }}/stacks/redis/users.acl"
-    owner: "{{ docker_rootless_user.name }}"
+    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+    mode: "0600" # -rw-------
   notify:
     - Restart Redis
 

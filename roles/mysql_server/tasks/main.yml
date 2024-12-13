@@ -18,9 +18,9 @@
   ansible.builtin.template:
     src: roles/mysql_server/templates/root-password.j2
     dest: "{{ docker_rootless_user.home }}/stacks/mysql/root-password"
-    owner: "{{ docker_rootless_user.name }}"
+    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+    mode: "0600" # -rw-------
   notify:
     - Restart MySQL
 
@@ -28,9 +28,9 @@
   ansible.builtin.template:
     src: roles/mysql_server/templates/replication-password.j2
     dest: "{{ docker_rootless_user.home }}/stacks/mysql/replication-password"
-    owner: "{{ docker_rootless_user.name }}"
+    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+    mode: "0600" # -rw-------
   notify:
     - Restart MySQL
 

@@ -1,2 +1,3 @@
 mysql_server_replication_mode: master
+postgresql_server_repmgr_primary_host: postgresql
 redis_server_replication_mode: master

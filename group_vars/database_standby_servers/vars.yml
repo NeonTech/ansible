@@ -1,2 +1,3 @@
 mysql_server_replication_mode: slave
+postgresql_server_repmgr_primary_host: "{{ postgresql_server_host }}"
 redis_server_replication_mode: slave
