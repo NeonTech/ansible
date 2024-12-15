@@ -3,10 +3,10 @@
 name=$RC_SVCNAME
 description="Step CA"
 supervisor="supervise-daemon"
-supervise_daemon_args="-e STEPPATH=\"{{ stepca_data.path }}\""
-command="{{ stepca.path }}"
+supervise_daemon_args="-e STEPPATH=\"{{ step_ca_data.path }}\""
+command="{{ step_ca.path }}"
 command_args=""
-command_user="{{ stepca_user.name }}"
+command_user="{{ step_ca_user.name }}"
 
 reload() {
     ebegin "Reloading $RC_SVCNAME"

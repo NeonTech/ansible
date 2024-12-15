@@ -1,6 +1,0 @@
-dependencies:
-  - role: postgresql_client
-    vars:
-      postgresql_client_username: "{{ stepca_postgresql_username }}"
-      postgresql_client_password: "{{ stepca_postgresql_password }}"
-      postgresql_client_database: "{{ stepca_postgresql_database }}"

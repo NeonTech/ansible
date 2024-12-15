@@ -1,22 +1,22 @@
 - name: Create user
   ansible.builtin.user:
-    name: "{{ stepca_username }}"
+    name: "{{ step_ca_username }}"
     password: "!"
     comment: Step CA
     state: present
-  register: stepca_user
+  register: step_ca_user
 
 - name: Register bin state
   ansible.builtin.file:
-    path: "{{ stepca_user.home }}/.local/bin/step-ca"
+    path: "{{ step_ca_user.home }}/.local/bin/step-ca"
     state: file
   ignore_errors: true
-  register: stepca
+  register: step_ca
 
 - name: Install
-  when: stepca.failed
+  when: step_ca.failed
   become: true
-  become_user: "{{ stepca_user.name }}"
+  become_user: "{{ step_ca_user.name }}"
   block:
     - name: Install required packages for build
       become: false # "sudo"
@@ -35,58 +35,59 @@
             state: installed
     - name: Create build directory
       ansible.builtin.file:
-        path: "{{ stepca_user.home }}/src"
-        owner: "{{ stepca_user.name }}"
-        group: "{{ stepca_user.name }}"
+        path: "{{ step_ca_user.home }}/src"
+        owner: "{{ step_ca_user.name }}"
+        group: "{{ step_ca_user.name }}"
         mode: "0700" # drwx------
         state: directory
-      register: stepca_build_dir
+      register: step_ca_build_dir
     - name: Download sources
       ansible.builtin.get_url:
-        url: https://github.com/smallstep/certificates/releases/download/v{{ stepca_version }}/step-ca_{{ stepca_version }}.tar.gz
-        dest: "{{ stepca_build_dir.path }}/step-ca.tar.gz"
-        owner: "{{ stepca_user.name }}"
-        group: "{{ stepca_user.name }}"
+        url: https://github.com/smallstep/certificates/releases/download/v{{ step_ca_version }}/step-ca_{{ step_ca_version }}.tar.gz
+        checksum: sha256:{{ step_ca_checksum }}
+        dest: "{{ step_ca_build_dir.path }}/step-ca.tar.gz"
+        owner: "{{ step_ca_user.name }}"
+        group: "{{ step_ca_user.name }}"
         mode: "0600" # -rw-------
     - name: Unarchive sources
       ansible.builtin.command:
-        chdir: "{{ stepca_build_dir.path }}"
+        chdir: "{{ step_ca_build_dir.path }}"
         # e(x)tract, (v)erbose, g(z)ip, (f)ile
         cmd: tar -xvzf step-ca.tar.gz
-      register: stepca_build_tar
-      changed_when: stepca_build_tar.rc == 0
-      failed_when: stepca_build_tar.rc != 0
+      register: step_ca_build_tar
+      changed_when: step_ca_build_tar.rc == 0
+      failed_when: step_ca_build_tar.rc != 0
       tags:
         # TODO Use unarchive module
         - skip_ansible_lint
     - name: Bootstrap
       community.general.make:
-        chdir: "{{ stepca_build_dir.path }}"
+        chdir: "{{ step_ca_build_dir.path }}"
         target: bootstrap
     - name: Build
       community.general.make:
-        chdir: "{{ stepca_build_dir.path }}"
+        chdir: "{{ step_ca_build_dir.path }}"
         target: build
         params:
           GO_ENVS: CGO_ENABLED=1
     - name: Create install directory
       ansible.builtin.file:
-        path: "{{ stepca.path | dirname }}"
-        owner: "{{ stepca_user.name }}"
-        group: "{{ stepca_user.name }}"
+        path: "{{ step_ca.path | dirname }}"
+        owner: "{{ step_ca_user.name }}"
+        group: "{{ step_ca_user.name }}"
         mode: "2711" # drwx--s--x
         state: directory
     - name: Install
       ansible.builtin.copy:
         remote_src: true
-        src: "{{ stepca_build_dir.path }}/bin/step-ca"
-        dest: "{{ stepca.path }}"
-        owner: "{{ stepca_user.name }}"
-        group: "{{ stepca_user.name }}"
+        src: "{{ step_ca_build_dir.path }}/bin/step-ca"
+        dest: "{{ step_ca.path }}"
+        owner: "{{ step_ca_user.name }}"
+        group: "{{ step_ca_user.name }}"
         mode: "2711" # drwx--s--x
     - name: Delete build directory
       ansible.builtin.file:
-        path: "{{ stepca_build_dir.path }}"
+        path: "{{ step_ca_build_dir.path }}"
         state: absent
     - name: Reboot
       become: false # "sudo"
@@ -94,53 +95,53 @@
 
 - name: Recreate user
   ansible.builtin.user:
-    name: "{{ stepca_user.name }}"
+    name: "{{ step_ca_user.name }}"
     password: "!"
-    comment: "{{ stepca_user.comment }}"
+    comment: "{{ step_ca_user.comment }}"
     state: present
-  register: stepca_user
+  register: step_ca_user
 
 - name: Create data directory
   ansible.builtin.file:
-    path: "{{ stepca_user.home }}/.local/share/step-ca"
-    owner: "{{ stepca_user.name }}"
-    group: "{{ stepca_user.name }}"
+    path: "{{ step_ca_user.home }}/.local/share/step-ca"
+    owner: "{{ step_ca_user.name }}"
+    group: "{{ step_ca_user.name }}"
     mode: "2711" # drwx--s--x
     state: directory
-  register: stepca_data
+  register: step_ca_data
 
 - name: Deploy data
   ansible.builtin.copy:
-    src: "roles/stepca/files/"
-    dest: "{{ stepca_data.path }}/"
-    owner: "{{ stepca_user.name }}"
-    group: "{{ stepca_user.name }}"
+    src: "roles/step_ca/files/"
+    dest: "{{ step_ca_data.path }}/"
+    owner: "{{ step_ca_user.name }}"
+    group: "{{ step_ca_user.name }}"
     mode: "0600" # -rw-----
     directory_mode: "0700" # drwx------
 
 - name: Create config directory
   ansible.builtin.file:
-    path: "{{ stepca_data.path }}/config"
-    owner: "{{ stepca_user.name }}"
-    group: "{{ stepca_user.name }}"
+    path: "{{ step_ca_data.path }}/config"
+    owner: "{{ step_ca_user.name }}"
+    group: "{{ step_ca_user.name }}"
     mode: "0700" # drwx------
     state: directory
-  register: stepca_config
+  register: step_ca_config
 
 - name: Deploy ca.json
   ansible.builtin.template:
-    src: "roles/stepca/templates/ca.json.j2"
-    dest: "{{ stepca_config.path }}/ca.json"
-    owner: "{{ stepca_user.name }}"
-    group: "{{ stepca_user.name }}"
+    src: "roles/step_ca/templates/ca.json.j2"
+    dest: "{{ step_ca_config.path }}/ca.json"
+    owner: "{{ step_ca_user.name }}"
+    group: "{{ step_ca_user.name }}"
     mode: "0600" # -rw-------
 
 - name: Deploy .profile
   ansible.builtin.template:
-    src: roles/stepca/templates/.profile.j2
-    dest: "{{ stepca_user.home }}/.profile"
-    owner: "{{ stepca_user.name }}"
-    group: "{{ stepca_user.name }}"
+    src: roles/step_ca/templates/.profile.j2
+    dest: "{{ step_ca_user.home }}/.profile"
+    owner: "{{ step_ca_user.name }}"
+    group: "{{ step_ca_user.name }}"
     mode: "0755" # -rwxr-xr-x
 
 - name: Install required packages
@@ -163,7 +164,7 @@
     - name: Deploy OpenRC step-ca
       when: ansible_os_family == "Alpine"
       ansible.builtin.template:
-        src: roles/stepca/templates/step-ca.openrc.j2
+        src: roles/step_ca/templates/step-ca.openrc.j2
         dest: /etc/init.d/step-ca
         owner: root
         group: root

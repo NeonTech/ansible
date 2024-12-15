@@ -1,19 +1,19 @@
 {
-  "root": "{{ stepca_data.path }}/certs/root_ca.crt",
+  "root": "{{ step_ca_data.path }}/certs/root_ca.crt",
   "federatedRoots": null,
-  "crt": "{{ stepca_data.path }}/certs/intermediate_ca.crt",
-  "key": "yubikey:slot-id={{ stepca_yubikey_intermediate_slot }}",
+  "crt": "{{ step_ca_data.path }}/certs/intermediate_ca.crt",
+  "key": "yubikey:slot-id={{ step_ca_yubikey_intermediate_slot }}",
   "kms": {
     "type": "yubikey",
-    "pin": "{{ stepca_yubikey_pin }}"
+    "pin": "{{ step_ca_yubikey_pin }}"
   },
-  "address": ":{{ stepca_port }}",
+  "address": ":{{ step_ca_port }}",
   "insecureAddress": "",
-  "dnsNames": {{ stepca_dns_names | to_json }},
+  "dnsNames": {{ step_ca_dns_names | to_json }},
   {# TODO
   "ssh": {
-    "hostKey": "yubikey:slot-id={{ stepca_yubikey_ssh_host_slot }}",
-    "userKey": "yubikey:slot-id={{ stepca_yubikey_ssh_user_slot }}"
+    "hostKey": "yubikey:slot-id={{ step_ca_yubikey_ssh_host_slot }}",
+    "userKey": "yubikey:slot-id={{ step_ca_yubikey_ssh_user_slot }}"
   },
   #}
   "logger": {
@@ -21,7 +21,7 @@
   },
   "db": {
     "type": "postgresql",
-    "dataSource": "postgresql://{{ stepca_postgresql_username }}:{{ stepca_postgresql_password }}@{{ stepca_postgresql_host }}:{{ stepca_postgresql_port }}/{{ stepca_postgresql_database }}"
+    "dataSource": "postgresql://{{ step_ca_postgresql_username }}:{{ step_ca_postgresql_password }}@{{ step_ca_postgresql_host }}:{{ step_ca_postgresql_port }}/{{ step_ca_postgresql_database }}"
   },
   "authority": {
     "enableAdmin": true

@@ -1,0 +1,6 @@
+dependencies:
+  - role: postgresql_client
+    vars:
+      postgresql_client_username: "{{ step_ca_postgresql_username }}"
+      postgresql_client_password: "{{ step_ca_postgresql_password }}"
+      postgresql_client_database: "{{ step_ca_postgresql_database }}"

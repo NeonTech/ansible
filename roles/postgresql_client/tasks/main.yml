@@ -7,6 +7,7 @@
         state: installed
 
 - name: Create user {{ postgresql_client_username }}
+  throttle: 1
   environment:
     PGOPTIONS: "-c password_encryption=scram-sha-256"
   community.postgresql.postgresql_user:
@@ -20,6 +21,7 @@
     state: present
 
 - name: Create database {{ postgresql_client_database }}
+  throttle: 1
   community.postgresql.postgresql_db:
     login_host: "{{ postgresql_client_login_host }}"
     login_port: "{{ postgresql_client_login_port }}"
