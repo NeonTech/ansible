@@ -8,6 +8,7 @@ services:
       MYSQL_ROOT_USER: {{ mysql_server_root_username }}
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/root-password
       MYSQL_MASTER_HOST: {{ mysql_server_master_host }}
+      MYSQL_MASTER_PORT_NUMBER: {{ mysql_server_master_port }}
       MYSQL_MASTER_ROOT_USER: {{ mysql_server_root_username }}
       MYSQL_MASTER_ROOT_PASSWORD_FILE: /run/secrets/root-password
       MYSQL_REPLICATION_USER: {{ mysql_server_replication_username }}

@@ -15,8 +15,8 @@
     mode: "0644" # -rw-r--r--
 
 - name: Deploy postgresql-password
-  ansible.builtin.template:
-    src: roles/postgresql_server/templates/postgresql-password.j2
+  ansible.builtin.copy:
+    content: "{{ postgresql_server_password }}"
     dest: "{{ docker_rootless_user.home }}/stacks/postgresql/postgresql-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
@@ -24,10 +24,10 @@
   notify:
     - Restart PostgreSQL
 
-- name: Deploy repmgr-password
-  ansible.builtin.template:
-    src: roles/postgresql_server/templates/repmgr-password.j2
-    dest: "{{ docker_rootless_user.home }}/stacks/postgresql/repmgr-password"
+- name: Deploy replication-password
+  ansible.builtin.copy:
+    content: "{{ postgresql_server_replication_password }}"
+    dest: "{{ docker_rootless_user.home }}/stacks/postgresql/replication-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------

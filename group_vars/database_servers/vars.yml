@@ -1,20 +1,35 @@
-# MySQL
+#region MySQL
+# server
 mysql_server_flags: [--max-connections=1000]
+# root
+mysql_server_root_username: root
 mysql_server_root_password: "{{ vault_mysql_server_root_password }}"
+# replication
+mysql_server_replication_username: replication
 mysql_server_replication_password: "{{ vault_mysql_server_replication_password }}"
+# master
 mysql_server_master_host: "{{ mysql_server_host }}"
+mysql_server_master_port: 3306
+#endregion
 
-# PostgreSQL
-postgresql_server_repmgr_password: "{{ vault_postgresql_server_repmgr_password }}"
-postgresql_server_repmgr_partner_nodes:
-  - postgresql1.service.neontech.dev
-  - postgresql2.service.neontech.dev
-  - postgresql3.service.neontech.dev
-  - postgresql4.service.neontech.dev
-postgresql_server_repmgr_primary_visibility_consensus: true
+#region PostgreSQL
+# replication
+postgresql_server_replication_username: replication
+postgresql_server_replication_password: "{{ vault_postgresql_server_replication_password }}"
+# master
+postgresql_server_master_host: "{{ postgresql_server_host }}"
+postgresql_server_master_port: 5432
+#endregion
 
-# Redis
-redis_server_master_host: "{{ redis_server_host }}"
-redis_server_replication_host: "{{ inventory_hostname }}.host.neontech.dev"
+#region Redis
+# server
+redis_server_username: default
 redis_server_password: "{{ vault_redis_server_password }}"
+# replication
+redis_server_replication_host: "{{ inventory_hostname }}.host.neontech.dev"
+# master
+redis_server_master_host: "{{ redis_server_host }}"
+# users.acl
+redis_server_administrator_username: administrator
 redis_server_administrator_password: "{{ vault_redis_server_administrator_password }}"
+#endregion

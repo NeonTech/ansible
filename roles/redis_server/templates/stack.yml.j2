@@ -10,6 +10,7 @@ services:
       REDIS_ACLFILE: /run/secrets/users.acl
       REDIS_REPLICATION_MODE: {{ redis_server_replication_mode }}
       REDIS_MASTER_HOST: {{ redis_server_master_host }}
+      REDIS_MASTER_PORT_NUMBER: {{ redis_server_master_port }}
       REDIS_MASTER_PASSWORD_FILE: /run/secrets/redis-password
       REDIS_REPLICA_IP: {{ redis_server_replication_host }}
     secrets:

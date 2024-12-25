@@ -1,12 +1,12 @@
-postgresql_server_docker_version: sha256:3682359d2b7f66dc93033372a7d323dcc01f2194e49d0c6bb7732bae14b855de # 17.2.0
-postgresql_server_database: postgresql
+postgresql_server_docker_version: sha256:30774f4007c4364541cbfb05b128917b689176387070f76bb1f94f15d1d21a45 # 17.2.0
+# server
 postgresql_server_username: postgresql
 postgresql_server_password: "{{ mandatory(msg='default secret') }}"
-postgresql_server_repmgr_database: repmgr
-postgresql_server_repmgr_username: repmgr
-postgresql_server_repmgr_password: "{{ mandatory(msg='default secret') }}"
-postgresql_server_repmgr_node_id: 1
-postgresql_server_repmgr_node_name: postgresql
-postgresql_server_repmgr_primary_host: postgresql
-postgresql_server_repmgr_partner_nodes: [postgresql]
-postgresql_server_repmgr_primary_visibility_consensus: false
+postgresql_server_database: postgresql
+# replication
+postgresql_server_replication_username: replication
+postgresql_server_replication_password: "{{ mandatory(msg='default secret') }}"
+postgresql_server_replication_mode: master
+# master
+postgresql_server_master_host: localhost
+postgresql_server_master_port: 5432
