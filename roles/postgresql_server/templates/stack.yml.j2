@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: bitnami/postgresql@{{ postgresql_server_docker_version }}
+    image: bitnami/postgresql:{{ postgresql_server_docker_version }}
     container_name: postgresql
     restart: always
     stop_grace_period: 1m

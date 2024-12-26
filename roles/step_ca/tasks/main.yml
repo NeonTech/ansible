@@ -54,9 +54,7 @@
         chdir: "{{ step_ca_build_dir.path }}"
         # e(x)tract, (v)erbose, g(z)ip, (f)ile
         cmd: tar -xvzf step-ca.tar.gz
-      register: step_ca_build_tar
-      changed_when: step_ca_build_tar.rc == 0
-      failed_when: step_ca_build_tar.rc != 0
+      changed_when: true
       tags:
         # TODO Use unarchive module
         - skip_ansible_lint

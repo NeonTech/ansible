@@ -1,6 +1,6 @@
 services:
   redis:
-    image: bitnami/redis@{{ redis_server_docker_version }}
+    image: bitnami/redis:{{ redis_server_docker_version }}
     container_name: redis
     restart: always
     stop_grace_period: 1m

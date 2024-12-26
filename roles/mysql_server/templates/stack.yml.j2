@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: bitnami/mysql@{{ mysql_server_docker_version }}
+    image: bitnami/mysql:{{ mysql_server_docker_version }}
     container_name: mysql
     restart: always
     stop_grace_period: 1m

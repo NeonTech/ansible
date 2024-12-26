@@ -5,11 +5,12 @@
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # drwxr-xr-x
     state: directory
+  register: mysql_server_stack
 
 - name: Deploy stack.yml
   ansible.builtin.template:
     src: roles/mysql_server/templates/stack.yml.j2
-    dest: "{{ docker_rootless_user.home }}/stacks/mysql/stack.yml"
+    dest: "{{ mysql_server_stack.path }}/stack.yml"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
@@ -17,7 +18,7 @@
 - name: Deploy root-password
   ansible.builtin.copy:
     content: "{{ mysql_server_root_password }}"
-    dest: "{{ docker_rootless_user.home }}/stacks/mysql/root-password"
+    dest: "{{ mysql_server_stack.path }}/root-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------
@@ -27,7 +28,7 @@
 - name: Deploy replication-password
   ansible.builtin.copy:
     content: "{{ mysql_server_replication_password }}"
-    dest: "{{ docker_rootless_user.home }}/stacks/mysql/replication-password"
+    dest: "{{ mysql_server_stack.path }}/replication-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------
@@ -41,7 +42,7 @@
     XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
     DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
   community.docker.docker_compose_v2:
-    project_src: "{{ docker_rootless_user.home }}/stacks/mysql"
+    project_src: "{{ mysql_server_stack.path }}"
     files: [stack.yml]
     project_name: mysql
     state: present

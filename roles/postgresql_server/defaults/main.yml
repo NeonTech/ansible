@@ -1,4 +1,4 @@
-postgresql_server_docker_version: sha256:30774f4007c4364541cbfb05b128917b689176387070f76bb1f94f15d1d21a45 # 17.2.0
+postgresql_server_docker_version: 17.2.0@sha256:30774f4007c4364541cbfb05b128917b689176387070f76bb1f94f15d1d21a45
 # server
 postgresql_server_username: postgresql
 postgresql_server_password: "{{ mandatory(msg='default secret') }}"

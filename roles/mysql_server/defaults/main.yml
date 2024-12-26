@@ -1,4 +1,4 @@
-mysql_server_docker_version: sha256:0c61a2f3861cddc96610eb3b92dea4f07471a21f5423d18df03dc476dc22e9e4 # 9.0.1
+mysql_server_docker_version: 9.0.1@sha256:48ce690effadbc5042c7f3edddeac50baf190d59a438b6a92ed714c3dea1ea19
 # server
 mysql_server_flags: []
 # root

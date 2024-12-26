@@ -6,6 +6,7 @@
         name:
           - docker-rootless-extras
           - docker-cli-compose
+          - py3-requests
         state: installed
 
 - name: Configure cgroups
@@ -68,6 +69,19 @@
     name: docker-rootless
     state: started
     enabled: true
+
+- name: Prune
+  become: true
+  become_user: "{{ docker_rootless_user.name }}"
+  environment:
+    XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
+    DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
+  community.general.docker_prune:
+    builder_cache: true
+    containers: true
+    images: true
+    networks: true
+    volumes: true
 
 - name: Allow routing ping packets
   ansible.posix.sysctl:
