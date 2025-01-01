@@ -1,3 +1,4 @@
+step_ca_port: "{{ ca_port }}"
 step_ca_dns_names:
   - ca.service.neontech.dev
   - ca1.service.neontech.dev

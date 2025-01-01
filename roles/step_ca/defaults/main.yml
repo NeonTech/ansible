@@ -2,7 +2,7 @@ step_ca_version: 0.28.1
 step_ca_checksum: 932f4eac08071f1290da62834b0d665839c7b31b87f168d747fead42a6984d30
 step_ca_username: step-ca
 step_ca_dns_names: [localhost]
-step_ca_port: 8443
+step_ca_port: 443
 step_ca_postgresql_host: postgresql
 step_ca_postgresql_port: 5432
 step_ca_postgresql_database: step_ca

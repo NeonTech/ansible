@@ -44,5 +44,4 @@
   community.docker.docker_compose_v2:
     project_src: "{{ mysql_server_stack.path }}"
     files: [stack.yml]
-    project_name: mysql
     state: present

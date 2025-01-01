@@ -35,6 +35,34 @@
   notify:
     - Restart Redis
 
+- name: Deploy TLS
+  when: redis_server_tls
+  notify:
+    - Restart Redis
+  block:
+    - name: Deploy redis-tls
+      ansible.builtin.copy:
+        src: roles/redis_server/files/redis-tls/
+        dest: "{{ redis_server_stack.path }}/redis-tls/"
+        owner: "{{ docker_rootless_user.name }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: preserve
+        directory_mode: "0755" # drwxr-xr-x
+    - name: Deploy tls-password
+      ansible.builtin.copy:
+        content: "{{ redis_server_tls_password }}"
+        dest: "{{ redis_server_stack.path }}/tls-password"
+        owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: "0600" # -rw-------
+    - name: Deploy acme-rfc2136.ini
+      ansible.builtin.template:
+        src: roles/redis_server/templates/acme-rfc2136.ini.j2
+        dest: "{{ redis_server_stack.path }}/acme-rfc2136.ini"
+        owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: "0600" # -rw-------
+
 - name: Create and start Redis
   become: true
   become_user: "{{ docker_rootless_user.name }}"
@@ -44,5 +72,4 @@
   community.docker.docker_compose_v2:
     project_src: "{{ redis_server_stack.path }}"
     files: [stack.yml]
-    project_name: redis
     state: present

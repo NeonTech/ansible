@@ -80,6 +80,8 @@
     builder_cache: true
     containers: true
     images: true
+    images_filters:
+      dangling: false
     networks: true
     volumes: true
 

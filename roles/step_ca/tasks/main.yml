@@ -82,7 +82,7 @@
         dest: "{{ step_ca.path }}"
         owner: "{{ step_ca_user.name }}"
         group: "{{ step_ca_user.name }}"
-        mode: "2711" # drwx--s--x
+        mode: "2711" # -rwx--s--x
     - name: Delete build directory
       ansible.builtin.file:
         path: "{{ step_ca_build_dir.path }}"
