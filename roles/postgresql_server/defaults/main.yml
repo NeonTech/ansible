@@ -1,4 +1,5 @@
 postgresql_server_docker_version: 17.2.0@sha256:30774f4007c4364541cbfb05b128917b689176387070f76bb1f94f15d1d21a45
+postgresql_server_step_docker_version: 0.28.2@sha256:dbe894c2d146b7389cc2e1e1d14cccd03f8c765a6eeb957f3340333c2f86a767
 # server
 postgresql_server_username: postgresql
 postgresql_server_password: "{{ mandatory(msg='default secret') }}"
@@ -10,3 +11,14 @@ postgresql_server_replication_mode: master
 # master
 postgresql_server_master_host: localhost
 postgresql_server_master_port: 5432
+# tls
+postgresql_server_tls: false
+postgresql_server_tls_domains: localhost
+postgresql_server_tls_ca_host: localhost
+postgresql_server_tls_ca_port: 443
+postgresql_server_tls_ca_fingerprint: "{{ mandatory(msg='default value') }}"
+postgresql_server_tls_acme_rfc2136_ip: 127.0.0.1
+postgresql_server_tls_acme_rfc2136_port: 53
+postgresql_server_tls_acme_rfc2136_name: acme
+postgresql_server_tls_acme_rfc2136_secret: "{{ mandatory(msg='default secret') }}"
+postgresql_server_tls_acme_rfc2136_algorithm: HMAC-SHA256

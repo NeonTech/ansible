@@ -35,6 +35,27 @@
   notify:
     - Restart PostgreSQL
 
+- name: Deploy TLS
+  when: postgresql_server_tls
+  notify:
+    - Restart PostgreSQL
+  block:
+    - name: Deploy postgresql-tls
+      ansible.builtin.copy:
+        src: roles/postgresql_server/files/postgresql-tls/
+        dest: "{{ postgresql_server_stack.path }}/postgresql-tls/"
+        owner: "{{ docker_rootless_user.name }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: preserve
+        directory_mode: "0755" # drwxr-xr-x
+    - name: Deploy acme-rfc2136.ini
+      ansible.builtin.template:
+        src: roles/postgresql_server/templates/acme-rfc2136.ini.j2
+        dest: "{{ postgresql_server_stack.path }}/acme-rfc2136.ini"
+        owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: "0600" # -rw-------
+
 - name: Create and start PostgreSQL
   become: true
   become_user: "{{ docker_rootless_user.name }}"

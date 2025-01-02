@@ -1,6 +1,18 @@
 services:
   postgresql:
+{% if postgresql_server_tls %}
+    image: postgresql-tls
+    build:
+      context: ./postgresql-tls
+      args:
+        STEP_VERSION: {{ postgresql_server_step_docker_version }}
+        POSTGRESQL_VERSION: {{ postgresql_server_docker_version }}
+        TLS_CA_HOST: {{ postgresql_server_tls_ca_host }}
+        TLS_CA_PORT: {{ postgresql_server_tls_ca_port }}
+        TLS_CA_FINGERPRINT: {{ postgresql_server_tls_ca_fingerprint }}
+{% else %}
     image: bitnami/postgresql:{{ postgresql_server_docker_version }}
+{% endif %}
     container_name: postgresql
     restart: always
     stop_grace_period: 1m
@@ -13,9 +25,15 @@ services:
       POSTGRESQL_REPLICATION_PASSWORD_FILE: /run/secrets/replication-password
       POSTGRESQL_MASTER_HOST: {{ postgresql_server_master_host }}
       POSTGRESQL_MASTER_PORT_NUMBER: {{ postgresql_server_master_port }}
+{% if postgresql_server_tls %}
+      TLS_DOMAINS: {{ postgresql_server_tls_domains }}
+{% endif %}
     secrets:
       - postgresql-password
       - replication-password
+{% if postgresql_server_tls %}
+      - acme-rfc2136.ini
+{% endif %}
     ports:
       - 5432:5432
     volumes:
@@ -26,6 +44,10 @@ secrets:
     file: ./postgresql-password
   replication-password:
     file: ./replication-password
+{% if postgresql_server_tls %}
+  acme-rfc2136.ini:
+    file: ./acme-rfc2136.ini
+{% endif %}
 
 networks:
   default:

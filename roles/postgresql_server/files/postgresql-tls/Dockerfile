@@ -1,7 +1,7 @@
 ARG STEP_VERSION=0.28.2@sha256:dbe894c2d146b7389cc2e1e1d14cccd03f8c765a6eeb957f3340333c2f86a767
-ARG REDIS_VERSION=7.4.1@sha256:33bca304adb3404963e8562c597fc83b800b79d2fbf1ff914bbd4bf1e16e3904
+ARG POSTGRESQL_VERSION=17.2.0@sha256:30774f4007c4364541cbfb05b128917b689176387070f76bb1f94f15d1d21a45
 FROM smallstep/step-cli:${STEP_VERSION} AS step
-FROM bitnami/redis:${REDIS_VERSION}
+FROM bitnami/postgresql:${POSTGRESQL_VERSION}
 
 # TLS
 ARG TLS_CA_HOST=localhost
@@ -14,11 +14,10 @@ ENV TLS_CA_CERT_FILE=$TLS_DIR/ca.crt
 ENV TLS_CERT_FILE=$TLS_DIR/leaf.crt
 ENV TLS_KEY_FILE=$TLS_DIR/leaf.key
 # Parent Dockerfile TLS
-ENV REDIS_TLS_ENABLED=yes
-ENV REDIS_TLS_CA_DIR=$TLS_DIR
-ENV REDIS_TLS_CA_FILE=$TLS_CA_CERT_FILE
-ENV REDIS_TLS_CERT_FILE=$TLS_CERT_FILE
-ENV REDIS_TLS_KEY_FILE=$TLS_KEY_FILE
+ENV POSTGRESQL_ENABLE_TLS=yes
+ENV POSTGRESQL_TLS_CA_FILE=$TLS_CA_CERT_FILE
+ENV POSTGRESQL_TLS_CERT_FILE=$TLS_CERT_FILE
+ENV POSTGRESQL_TLS_KEY_FILE=$TLS_KEY_FILE
 
 # Install step
 COPY --from=step /usr/local/bin/step /usr/local/bin/
@@ -59,4 +58,4 @@ USER 1001
 COPY entrypoint-shim.sh cert-*.sh /usr/local/bin/
 ENTRYPOINT ["entrypoint-shim.sh"]
 # Copy CMD from parent Dockerfile
-CMD ["/opt/bitnami/scripts/redis/run.sh"]
+CMD ["/opt/bitnami/scripts/postgresql/run.sh"]
