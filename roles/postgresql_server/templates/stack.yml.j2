@@ -38,6 +38,7 @@ services:
       - 5432:5432
     volumes:
       - postgresql:/bitnami/postgresql
+      - ./pg_hba.conf:/bitnami/postgresql/conf/pg_hba.conf
 
 secrets:
   postgresql-password:

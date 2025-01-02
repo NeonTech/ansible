@@ -35,10 +35,18 @@
   notify:
     - Restart PostgreSQL
 
-- name: Deploy TLS
-  when: postgresql_server_tls
+- name: Deploy pg_hba.conf
+  ansible.builtin.copy:
+    src: roles/postgresql_server/files/pg_hba.conf
+    dest: "{{ postgresql_server_stack.path }}/pg_hba.conf"
+    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
   notify:
     - Restart PostgreSQL
+
+- name: Deploy TLS
+  when: postgresql_server_tls
   block:
     - name: Deploy postgresql-tls
       ansible.builtin.copy:
@@ -55,6 +63,8 @@
         owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
         group: "{{ docker_rootless_user.name }}"
         mode: "0600" # -rw-------
+      notify:
+        - Restart PostgreSQL
 
 - name: Create and start PostgreSQL
   become: true

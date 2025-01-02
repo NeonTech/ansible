@@ -37,8 +37,6 @@
 
 - name: Deploy TLS
   when: redis_server_tls
-  notify:
-    - Restart Redis
   block:
     - name: Deploy redis-tls
       ansible.builtin.copy:
@@ -55,6 +53,8 @@
         owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
         group: "{{ docker_rootless_user.name }}"
         mode: "0600" # -rw-------
+      notify:
+        - Restart Redis
     - name: Deploy acme-rfc2136.ini
       ansible.builtin.template:
         src: roles/redis_server/templates/acme-rfc2136.ini.j2
@@ -62,6 +62,8 @@
         owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
         group: "{{ docker_rootless_user.name }}"
         mode: "0600" # -rw-------
+      notify:
+        - Restart Redis
 
 - name: Create and start Redis
   become: true
