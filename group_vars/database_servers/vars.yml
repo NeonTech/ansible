@@ -26,6 +26,8 @@ postgresql_server_tls_domains: "{{ postgresql_server_master_host }},{{ postgresq
 postgresql_server_tls_ca_host: "{{ ca_host }}"
 postgresql_server_tls_ca_port: "{{ ca_port }}"
 postgresql_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"
+postgresql_server_tls_ca_database_name: "{{ ca_database_name }}"
+postgresql_server_tls_ca_database_user: "{{ ca_database_user }}"
 postgresql_server_tls_acme_rfc2136_ip: "{{ dns_server }}"
 postgresql_server_tls_acme_rfc2136_name: acme_{{ postgresql_server_host }}
 postgresql_server_tls_acme_rfc2136_secret: "{{ vault_postgresql_server_tls_acme_rfc2136_secret }}"

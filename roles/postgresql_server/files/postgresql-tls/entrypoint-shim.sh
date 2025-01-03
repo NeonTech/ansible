@@ -17,6 +17,7 @@ while
     cert-enroller.sh || rc=$?
     [ $rc -ne 0 ]
 do
+    retries=$((retries + 1))
     if [ $retries -eq $max_retries ]; then
         echo >&2 "Failed enrollment...exiting..."
         exit 1
@@ -24,9 +25,7 @@ do
 
     echo >&2 "Failed enrollment...waiting..."
     sleep 10s
-
-    retries=$((retries + 1))
-    echo >&2 "Retrying ($retries / $max_retries) enrollment..."
+    echo >&2 "Retrying ($retries/$max_retries) enrollment..."
 done
 
 cert-renewer.sh

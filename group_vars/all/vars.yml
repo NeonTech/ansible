@@ -18,6 +18,8 @@ dns_server: "{{ dns_servers[0] }}"
 ca_host: ca.service.neontech.dev
 ca_port: 8443
 ca_fingerprint: c8ad3b1721b84e4915e53fe1e5a763a5bdd3beabfaf42005542906a7829f27af
+ca_database_name: step_ca
+ca_database_user: step_ca
 
 # MySQL
 mysql_server_host: mysql.service.neontech.dev

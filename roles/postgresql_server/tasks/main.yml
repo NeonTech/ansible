@@ -36,8 +36,8 @@
     - Restart PostgreSQL
 
 - name: Deploy pg_hba.conf
-  ansible.builtin.copy:
-    src: roles/postgresql_server/files/pg_hba.conf
+  ansible.builtin.template:
+    src: roles/postgresql_server/templates/pg_hba.conf.j2
     dest: "{{ postgresql_server_stack.path }}/pg_hba.conf"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
