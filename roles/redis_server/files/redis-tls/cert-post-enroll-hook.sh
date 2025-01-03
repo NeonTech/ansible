@@ -9,7 +9,7 @@ done
 
 renewal_file=$CERTBOT_CONFIG_DIR/renewal/$tls_subject.conf
 # Add configuration to the top of the file iif (uncommented) configuration does not exist
-if ! grep --quiet --regexp='^(?!#).*renew_before_expiry.*' "$renewal_file"; then
+if ! grep --invert --regexp "^#" "$renewal_file" | grep --quiet renew_before_expiry; then
     sed --in-place '1s/^/renew_before_expiry = 8 hours\n/' "$renewal_file"
 fi
 
