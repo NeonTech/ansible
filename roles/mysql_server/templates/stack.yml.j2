@@ -1,6 +1,18 @@
 services:
   mysql:
+{% if mysql_server_tls %}
+    image: mysql-tls
+    build:
+      context: ./mysql-tls
+      args:
+        STEP_VERSION: {{ mysql_server_step_docker_version }}
+        MYSQL_VERSION: {{ mysql_server_docker_version }}
+        TLS_CA_HOST: {{ mysql_server_tls_ca_host }}
+        TLS_CA_PORT: {{ mysql_server_tls_ca_port }}
+        TLS_CA_FINGERPRINT: {{ mysql_server_tls_ca_fingerprint }}
+{% else %}
     image: bitnami/mysql:{{ mysql_server_docker_version }}
+{% endif %}
     container_name: mysql
     restart: always
     stop_grace_period: 1m
@@ -15,9 +27,20 @@ services:
       MYSQL_REPLICATION_PASSWORD_FILE: /run/secrets/replication-password
       MYSQL_REPLICATION_MODE: {{ mysql_server_replication_mode }}
       MYSQL_EXTRA_FLAGS: {{ mysql_server_flags | join(",") }}
+{% if mysql_server_tls %}
+      TLS_DOMAINS: {{ mysql_server_tls_domains }}
+      TLS_USERNAME: {{ mysql_server_tls_username }}
+      TLS_PASSWORD_FILE: /run/secrets/tls-password
+      TLS_ACME_RFC2136_FILE: /run/secrets/acme-rfc2136.ini
+{% endif %}
     secrets:
       - root-password
       - replication-password
+{% if mysql_server_tls %}
+      - tls-password
+      - source: acme-rfc2136
+        target: acme-rfc2136.ini
+{% endif %}
     ports:
       - 3306:3306
     volumes:
@@ -28,6 +51,12 @@ secrets:
     file: ./root-password
   replication-password:
     file: ./replication-password
+{% if mysql_server_tls %}
+  tls-password:
+    file: ./tls-password
+  acme-rfc2136:
+    file: ./acme-rfc2136.ini
+{% endif %}
 
 networks:
   default:

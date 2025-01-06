@@ -35,6 +35,36 @@
   notify:
     - Restart MySQL
 
+- name: Deploy TLS
+  when: mysql_server_tls
+  block:
+    - name: Deploy mysql-tls
+      ansible.builtin.copy:
+        src: roles/mysql_server/files/mysql-tls/
+        dest: "{{ mysql_server_stack.path }}/mysql-tls/"
+        owner: "{{ docker_rootless_user.name }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: preserve
+        directory_mode: "0755" # drwxr-xr-x
+    - name: Deploy tls-password
+      ansible.builtin.copy:
+        content: "{{ mysql_server_tls_password }}"
+        dest: "{{ mysql_server_stack.path }}/tls-password"
+        owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: "0600" # -rw-------
+      notify:
+        - Restart MySQL
+    - name: Deploy acme-rfc2136.ini
+      ansible.builtin.template:
+        src: roles/mysql_server/templates/acme-rfc2136.ini.j2
+        dest: "{{ mysql_server_stack.path }}/acme-rfc2136.ini"
+        owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: "0600" # -rw-------
+      notify:
+        - Restart MySQL
+
 - name: Create and start MySQL
   become: true
   become_user: "{{ docker_rootless_user.name }}"

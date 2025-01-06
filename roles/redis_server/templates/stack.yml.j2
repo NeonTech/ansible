@@ -29,13 +29,15 @@ services:
       TLS_DOMAINS: {{ redis_server_tls_domains }}
       TLS_USERNAME: {{ redis_server_tls_username }}
       TLS_PASSWORD_FILE: /run/secrets/tls-password
+      TLS_ACME_RFC2136_FILE: /run/secrets/acme-rfc2136.ini
 {% endif %}
     secrets:
       - redis-password
       - users.acl
 {% if redis_server_tls %}
       - tls-password
-      - acme-rfc2136.ini
+      - source: acme-rfc2136
+        target: acme-rfc2136.ini
 {% endif %}
     ports:
       - 6379:6379
@@ -50,7 +52,7 @@ secrets:
 {% if redis_server_tls %}
   tls-password:
     file: ./tls-password
-  acme-rfc2136.ini:
+  acme-rfc2136:
     file: ./acme-rfc2136.ini
 {% endif %}
 

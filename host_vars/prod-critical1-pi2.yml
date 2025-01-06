@@ -1,2 +1,3 @@
+mysql_server_node_id: 2
 postgresql_server_node_id: 2
 redis_server_node_id: 2

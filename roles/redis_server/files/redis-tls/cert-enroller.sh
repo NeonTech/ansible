@@ -23,6 +23,11 @@ else
     echo "Using ACME URL: ${tls_acme_url}"
 fi
 
+if [ -z "$TLS_ACME_RFC2136_FILE" ]; then
+    echo >&2 "You must supply a value to \$TLS_ACME_RFC2136_FILE."
+    exit 1
+fi
+
 certbot certonly \
     --non-interactive \
     --config-dir "$CERTBOT_CONFIG_DIR" \
@@ -31,7 +36,7 @@ certbot certonly \
     --register-unsafely-without-email \
     --server "$tls_acme_url" \
     --dns-rfc2136 \
-    --dns-rfc2136-credentials /run/secrets/acme-rfc2136.ini \
+    --dns-rfc2136-credentials "$TLS_ACME_RFC2136_FILE" \
     --dns-rfc2136-propagation-seconds 10 \
     --cert-name "$tls_subject" \
     "${tls_sans[@]}"

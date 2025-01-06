@@ -27,12 +27,14 @@ services:
       POSTGRESQL_MASTER_PORT_NUMBER: {{ postgresql_server_master_port }}
 {% if postgresql_server_tls %}
       TLS_DOMAINS: {{ postgresql_server_tls_domains }}
+      TLS_ACME_RFC2136_FILE: /run/secrets/acme-rfc2136.ini
 {% endif %}
     secrets:
       - postgresql-password
       - replication-password
 {% if postgresql_server_tls %}
-      - acme-rfc2136.ini
+      - source: acme-rfc2136
+        target: acme-rfc2136.ini
 {% endif %}
     ports:
       - 5432:5432
@@ -46,7 +48,7 @@ secrets:
   replication-password:
     file: ./replication-password
 {% if postgresql_server_tls %}
-  acme-rfc2136.ini:
+  acme-rfc2136:
     file: ./acme-rfc2136.ini
 {% endif %}
 
