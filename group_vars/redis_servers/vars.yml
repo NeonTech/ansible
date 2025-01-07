@@ -1,0 +1,21 @@
+# server
+redis_server_username: default
+redis_server_password: "{{ vault_redis_server_password }}"
+# replication
+redis_server_replication_host: redis{{ redis_server_node_id }}.service.neontech.dev
+# master
+redis_server_master_host: "{{ redis_server_host }}"
+# tls
+redis_server_tls: true
+redis_server_tls_username: tls
+redis_server_tls_password: "{{ vault_redis_server_tls_password }}"
+redis_server_tls_domains: "{{ redis_server_master_host }},{{ redis_server_replication_host }}"
+redis_server_tls_ca_host: "{{ ca_host }}"
+redis_server_tls_ca_port: "{{ ca_port }}"
+redis_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"
+redis_server_tls_acme_rfc2136_ip: "{{ dns_server }}"
+redis_server_tls_acme_rfc2136_name: acme_{{ redis_server_host }}
+redis_server_tls_acme_rfc2136_secret: "{{ vault_redis_server_tls_acme_rfc2136_secret }}"
+# users.acl
+redis_server_administrator_username: administrator
+redis_server_administrator_password: "{{ vault_redis_server_administrator_password }}"

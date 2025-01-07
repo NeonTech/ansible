@@ -4,11 +4,17 @@
 - name: Setup Network Time Protocol (NTP)
   ansible.builtin.import_playbook: ntp.yml
 
-- name: Setup database servers
-  ansible.builtin.import_playbook: database_servers.yml
+- name: Setup PostgreSQL servers
+  ansible.builtin.import_playbook: postgresql_servers.yml
 
 - name: Setup Certificate Authority (CA)
   ansible.builtin.import_playbook: ca.yml
+
+- name: Setup MySQL servers
+  ansible.builtin.import_playbook: mysql_servers.yml
+
+- name: Setup Redis servers
+  ansible.builtin.import_playbook: redis_servers.yml
 
 - name: Commit
   ansible.builtin.import_playbook: commit.yml

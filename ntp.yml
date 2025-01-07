@@ -1,4 +1,3 @@
 - name: Setup Network Time Protocol (NTP)
   hosts: ntp
-  roles:
-    - chrony
+  roles: [chrony]

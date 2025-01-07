@@ -1,0 +1,3 @@
+- name: Setup Redis servers
+  hosts: redis_servers
+  roles: [redis_server]
