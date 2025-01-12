@@ -1,3 +1,4 @@
+mariadb_server_node_id: 3
 mysql_server_node_id: 3
 postgresql_server_node_id: 3
 redis_server_node_id: 3

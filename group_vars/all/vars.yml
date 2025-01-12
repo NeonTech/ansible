@@ -21,8 +21,13 @@ ca_fingerprint: c8ad3b1721b84e4915e53fe1e5a763a5bdd3beabfaf42005542906a7829f27af
 ca_database_name: step_ca
 ca_database_user: step_ca
 
+# MariaDB
+mariadb_server_host: mariadb.service.neontech.dev
+mariadb_server_port: 6603
+
 # MySQL
 mysql_server_host: mysql.service.neontech.dev
+mysql_server_port: 3306
 
 #region PostgreSQL
 # Server
@@ -41,3 +46,4 @@ postgresql_client_login_database: "{{ postgresql_server_database }}"
 
 # Redis
 redis_server_host: redis.service.neontech.dev
+redis_server_port: 6379

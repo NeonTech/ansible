@@ -4,7 +4,7 @@ postgresql_server_replication_password: "{{ vault_postgresql_server_replication_
 postgresql_server_replication_host: postgresql{{ postgresql_server_node_id }}.service.neontech.dev
 # master
 postgresql_server_master_host: "{{ postgresql_server_host }}"
-postgresql_server_master_port: 5432
+postgresql_server_master_port: "{{ postgresql_server_port }}"
 # tls
 postgresql_server_tls: true
 postgresql_server_tls_domains: "{{ postgresql_server_master_host }},{{ postgresql_server_replication_host }}"

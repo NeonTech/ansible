@@ -37,7 +37,7 @@ services:
         target: acme-rfc2136.ini
 {% endif %}
     ports:
-      - 5432:5432
+      - {{ postgresql_server_port }}:5432
     volumes:
       - postgresql:/bitnami/postgresql
       - ./pg_hba.conf:/bitnami/postgresql/conf/pg_hba.conf

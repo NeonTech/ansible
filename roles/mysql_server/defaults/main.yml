@@ -1,6 +1,7 @@
 mysql_server_docker_version: 9.0.1@sha256:48ce690effadbc5042c7f3edddeac50baf190d59a438b6a92ed714c3dea1ea19
 mysql_server_step_docker_version: 0.28.2@sha256:dbe894c2d146b7389cc2e1e1d14cccd03f8c765a6eeb957f3340333c2f86a767
 # server
+mysql_server_port: 3306
 mysql_server_flags: []
 # root
 mysql_server_root_username: root
@@ -11,7 +12,7 @@ mysql_server_replication_password: "{{ mandatory(msg='default secret') }}"
 mysql_server_replication_mode: master
 # master
 mysql_server_master_host: localhost
-mysql_server_master_port: 3306
+mysql_server_master_port: "{{ mysql_server_port }}"
 # tls
 mysql_server_tls: false
 mysql_server_tls_username: tls

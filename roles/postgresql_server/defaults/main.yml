@@ -1,6 +1,7 @@
 postgresql_server_docker_version: 17.2.0@sha256:30774f4007c4364541cbfb05b128917b689176387070f76bb1f94f15d1d21a45
 postgresql_server_step_docker_version: 0.28.2@sha256:dbe894c2d146b7389cc2e1e1d14cccd03f8c765a6eeb957f3340333c2f86a767
 # server
+postgresql_server_port: 5432
 postgresql_server_username: postgresql
 postgresql_server_password: "{{ mandatory(msg='default secret') }}"
 postgresql_server_database: postgresql
@@ -10,7 +11,7 @@ postgresql_server_replication_password: "{{ mandatory(msg='default secret') }}"
 postgresql_server_replication_mode: master
 # master
 postgresql_server_master_host: localhost
-postgresql_server_master_port: 5432
+postgresql_server_master_port: "{{ postgresql_server_port }}"
 # tls
 postgresql_server_tls: false
 postgresql_server_tls_domains: localhost

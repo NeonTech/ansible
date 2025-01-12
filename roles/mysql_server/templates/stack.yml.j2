@@ -42,7 +42,7 @@ services:
         target: acme-rfc2136.ini
 {% endif %}
     ports:
-      - 3306:3306
+      - {{ mysql_server_port }}:3306
     volumes:
       - mysql:/bitnami/mysql/data
 

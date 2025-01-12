@@ -1,0 +1,21 @@
+# root
+mariadb_server_root_username: root
+mariadb_server_root_password: "{{ vault_mariadb_server_root_password }}"
+# replication
+mariadb_server_replication_username: replication
+mariadb_server_replication_password: "{{ vault_mariadb_server_replication_password }}"
+mariadb_server_replication_host: mariadb{{ mariadb_server_node_id }}.service.neontech.dev
+# master
+mariadb_server_master_host: "{{ mariadb_server_host }}"
+mariadb_server_master_port: "{{ mariadb_server_port }}"
+# tls
+mariadb_server_tls: true
+mariadb_server_tls_username: "{{ mariadb_server_root_username }}"
+mariadb_server_tls_password: "{{ mariadb_server_root_password }}"
+mariadb_server_tls_domains: "{{ mariadb_server_master_host }},{{ mariadb_server_replication_host }}"
+mariadb_server_tls_ca_host: "{{ ca_host }}"
+mariadb_server_tls_ca_port: "{{ ca_port }}"
+mariadb_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"
+mariadb_server_tls_acme_rfc2136_ip: "{{ dns_server }}"
+mariadb_server_tls_acme_rfc2136_name: acme_{{ mariadb_server_host }}
+mariadb_server_tls_acme_rfc2136_secret: "{{ vault_mariadb_server_tls_acme_rfc2136_secret }}"

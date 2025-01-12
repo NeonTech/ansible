@@ -41,7 +41,7 @@ services:
         target: acme-rfc2136.ini
 {% endif %}
     ports:
-      - 6379:6379
+      - {{ redis_server_port }}:6379
     volumes:
       - redis:/bitnami/redis/data
 

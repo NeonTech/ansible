@@ -5,6 +5,7 @@ redis_server_password: "{{ vault_redis_server_password }}"
 redis_server_replication_host: redis{{ redis_server_node_id }}.service.neontech.dev
 # master
 redis_server_master_host: "{{ redis_server_host }}"
+redis_server_master_port: "{{ redis_server_port }}"
 # tls
 redis_server_tls: true
 redis_server_tls_clients: false

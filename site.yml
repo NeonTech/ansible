@@ -10,6 +10,9 @@
 - name: Setup Certificate Authority (CA)
   ansible.builtin.import_playbook: ca.yml
 
+- name: Setup MariaDB servers
+  ansible.builtin.import_playbook: mariadb_servers.yml
+
 - name: Setup MySQL servers
   ansible.builtin.import_playbook: mysql_servers.yml
 
