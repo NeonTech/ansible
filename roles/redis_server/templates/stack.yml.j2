@@ -26,6 +26,7 @@ services:
       REDIS_MASTER_PASSWORD_FILE: /run/secrets/redis-password
       REDIS_REPLICA_IP: {{ redis_server_replication_host }}
 {% if redis_server_tls %}
+      REDIS_TLS_AUTH_CLIENTS: {{ redis_server_tls_clients | ternary('yes', 'no') }}
       TLS_DOMAINS: {{ redis_server_tls_domains }}
       TLS_USERNAME: {{ redis_server_tls_username }}
       TLS_PASSWORD_FILE: /run/secrets/tls-password

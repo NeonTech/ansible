@@ -11,6 +11,7 @@ redis_server_master_host: localhost
 redis_server_master_port: 6379
 # tls
 redis_server_tls: false
+redis_server_tls_clients: true
 redis_server_tls_username: tls
 redis_server_tls_password: "{{ mandatory(msg='default secret') }}"
 redis_server_tls_domains: localhost

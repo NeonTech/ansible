@@ -1,5 +1,5 @@
 user {{ redis_server_username }} on #{{ redis_server_password | hash("sha256") }} +psync +replconf +ping
-user {{ redis_server_administrator_username }} on #{{ redis_server_administrator_password | hash("sha256") }} allcommands allkeys allchannels
 {% if redis_server_tls %}
 user {{ redis_server_tls_username }} on #{{ redis_server_tls_password | hash("sha256") }} +config
 {% endif %}
+user {{ redis_server_administrator_username }} on #{{ redis_server_administrator_password | hash("sha256") }} allcommands allkeys allchannels
