@@ -1,13 +1,14 @@
-ansible_python_interpreter: auto_silent
-
+# region Ansible
 # Become
 ansible_become_method: su
-
+# Python
+ansible_python_interpreter: auto_silent
 # SSH
-ansible_ssh_args: -o UserKnownHostsFile=./ssh/known_hosts
+ansible_ssh_args: -C -o ControlMaster=auto -o ControlPersist=60s -o UserKnownHostsFile=./ssh/known_hosts
 ansible_ssh_user: root
 ansible_ssh_host: "{{ inventory_hostname }}.host.neontech.dev"
 ansible_ssh_private_key_file: ./.ssh/{{ inventory_hostname }}_{{ ansible_ssh_user }}_ed25519
+# endregion
 
 # DNS
 dns_servers:
@@ -29,7 +30,7 @@ mariadb_server_port: 6603
 mysql_server_host: mysql.service.neontech.dev
 mysql_server_port: 3306
 
-#region PostgreSQL
+# region PostgreSQL
 # Server
 postgresql_server_host: postgresql.service.neontech.dev
 postgresql_server_port: 5432
@@ -42,7 +43,7 @@ postgresql_client_login_port: "{{ postgresql_server_port }}"
 postgresql_client_login_username: "{{ postgresql_server_username }}"
 postgresql_client_login_password: "{{ postgresql_server_password }}"
 postgresql_client_login_database: "{{ postgresql_server_database }}"
-#endregion
+# endregion
 
 # Redis
 redis_server_host: redis.service.neontech.dev
