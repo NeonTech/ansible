@@ -12,9 +12,9 @@ Inventory and automation of NeonTech infrastructure using [Ansible](https://www.
 
    `cd ./ansible`
 
-3. Decrypt the Ansible vaults in `./ssh` and copy their values to `./.ssh`:
+3. Initialize the repository:
 
-   `./scripts/setup_ssh.sh`
+   `./scripts/initialize.sh`
 
 4. Test connections to hosts:
 

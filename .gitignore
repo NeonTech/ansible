@@ -6,6 +6,3 @@ vault-password-file
 
 # Python
 .venv
-
-# Visual Studio Code
-.vscode

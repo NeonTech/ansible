@@ -2,7 +2,6 @@
 
 setup_ssh() {
     # "source" relative to the location of this script
-    # https://stackoverflow.com/a/1638397/5302085
     . "$(dirname "$0")/setup_ssh.sh"
 }
 
