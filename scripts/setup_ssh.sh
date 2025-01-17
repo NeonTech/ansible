@@ -2,40 +2,45 @@
 
 set -o errexit -o nounset
 
-if [ ! -d ./ssh ]; then
-    echo "ssh directory not found: re-execute in root of the repository"
+public_ssh_dir=./ssh
+if [ ! -d $public_ssh_dir ]; then
+    echo $public_ssh_dir not found: re-execute in root of the repository
     exit 1
 fi
+chmod 755 $public_ssh_dir
 
-mkdir -p ./.ssh
-chmod 700 ./ssh ./.ssh
+private_ssh_dir=./.ssh
+mkdir -p $private_ssh_dir
+chmod 700 $private_ssh_dir
 
-if [ ! -f ./vault-password-file ]; then
-    echo "What is the ansible-vault password?"
+vault_password_file=./vault-password-file
+if [ ! -f $vault_password_file ]; then
+    touch $vault_password_file
+    chmod 600 $vault_password_file
+    echo "###################################"
+    echo What is the ansible-vault password?
     stty -echo
     read -r ANSIBLE_VAULT_PASSWORD
-    printf "%s" "$ANSIBLE_VAULT_PASSWORD" >./vault-password-file
+    printf %s "$ANSIBLE_VAULT_PASSWORD" >$vault_password_file
     unset ANSIBLE_VAULT_PASSWORD
     stty echo
     echo
 fi
 
-chmod 600 ./vault-password-file
-
-for file in ./ssh/*; do
-    if [ "$(basename "$file")" = "known_hosts" ]; then
-        chmod 600 "$file"
-        continue
-    fi
-    if [ "${file##*.}" = "pub" ]; then
+for file in "$public_ssh_dir"/*; do
+    if [ "$(basename "$file")" = known_hosts ]; then
         chmod 644 "$file"
         continue
     fi
-
-    decrypt_file="./.ssh/${file##*/}"
-    rm -f "$decrypt_file"
-    ansible-vault decrypt --vault-password-file ./vault-password-file --output - "$file" >"$decrypt_file"
-
+    if [ "${file##*.}" = pub ]; then
+        chmod 644 "$file"
+        continue
+    fi
     chmod 600 "$file"
+
+    decrypt_file=$private_ssh_dir/${file##*/}
+    rm -f "$decrypt_file"
+    touch "$decrypt_file"
     chmod 600 "$decrypt_file"
+    ansible-vault decrypt --vault-password-file $vault_password_file --output - "$file" >"$decrypt_file"
 done
