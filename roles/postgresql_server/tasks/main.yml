@@ -35,10 +35,19 @@
   notify:
     - Restart PostgreSQL
 
+- name: Create conf directory
+  ansible.builtin.file:
+    path: "{{ postgresql_server_stack.path }}/conf"
+    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # -rwxr-xr-x
+    state: directory
+  register: postgresql_server_conf
+
 - name: Deploy pg_hba.conf
   ansible.builtin.template:
     src: roles/postgresql_server/templates/pg_hba.conf.j2
-    dest: "{{ postgresql_server_stack.path }}/pg_hba.conf"
+    dest: "{{ postgresql_server_conf.path }}/pg_hba.conf"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--

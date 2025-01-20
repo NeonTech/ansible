@@ -6,4 +6,4 @@ cert-enroller.sh
 cert-renewer.sh
 
 # Copy ENTRYPOINT from parent Dockerfile
-/opt/bitnami/scripts/mysql/entrypoint.sh "$@"
+exec /opt/bitnami/scripts/mysql/entrypoint.sh "$@"

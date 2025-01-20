@@ -33,4 +33,4 @@ cert-renewer.sh
 pg_ctl --pgdata=/bitnami/postgresql/data stop
 export POSTGRESQL_ENABLE_TLS=yes
 # Copy ENTRYPOINT from parent Dockerfile
-/opt/bitnami/scripts/postgresql/entrypoint.sh "$@"
+exec /opt/bitnami/scripts/postgresql/entrypoint.sh "$@"

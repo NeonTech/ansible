@@ -6,4 +6,4 @@ cert-enroller.sh
 cert-renewer.sh
 
 # Copy ENTRYPOINT from parent Dockerfile
-/opt/bitnami/scripts/redis/entrypoint.sh "$@"
+exec /opt/bitnami/scripts/redis/entrypoint.sh "$@"
