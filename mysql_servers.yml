@@ -1,3 +1,0 @@
-- name: Setup MySQL servers
-  hosts: mysql_servers
-  roles: [mysql_server]

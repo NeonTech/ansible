@@ -1,0 +1,3 @@
+- name: Redis
+  hosts: redis
+  roles: [redis_server]

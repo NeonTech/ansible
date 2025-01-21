@@ -1,3 +1,0 @@
-- name: Setup PostgreSQL servers
-  hosts: postgresql_servers
-  roles: [postgresql_server]

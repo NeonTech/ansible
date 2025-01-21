@@ -1,3 +1,0 @@
-- name: Setup MariaDB servers
-  hosts: mariadb_servers
-  roles: [mariadb_server]
