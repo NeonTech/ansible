@@ -1,0 +1,2 @@
+- name: Restart NGINX
+  ansible.builtin.include_tasks: roles/nginx_server/handlers/restart.yml

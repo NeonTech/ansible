@@ -1,0 +1,48 @@
+- name: Create stack directory
+  ansible.builtin.file:
+    path: "{{ docker_rootless_user.home }}/stacks/nginx"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # drwxr-xr-x
+    state: directory
+  register: nginx_server_stack
+
+- name: Deploy stack.yml
+  ansible.builtin.template:
+    src: roles/nginx_server/templates/stack.yml.j2
+    dest: "{{ nginx_server_stack.path }}/stack.yml"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
+
+- name: Deploy TLS
+  when: nginx_server_tls
+  block:
+    - name: Deploy nginx-tls
+      ansible.builtin.copy:
+        src: roles/nginx_server/files/nginx-tls/
+        dest: "{{ nginx_server_stack.path }}/nginx-tls/"
+        owner: "{{ docker_rootless_user.name }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: preserve
+        directory_mode: "0755" # drwxr-xr-x
+    - name: Deploy acme-cloudflare.ini
+      ansible.builtin.template:
+        src: roles/nginx_server/templates/acme-cloudflare.ini.j2
+        dest: "{{ nginx_server_stack.path }}/acme-cloudflare.ini"
+        owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+        group: "{{ docker_rootless_user.name }}"
+        mode: "0600" # -rw-------
+      notify:
+        - Restart NGINX
+
+- name: Create and start NGINX
+  become: true
+  become_user: "{{ docker_rootless_user.name }}"
+  environment:
+    XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
+    DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
+  community.docker.docker_compose_v2:
+    project_src: "{{ nginx_server_stack.path }}"
+    files: [stack.yml]
+    state: present

@@ -16,6 +16,9 @@
 - name: MySQL
   ansible.builtin.import_playbook: mysql.yml
 
+- name: NGINX
+  ansible.builtin.import_playbook: nginx.yml
+
 - name: Redis
   ansible.builtin.import_playbook: redis.yml
 
