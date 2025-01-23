@@ -3,13 +3,18 @@
 tls_subject=""
 declare -a tls_sans
 for tls_domain in ${TLS_DOMAINS//,/ }; do
-    if [ "$tls_subject" = "" ]; then
+    if [ -z "$tls_subject" ]; then
         tls_subject=$tls_domain
     fi
     tls_sans=("${tls_sans[@]}" --domain "$tls_domain")
 done
-if [ "$tls_subject" = "" ]; then
+if [ -z "$tls_subject" ]; then
     echo >&2 "You must supply at least one value to \$TLS_DOMAINS."
+    exit 1
+fi
+
+if [ -z "$TLS_ACME_RFC2136_FILE" ]; then
+    echo >&2 "You must supply a value to \$TLS_ACME_RFC2136_FILE."
     exit 1
 fi
 
@@ -21,11 +26,6 @@ if [ "$provisioner" = "null" ]; then
 else
     tls_acme_url=$TLS_CA_URL/acme/$provisioner/directory
     echo "Using ACME URL: ${tls_acme_url}"
-fi
-
-if [ -z "$TLS_ACME_RFC2136_FILE" ]; then
-    echo >&2 "You must supply a value to \$TLS_ACME_RFC2136_FILE."
-    exit 1
 fi
 
 certbot certonly \

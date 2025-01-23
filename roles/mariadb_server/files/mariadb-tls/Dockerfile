@@ -33,7 +33,7 @@ USER root
 RUN apt-get update; \
     apt-get install --yes --no-install-recommends jq; \
     step ca bootstrap --ca-url=$TLS_CA_URL --fingerprint=$TLS_CA_FINGERPRINT --install; \
-    cp $STEPPATH/certs/root_ca.crt $TLS_CA_CERT_FILE; \
+    step ca root >$TLS_CA_CERT_FILE; \
     chown -R 1001:1001 $TLS_DIR;
 
 # ...install certbot
