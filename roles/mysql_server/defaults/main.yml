@@ -17,7 +17,7 @@ mysql_server_master_port: "{{ mysql_server_port }}"
 mysql_server_tls: false
 mysql_server_tls_username: tls
 mysql_server_tls_password: "{{ mandatory(msg='default secret') }}"
-mysql_server_tls_domains: localhost
+mysql_server_tls_domains: [localhost]
 mysql_server_tls_ca_host: ca
 mysql_server_tls_ca_port: 443
 mysql_server_tls_ca_fingerprint: "{{ mandatory(msg='default value') }}"

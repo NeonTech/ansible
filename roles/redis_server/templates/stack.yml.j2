@@ -3,7 +3,7 @@ services:
 {% if redis_server_tls %}
     image: redis-tls
     build:
-      context: ./redis-tls
+      context: {{ redis_server_tls_dir.dest }}
       args:
         STEP_VERSION: {{ redis_server_step_docker_version }}
         REDIS_VERSION: {{ redis_server_docker_version }}
@@ -26,15 +26,16 @@ services:
       REDIS_MASTER_PASSWORD_FILE: /run/secrets/redis-password
       REDIS_REPLICA_IP: {{ redis_server_replication_host }}
 {% if redis_server_tls %}
-      REDIS_TLS_AUTH_CLIENTS: {{ redis_server_tls_clients | ternary('yes', 'no') }}
-      TLS_DOMAINS: {{ redis_server_tls_domains }}
+      REDIS_TLS_AUTH_CLIENTS: {{ redis_server_tls_clients | ternary("yes", "no") }}
+      TLS_DOMAINS: {{ redis_server_tls_domains | join(",") }}
       TLS_USERNAME: {{ redis_server_tls_username }}
       TLS_PASSWORD_FILE: /run/secrets/tls-password
       TLS_ACME_RFC2136_FILE: /run/secrets/acme-rfc2136.ini
 {% endif %}
     secrets:
       - redis-password
-      - users.acl
+      - source: users
+        target: users.acl
 {% if redis_server_tls %}
       - tls-password
       - source: acme-rfc2136
@@ -47,14 +48,14 @@ services:
 
 secrets:
   redis-password:
-    file: ./redis-password
-  users.acl:
-    file: ./users.acl
+    file: {{ redis_server_password_file.dest }}
+  users:
+    file: {{ redis_server_users_file.dest }}
 {% if redis_server_tls %}
   tls-password:
-    file: ./tls-password
+    file: {{ redis_server_tls_password_file.dest }}
   acme-rfc2136:
-    file: ./acme-rfc2136.ini
+    file: {{ redis_server_tls_acme_rfc2136_file.dest }}
 {% endif %}
 
 networks:

@@ -11,7 +11,9 @@ redis_server_tls: true
 redis_server_tls_clients: false
 redis_server_tls_username: tls
 redis_server_tls_password: "{{ vault_redis_server_tls_password }}"
-redis_server_tls_domains: "{{ redis_server_master_host }},{{ redis_server_replication_host }}"
+redis_server_tls_domains:
+  - "{{ redis_server_master_host }}"
+  - "{{ redis_server_replication_host }}"
 redis_server_tls_ca_host: "{{ ca_host }}"
 redis_server_tls_ca_port: "{{ ca_port }}"
 redis_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"

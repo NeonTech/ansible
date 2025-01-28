@@ -1,2 +1,11 @@
 - name: Restart PostgreSQL
   ansible.builtin.include_tasks: roles/postgresql_server/handlers/restart.yml
+
+- name: Reload PostgreSQL
+  community.postgresql.postgresql_query:
+    login_host: "{{ postgresql_server_master_host }}"
+    login_port: "{{ postgresql_server_master_port }}"
+    login_user: "{{ postgresql_server_username }}"
+    login_password: "{{ postgresql_server_password }}"
+    login_db: "{{ postgresql_server_database }}"
+    query: SELECT pg_reload_conf();

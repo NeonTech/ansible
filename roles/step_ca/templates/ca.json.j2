@@ -1,7 +1,7 @@
 {
-  "root": "{{ step_ca_data.path }}/certs/root_ca.crt",
+  "root": "{{ step_ca_data_dir.path }}/certs/root_ca.crt",
   "federatedRoots": null,
-  "crt": "{{ step_ca_data.path }}/certs/intermediate_ca.crt",
+  "crt": "{{ step_ca_data_dir.path }}/certs/intermediate_ca.crt",
   "key": "yubikey:slot-id={{ step_ca_yubikey_intermediate_slot }}",
   "kms": {
     "type": "yubikey",

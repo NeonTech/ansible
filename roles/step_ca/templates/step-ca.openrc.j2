@@ -3,8 +3,8 @@
 name=$RC_SVCNAME
 description="Step CA"
 supervisor="supervise-daemon"
-supervise_daemon_args="-e STEPPATH=\"{{ step_ca_data.path }}\""
-command="{{ step_ca.path }}"
+supervise_daemon_args="-e STEPPATH=\"{{ step_ca_data_dir.path }}\""
+command="{{ step_ca_bin_file.path }}"
 command_args=""
 command_user="{{ step_ca_user.name }}"
 

@@ -14,7 +14,7 @@ postgresql_server_master_host: localhost
 postgresql_server_master_port: "{{ postgresql_server_port }}"
 # tls
 postgresql_server_tls: false
-postgresql_server_tls_domains: localhost
+postgresql_server_tls_domains: [localhost]
 postgresql_server_tls_ca_host: ca
 postgresql_server_tls_ca_port: 443
 postgresql_server_tls_ca_fingerprint: "{{ mandatory(msg='default value') }}"

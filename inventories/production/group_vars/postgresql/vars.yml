@@ -7,7 +7,9 @@ postgresql_server_master_host: "{{ postgresql_server_host }}"
 postgresql_server_master_port: "{{ postgresql_server_port }}"
 # tls
 postgresql_server_tls: true
-postgresql_server_tls_domains: "{{ postgresql_server_master_host }},{{ postgresql_server_replication_host }}"
+postgresql_server_tls_domains:
+  - "{{ postgresql_server_master_host }}"
+  - "{{ postgresql_server_replication_host }}"
 postgresql_server_tls_ca_host: "{{ ca_host }}"
 postgresql_server_tls_ca_port: "{{ ca_port }}"
 postgresql_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"

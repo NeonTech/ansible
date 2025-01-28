@@ -12,7 +12,9 @@ mariadb_server_master_port: "{{ mariadb_server_port }}"
 mariadb_server_tls: true
 mariadb_server_tls_username: "{{ mariadb_server_root_username }}"
 mariadb_server_tls_password: "{{ mariadb_server_root_password }}"
-mariadb_server_tls_domains: "{{ mariadb_server_master_host }},{{ mariadb_server_replication_host }}"
+mariadb_server_tls_domains:
+  - "{{ mariadb_server_master_host }}"
+  - "{{ mariadb_server_replication_host }}"
 mariadb_server_tls_ca_host: "{{ ca_host }}"
 mariadb_server_tls_ca_port: "{{ ca_port }}"
 mariadb_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"

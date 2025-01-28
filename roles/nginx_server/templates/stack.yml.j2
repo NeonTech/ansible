@@ -3,7 +3,7 @@ services:
 {% if nginx_server_tls %}
     image: nginx-tls
     build:
-      context: ./nginx-tls
+      context: {{ nginx_server_tls_dir.dest }}
       args:
         STEP_VERSION: {{ nginx_server_step_docker_version }}
         NGINX_VERSION: {{ nginx_server_docker_version }}
@@ -38,7 +38,7 @@ services:
 secrets:
 {% if nginx_server_tls %}
   acme-cloudflare:
-    file: ./acme-cloudflare.ini
+    file: {{ nginx_server_tls_acme_cloudflare_file.dest }}
 {% endif %}
 
 networks:

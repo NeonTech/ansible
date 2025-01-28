@@ -3,7 +3,7 @@ services:
 {% if mysql_server_tls %}
     image: mysql-tls
     build:
-      context: ./mysql-tls
+      context: {{ mysql_server_tls_dir.dest }}
       args:
         STEP_VERSION: {{ mysql_server_step_docker_version }}
         MYSQL_VERSION: {{ mysql_server_docker_version }}
@@ -28,7 +28,7 @@ services:
       MYSQL_REPLICATION_MODE: {{ mysql_server_replication_mode }}
       MYSQL_EXTRA_FLAGS: {{ mysql_server_flags | join(",") }}
 {% if mysql_server_tls %}
-      TLS_DOMAINS: {{ mysql_server_tls_domains }}
+      TLS_DOMAINS: {{ mysql_server_tls_domains | join(",") }}
       TLS_USERNAME: {{ mysql_server_tls_username }}
       TLS_PASSWORD_FILE: /run/secrets/tls-password
       TLS_ACME_RFC2136_FILE: /run/secrets/acme-rfc2136.ini
@@ -48,14 +48,14 @@ services:
 
 secrets:
   root-password:
-    file: ./root-password
+    file: {{ mysql_server_root_password_file.dest }}
   replication-password:
-    file: ./replication-password
+    file: {{ mysql_server_replication_password_file.dest }}
 {% if mysql_server_tls %}
   tls-password:
-    file: ./tls-password
+    file: {{ mysql_server_tls_password_file.dest }}
   acme-rfc2136:
-    file: ./acme-rfc2136.ini
+    file: {{ mysql_server_tls_acme_rfc2136_file.dest }}
 {% endif %}
 
 networks:

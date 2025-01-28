@@ -5,33 +5,27 @@
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # drwxr-xr-x
     state: directory
-  register: mysql_server_stack
-
-- name: Deploy stack.yml
-  ansible.builtin.template:
-    src: roles/mysql_server/templates/stack.yml.j2
-    dest: "{{ mysql_server_stack.path }}/stack.yml"
-    owner: "{{ docker_rootless_user.name }}"
-    group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+  register: mysql_server_stack_dir
 
 - name: Deploy root-password
   ansible.builtin.copy:
     content: "{{ mysql_server_root_password }}"
-    dest: "{{ mysql_server_stack.path }}/root-password"
+    dest: "{{ mysql_server_stack_dir.path }}/root-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------
+  register: mysql_server_root_password_file
   notify:
     - Restart MySQL
 
 - name: Deploy replication-password
   ansible.builtin.copy:
     content: "{{ mysql_server_replication_password }}"
-    dest: "{{ mysql_server_stack.path }}/replication-password"
+    dest: "{{ mysql_server_stack_dir.path }}/replication-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------
+  register: mysql_server_replication_password_file
   notify:
     - Restart MySQL
 
@@ -41,29 +35,40 @@
     - name: Deploy mysql-tls
       ansible.builtin.copy:
         src: roles/mysql_server/files/mysql-tls/
-        dest: "{{ mysql_server_stack.path }}/mysql-tls/"
+        dest: "{{ mysql_server_stack_dir.path }}/mysql-tls/"
         owner: "{{ docker_rootless_user.name }}"
         group: "{{ docker_rootless_user.name }}"
         mode: preserve
         directory_mode: "0755" # drwxr-xr-x
+      register: mysql_server_tls_dir
     - name: Deploy tls-password
       ansible.builtin.copy:
         content: "{{ mysql_server_tls_password }}"
-        dest: "{{ mysql_server_stack.path }}/tls-password"
+        dest: "{{ mysql_server_stack_dir.path }}/tls-password"
         owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
         group: "{{ docker_rootless_user.name }}"
         mode: "0600" # -rw-------
+      register: mysql_server_tls_password_file
       notify:
         - Restart MySQL
     - name: Deploy acme-rfc2136.ini
       ansible.builtin.template:
         src: roles/mysql_server/templates/acme-rfc2136.ini.j2
-        dest: "{{ mysql_server_stack.path }}/acme-rfc2136.ini"
+        dest: "{{ mysql_server_stack_dir.path }}/acme-rfc2136.ini"
         owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
         group: "{{ docker_rootless_user.name }}"
         mode: "0600" # -rw-------
+      register: mysql_server_tls_acme_rfc2136_file
       notify:
         - Restart MySQL
+
+- name: Deploy stack.yml
+  ansible.builtin.template:
+    src: roles/mysql_server/templates/stack.yml.j2
+    dest: "{{ mysql_server_stack_dir.path }}/stack.yml"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
 
 - name: Create and start MySQL
   become: true
@@ -72,6 +77,6 @@
     XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
     DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
   community.docker.docker_compose_v2:
-    project_src: "{{ mysql_server_stack.path }}"
+    project_src: "{{ mysql_server_stack_dir.path }}"
     files: [stack.yml]
     state: present

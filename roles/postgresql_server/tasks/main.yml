@@ -5,54 +5,48 @@
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # drwxr-xr-x
     state: directory
-  register: postgresql_server_stack
-
-- name: Deploy stack.yml
-  ansible.builtin.template:
-    src: roles/postgresql_server/templates/stack.yml.j2
-    dest: "{{ postgresql_server_stack.path }}/stack.yml"
-    owner: "{{ docker_rootless_user.name }}"
-    group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+  register: postgresql_server_stack_dir
 
 - name: Deploy postgresql-password
   ansible.builtin.copy:
     content: "{{ postgresql_server_password }}"
-    dest: "{{ postgresql_server_stack.path }}/postgresql-password"
+    dest: "{{ postgresql_server_stack_dir.path }}/postgresql-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------
+  register: postgresql_server_password_file
   notify:
     - Restart PostgreSQL
 
 - name: Deploy replication-password
   ansible.builtin.copy:
     content: "{{ postgresql_server_replication_password }}"
-    dest: "{{ postgresql_server_stack.path }}/replication-password"
+    dest: "{{ postgresql_server_stack_dir.path }}/replication-password"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0600" # -rw-------
+  register: postgresql_server_replication_password_file
   notify:
     - Restart PostgreSQL
 
 - name: Create conf directory
   ansible.builtin.file:
-    path: "{{ postgresql_server_stack.path }}/conf"
+    path: "{{ postgresql_server_stack_dir.path }}/conf"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0755" # -rwxr-xr-x
     state: directory
-  register: postgresql_server_conf
+  register: postgresql_server_conf_dir
 
 - name: Deploy pg_hba.conf
   ansible.builtin.template:
     src: roles/postgresql_server/templates/pg_hba.conf.j2
-    dest: "{{ postgresql_server_conf.path }}/pg_hba.conf"
+    dest: "{{ postgresql_server_conf_dir.path }}/pg_hba.conf"
     owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
   notify:
-    - Restart PostgreSQL
+    - Reload PostgreSQL
 
 - name: Deploy TLS
   when: postgresql_server_tls
@@ -60,20 +54,30 @@
     - name: Deploy postgresql-tls
       ansible.builtin.copy:
         src: roles/postgresql_server/files/postgresql-tls/
-        dest: "{{ postgresql_server_stack.path }}/postgresql-tls/"
+        dest: "{{ postgresql_server_stack_dir.path }}/postgresql-tls/"
         owner: "{{ docker_rootless_user.name }}"
         group: "{{ docker_rootless_user.name }}"
         mode: preserve
         directory_mode: "0755" # drwxr-xr-x
+      register: postgresql_server_tls_dir
     - name: Deploy acme-rfc2136.ini
       ansible.builtin.template:
         src: roles/postgresql_server/templates/acme-rfc2136.ini.j2
-        dest: "{{ postgresql_server_stack.path }}/acme-rfc2136.ini"
+        dest: "{{ postgresql_server_stack_dir.path }}/acme-rfc2136.ini"
         owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
         group: "{{ docker_rootless_user.name }}"
         mode: "0600" # -rw-------
+      register: postgresql_server_tls_acme_rfc2136_file
       notify:
         - Restart PostgreSQL
+
+- name: Deploy stack.yml
+  ansible.builtin.template:
+    src: roles/postgresql_server/templates/stack.yml.j2
+    dest: "{{ postgresql_server_stack_dir.path }}/stack.yml"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
 
 - name: Create and start PostgreSQL
   become: true
@@ -82,6 +86,6 @@
     XDG_RUNTIME_DIR: /run/user/{{ docker_rootless_user.name }}
     DOCKER_HOST: unix:///run/user/{{ docker_rootless_user.name }}/docker.sock
   community.docker.docker_compose_v2:
-    project_src: "{{ postgresql_server_stack.path }}"
+    project_src: "{{ postgresql_server_stack_dir.path }}"
     files: [stack.yml]
     state: present

@@ -14,7 +14,9 @@ mysql_server_master_port: "{{ mysql_server_port }}"
 mysql_server_tls: true
 mysql_server_tls_username: "{{ mysql_server_root_username }}"
 mysql_server_tls_password: "{{ mysql_server_root_password }}"
-mysql_server_tls_domains: "{{ mysql_server_master_host }},{{ mysql_server_replication_host }}"
+mysql_server_tls_domains:
+  - "{{ mysql_server_master_host }}"
+  - "{{ mysql_server_replication_host }}"
 mysql_server_tls_ca_host: "{{ ca_host }}"
 mysql_server_tls_ca_port: "{{ ca_port }}"
 mysql_server_tls_ca_fingerprint: "{{ ca_fingerprint }}"

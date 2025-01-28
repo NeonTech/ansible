@@ -11,10 +11,10 @@
     path: "{{ step_ca_user.home }}/.local/bin/step-ca"
     state: file
   ignore_errors: true
-  register: step_ca
+  register: step_ca_bin_file
 
 - name: Install
-  when: step_ca.failed
+  when: step_ca_bin_file.failed
   become: true
   become_user: "{{ step_ca_user.name }}"
   block:
@@ -70,7 +70,7 @@
           GO_ENVS: CGO_ENABLED=1
     - name: Create install directory
       ansible.builtin.file:
-        path: "{{ step_ca.path | dirname }}"
+        path: "{{ step_ca_bin_file.path | dirname }}"
         owner: "{{ step_ca_user.name }}"
         group: "{{ step_ca_user.name }}"
         mode: "2711" # drwx--s--x
@@ -79,7 +79,7 @@
       ansible.builtin.copy:
         remote_src: true
         src: "{{ step_ca_build_dir.path }}/bin/step-ca"
-        dest: "{{ step_ca.path }}"
+        dest: "{{ step_ca_bin_file.path }}"
         owner: "{{ step_ca_user.name }}"
         group: "{{ step_ca_user.name }}"
         mode: "2711" # -rwx--s--x
@@ -106,12 +106,12 @@
     group: "{{ step_ca_user.name }}"
     mode: "2711" # drwx--s--x
     state: directory
-  register: step_ca_data
+  register: step_ca_data_dir
 
 - name: Deploy data
   ansible.builtin.copy:
     src: "roles/step_ca/files/"
-    dest: "{{ step_ca_data.path }}/"
+    dest: "{{ step_ca_data_dir.path }}/"
     owner: "{{ step_ca_user.name }}"
     group: "{{ step_ca_user.name }}"
     mode: "0600" # -rw-----
@@ -119,17 +119,17 @@
 
 - name: Create config directory
   ansible.builtin.file:
-    path: "{{ step_ca_data.path }}/config"
+    path: "{{ step_ca_data_dir.path }}/config"
     owner: "{{ step_ca_user.name }}"
     group: "{{ step_ca_user.name }}"
     mode: "0700" # drwx------
     state: directory
-  register: step_ca_config
+  register: step_ca_config_dir
 
 - name: Deploy ca.json
   ansible.builtin.template:
     src: "roles/step_ca/templates/ca.json.j2"
-    dest: "{{ step_ca_config.path }}/ca.json"
+    dest: "{{ step_ca_config_dir.path }}/ca.json"
     owner: "{{ step_ca_user.name }}"
     group: "{{ step_ca_user.name }}"
     mode: "0600" # -rw-------
