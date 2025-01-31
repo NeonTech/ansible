@@ -1,13 +1,11 @@
-{% if postgresql_server_tls %}
-# TYPE DATABASE                                     USER                                         ADDRESS METHOD
-host   {{ postgresql_server_tls_ca_database_name }} {{ postgresql_server_tls_ca_database_user }} all     scram-sha-256
-{% else %}
-# TYPE DATABASE    USER        ADDRESS METHOD
-host   all         all         all     scram-sha-256
-host   replication replication all     scram-sha-256
-{% endif %}
+include /bitnami/postgresql/conf/pg_hba.d
+
 {% if postgresql_server_tls %}
 # TYPE  DATABASE    USER        ADDRESS METHOD
 hostssl all         all         all     scram-sha-256
 hostssl replication replication all     scram-sha-256
+{% else %}
+# TYPE    DATABASE    USER        ADDRESS METHOD
+hostnossl all         all         all     scram-sha-256
+hostnossl replication replication all     scram-sha-256
 {% endif %}

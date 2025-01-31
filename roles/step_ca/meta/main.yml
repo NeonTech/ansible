@@ -1,6 +1,14 @@
 dependencies:
   - role: postgresql_client
     vars:
+      postgresql_client_database: "{{ step_ca_postgresql_database }}"
       postgresql_client_username: "{{ step_ca_postgresql_username }}"
       postgresql_client_password: "{{ step_ca_postgresql_password }}"
-      postgresql_client_database: "{{ step_ca_postgresql_database }}"
+      postgresql_client_hba_id: step_ca
+      postgresql_client_hba_rules:
+        - contype: host
+          databases: "{{ step_ca_postgresql_database }}"
+          users: "{{ step_ca_postgresql_username }}"
+          address: all
+          method: scram-sha-256
+          state: present

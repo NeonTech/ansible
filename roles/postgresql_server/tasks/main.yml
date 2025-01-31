@@ -32,17 +32,25 @@
 - name: Create conf directory
   ansible.builtin.file:
     path: "{{ postgresql_server_stack_dir.path }}/conf"
-    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+    owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0755" # -rwxr-xr-x
+    mode: "0755" # drwxr-xr-x
     state: directory
   register: postgresql_server_conf_dir
+
+- name: Create pg_hba.d directory
+  ansible.builtin.file:
+    path: "{{ postgresql_server_conf_dir.path }}/pg_hba.d"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # drwxr-xr-x
+    state: directory
 
 - name: Deploy pg_hba.conf
   ansible.builtin.template:
     src: roles/postgresql_server/templates/pg_hba.conf.j2
     dest: "{{ postgresql_server_conf_dir.path }}/pg_hba.conf"
-    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+    owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
   notify:

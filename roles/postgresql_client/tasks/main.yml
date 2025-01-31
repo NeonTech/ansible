@@ -6,6 +6,25 @@
         name: py3-psycopg2
         state: installed
 
+- name: Deploy pg_hba.conf fragment
+  when: postgresql_client_hba_id
+  run_once: true
+  loop: "{{ groups['postgresql'] }}"
+  delegate_to: "{{ item }}"
+  community.postgresql.postgresql_pg_hba:
+    # TODO Get home path from ansible.builtin.user and stack path from a filter
+    dest: /home/{{ postgresql_client_hba_username }}/stacks/postgresql/conf/pg_hba.d/{{ postgresql_client_hba_id }}.conf
+    rules: "{{ postgresql_client_hba_rules }}"
+    create: true
+    overwrite: true
+    keep_comments_at_rules: true
+    # Standard chown/chmod options
+    owner: "{{ postgresql_client_hba_username }}"
+    group: "{{ postgresql_client_hba_username }}"
+    mode: "0644" # -rw-r--r--
+  notify:
+    - Reload PostgreSQL
+
 - name: Create user {{ postgresql_client_username }}
   run_once: true
   environment:

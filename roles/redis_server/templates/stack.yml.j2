@@ -19,7 +19,7 @@ services:
     environment:
       # ACL includes password
       ALLOW_EMPTY_PASSWORD: yes
-      REDIS_ACLFILE: /run/secrets/users.acl
+      REDIS_ACLFILE: /bitnami/redis/conf/users.acl
       REDIS_REPLICATION_MODE: {{ redis_server_replication_mode }}
       REDIS_MASTER_HOST: {{ redis_server_master_host }}
       REDIS_MASTER_PORT_NUMBER: {{ redis_server_master_port }}
@@ -34,8 +34,6 @@ services:
 {% endif %}
     secrets:
       - redis-password
-      - source: users
-        target: users.acl
 {% if redis_server_tls %}
       - tls-password
       - source: acme-rfc2136
@@ -45,12 +43,11 @@ services:
       - {{ redis_server_port }}:6379
     volumes:
       - redis:/bitnami/redis/data
+      - {{ redis_server_conf_dir.path }}:/bitnami/redis/conf
 
 secrets:
   redis-password:
     file: {{ redis_server_password_file.dest }}
-  users:
-    file: {{ redis_server_users_file.dest }}
 {% if redis_server_tls %}
   tls-password:
     file: {{ redis_server_tls_password_file.dest }}

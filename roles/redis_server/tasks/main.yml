@@ -18,14 +18,39 @@
   notify:
     - Restart Redis
 
-- name: Deploy users.acl
-  ansible.builtin.template:
-    src: roles/redis_server/templates/users.acl.j2
-    dest: "{{ redis_server_stack_dir.path }}/users.acl"
-    owner: "{{ docker_rootless_subuid + 1001 - 1 }}"
+- name: Create conf directory
+  ansible.builtin.file:
+    path: "{{ redis_server_stack_dir.path }}/conf"
+    owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
-    mode: "0600" # -rw-------
-  register: redis_server_users_file
+    mode: "0755" # drwxr-xr-x
+    state: directory
+  register: redis_server_conf_dir
+
+- name: Create users.d directory
+  ansible.builtin.file:
+    path: "{{ redis_server_conf_dir.path }}/users.d"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0755" # drwxr-xr-x
+    state: directory
+  register: redis_server_users_dir
+
+- name: Deploy redis.acl
+  ansible.builtin.template:
+    src: roles/redis_server/templates/redis.acl.j2
+    dest: "{{ redis_server_users_dir.path }}/redis.acl"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
+
+- name: Deploy users.acl
+  ansible.builtin.assemble:
+    src: "{{ redis_server_users_dir.path }}"
+    dest: "{{ redis_server_conf_dir.path }}/users.acl"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
   notify:
     - Restart Redis
 

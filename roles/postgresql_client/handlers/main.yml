@@ -1,0 +1,8 @@
+- name: Reload PostgreSQL
+  community.postgresql.postgresql_query:
+    login_host: "{{ postgresql_client_login_host }}"
+    login_port: "{{ postgresql_client_login_port }}"
+    login_db: "{{ postgresql_client_login_database }}"
+    login_user: "{{ postgresql_client_login_username }}"
+    login_password: "{{ postgresql_client_login_password }}"
+    query: SELECT pg_reload_conf();
