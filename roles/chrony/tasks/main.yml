@@ -9,7 +9,7 @@
 - name: Deploy chrony.conf
   ansible.builtin.template:
     src: roles/chrony/templates/chrony.conf.j2
-    dest: "{{ chrony_conf }}"
+    dest: "{{ chrony_conf_file }}"
     owner: root
     group: root
     mode: "0644" # -rw-r--r--

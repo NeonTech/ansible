@@ -14,7 +14,7 @@ server {{ server }}
 # in reality (so the true time has only advanced by 999900 microseconds). The
 # second is an estimate of the error bound around the first value in which the
 # true rate actually lies.
-driftfile {{ chrony_driftfile }}
+driftfile {{ chrony_drift_file }}
 
 # This directive forces chronyd to step the system clock if the adjustment is
 # larger than a threshold value, but only if there were no more clock updates
@@ -39,9 +39,9 @@ allow {{ allow }}
 # saved to a single file named ntskeys. When chronyd is restarted, reloading the
 # keys allows the clients to continue using old cookies and avoids a storm of
 # NTS-KE requests. By default, the server does not save the keys.
-ntsdumpdir {{ chrony_ntsdumpdir }}
+ntsdumpdir {{ chrony_nts_dump_dir }}
 
 # This directive specifies the directory for writing log files enabled by the
 # log directive. If the directory does not exist, it will be created
 # automatically.
-logdir {{ chrony_logdir }}
+logdir {{ chrony_log_dir }}
