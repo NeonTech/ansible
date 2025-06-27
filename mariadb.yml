@@ -1,3 +1,0 @@
-- name: MariaDB
-  hosts: mariadb
-  roles: [mariadb_server]

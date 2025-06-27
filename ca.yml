@@ -1,3 +1,0 @@
-- name: Certificate Authority (CA)
-  hosts: ca
-  roles: [step_ca]

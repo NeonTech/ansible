@@ -1,2 +1,0 @@
-- name: Restart MySQL
-  ansible.builtin.include_tasks: roles/mysql_server/handlers/restart.yml

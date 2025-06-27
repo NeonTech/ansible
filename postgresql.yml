@@ -1,3 +1,0 @@
-- name: PostgreSQL
-  hosts: postgresql
-  roles: [postgresql_server]

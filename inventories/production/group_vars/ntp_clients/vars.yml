@@ -1,3 +1,0 @@
-chrony_servers:
-  - ntp1.service.neontech.dev iburst
-  - ntp2.service.neontech.dev iburst

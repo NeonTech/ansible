@@ -1,2 +1,0 @@
-- name: Restart MariaDB
-  ansible.builtin.include_tasks: roles/mariadb_server/handlers/restart.yml

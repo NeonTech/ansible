@@ -1,3 +1,0 @@
-docker_rootless_username: docker-rootless
-docker_rootless_subuid: 10000000
-docker_rootless_subgid: 10000000

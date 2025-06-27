@@ -1,2 +1,0 @@
-- name: Restart Redis
-  ansible.builtin.include_tasks: roles/redis_server/handlers/restart.yml

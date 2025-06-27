@@ -1,8 +1,0 @@
-chrony_conf_file: /etc/chrony/chrony.conf
-chrony_servers: [time.cloudflare.com iburst nts]
-chrony_drift_file: /var/lib/chrony/chrony.drift
-chrony_makestep_threshold: 0.1
-chrony_makestep_updates: 3
-chrony_allows: []
-chrony_nts_dump_dir: /var/lib/chrony
-chrony_log_dir: /var/log/chrony

@@ -2,5 +2,13 @@
 
 set -o errexit -o nounset
 
+requirements=./requirements.txt
+if [ ! -f $requirements ]; then
+    echo $requirements not found: re-execute in root of the repository
+    exit 1
+fi
+
 # https://pypi.org/project/pip-review
 pip-review --interactive
+
+pip freeze >$requirements
