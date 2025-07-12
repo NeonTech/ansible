@@ -2,20 +2,21 @@
 
 set -o errexit -o nounset
 
-requirements=./requirements.txt
+requirements=requirements.txt
 if [ ! -f $requirements ]; then
     printf "%s not found: re-execute in root of the repository\n" $requirements
     exit 1
 fi
 
-venv_dir=./.venv
+venv_dir=.venv
 python -m venv $venv_dir
-# shellcheck source=./.venv/bin/activate
+# shellcheck source=.venv/bin/activate
 . $venv_dir/bin/activate
 
 pip install --requirement $requirements
+ansible-galaxy collection install --requirements-file roles/$requirements
 
-vault_password_file=./vault-password-file
+vault_password_file=vault-password-file
 if [ ! -f $vault_password_file ]; then
     printf "\n"
     stty -echo
@@ -30,14 +31,14 @@ if [ ! -f $vault_password_file ]; then
 fi
 
 #region SSH
-private_ssh_dir=./.ssh
+private_ssh_dir=.ssh
 if [ -d $private_ssh_dir ]; then
     rm --recursive $private_ssh_dir
 fi
 mkdir $private_ssh_dir
 chmod 700 $private_ssh_dir
 
-public_ssh_dir=./ssh
+public_ssh_dir=ssh
 for public_environment_dir in "$public_ssh_dir"/*; do
     environment=$(basename "$public_environment_dir")
     private_environment_dir=$private_ssh_dir/$environment

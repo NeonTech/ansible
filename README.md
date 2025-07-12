@@ -10,16 +10,16 @@ Inventory and automation of NeonTech infrastructure using [Ansible](https://www.
 
 2. Set the working directory as the root of the repository:
 
-   `cd ./ansible`
+   `cd ansible`
 
 3. Initialize the repository:
 
-   `./scripts/initialize.sh`
+   `scripts/initialize.sh`
 
 4. Test connections to hosts:
 
-   `ansible all --inventory ./inventories/prod/hosts --vault-password-file ./vault-password-file --module-name ansible.builtin.ping`
+   `ansible all --inventory inventories/prod/hosts --vault-password-file vault-password-file --module-name ansible.builtin.ping`
 
 5. Run the `site.yml` playbook to deploy **_everything_**:
 
-   `ansible-playbook site.yml --inventory ./inventories/prod/hosts --vault-password-file ./vault-password-file`
+   `ansible-playbook site.yml --inventory inventories/prod/hosts --vault-password-file vault-password-file`

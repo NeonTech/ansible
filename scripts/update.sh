@@ -2,7 +2,7 @@
 
 set -o errexit -o nounset
 
-requirements=./requirements.txt
+requirements=requirements.txt
 if [ ! -f $requirements ]; then
     printf "%s not found: re-execute in root of the repository\n" $requirements
     exit 1

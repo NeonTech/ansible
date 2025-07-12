@@ -2,11 +2,11 @@
 ansible_ssh_args: >-
   -C
   -o GlobalKnownHostsFile=/dev/null
-  -o UserKnownHostsFile=./ssh/prod/known_hosts
+  -o UserKnownHostsFile=ssh/prod/known_hosts
   -o ControlMaster=auto
   -o ControlPersist=60s
 ansible_ssh_user: root
 # inventory_hostname_short is compatible with delegation unlike inventory_hostname
 ansible_ssh_host: "{{ inventory_hostname_short }}.neontech.dev"
-ansible_ssh_private_key_file: ./.ssh/prod/{{ inventory_hostname_short }}_{{ ansible_ssh_user }}_ed25519
+ansible_ssh_private_key_file: .ssh/prod/{{ inventory_hostname_short }}_{{ ansible_ssh_user }}_ed25519
 #endregion
