@@ -1,0 +1,33 @@
+# This file was automatically generated using Ansible.
+#
+# Adds stable /dev paths for devices used in Resource Mappings.
+
+# PCI
+{% for pci_device in pci_devices -%}
+  {% set name = pci_device.id -%}
+  {% for raw_mapping in pci_device.map -%}
+    {% set mapping = raw_mapping.split(',') | map('split', '=') | community.general.dict -%}
+    {% if mapping.node == inventory_hostname -%}
+      {% if "gpu".casefold() in name.casefold() -%}
+## GPU
+{# TODO Use mapping id, iommugroup, and/or subsystem #}
+SUBSYSTEM=="drm", SUBSYSTEMS=="pci", KERNELS=="{{ mapping.path }}", SYMLINK="{{ name }}"
+      {% else -%}
+## Other
+# TODO "{{ pci_device }}"
+      {%- endif %}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+# USB
+{% for usb_device in usb_devices -%}
+  {% set name = usb_device.id -%}
+  {% for raw_mapping in usb_device.map -%}
+    {% set mapping = raw_mapping.split(',') | map('split', '=') | community.general.dict -%}
+    {% if mapping.node == inventory_hostname -%}
+      {% set ids = mapping.id.split(':') -%}
+SUBSYSTEM=="usb", ATTRS{idVendor}=="{{ ids[0] }}", ATTRS{idProduct}=="{{ ids[1] }}", SYMLINK+="{{ name }}"
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}

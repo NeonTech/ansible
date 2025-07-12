@@ -1,0 +1,20 @@
+- name: Get PCI resource mappings
+  ansible.builtin.command: pvesh get /cluster/mapping/pci --output-format json
+  register: pci_resource_mappings
+  changed_when: false
+
+- name: Get USB resource mappings
+  ansible.builtin.command: pvesh get /cluster/mapping/usb --output-format json
+  register: usb_resource_mappings
+  changed_when: false
+
+- name: Add udev resource mappings rules
+  vars:
+    usb_devices: "{{ usb_resource_mappings.stdout | from_json }}"
+    pci_devices: "{{ pci_resource_mappings.stdout | from_json }}"
+  ansible.builtin.template:
+    src: 99-resource-mappings.rules.j2
+    dest: /etc/udev/rules.d/99-resource-mappings.rules
+    mode: "0644"
+  notify:
+    - Reboot
