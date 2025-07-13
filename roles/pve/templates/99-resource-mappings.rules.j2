@@ -4,14 +4,16 @@
 
 # PCI
 {% for pci_device in pci_devices -%}
-  {% set name = pci_device.id -%}
   {% for raw_mapping in pci_device.map -%}
     {% set mapping = raw_mapping.split(',') | map('split', '=') | community.general.dict -%}
     {% if mapping.node == inventory_hostname -%}
+      {% set name = pci_device.id -%}
+      {% set ids = mapping.id.split(':') -%}
       {% if "gpu".casefold() in name.casefold() -%}
 ## GPU
-{# TODO Use mapping id, iommugroup, and/or subsystem #}
-SUBSYSTEM=="drm", SUBSYSTEMS=="pci", KERNELS=="{{ mapping.path }}", SYMLINK="{{ name }}"
+{# TODO Use mapping iommugroup, path, and/or subsystem-id #}
+SUBSYSTEM=="drm", KERNEL=="card*", ATTRS{vendor}=="0x{{ ids[0] }}", ATTRS{device}=="0x{{ ids[1] }}", SYMLINK+="{{ name }}-card"
+SUBSYSTEM=="drm", KERNEL=="render*", ATTRS{vendor}=="0x{{ ids[0] }}", ATTRS{device}=="0x{{ ids[1] }}", SYMLINK+="{{ name }}-render"
       {% else -%}
 ## Other
 # TODO "{{ pci_device }}"
@@ -22,10 +24,10 @@ SUBSYSTEM=="drm", SUBSYSTEMS=="pci", KERNELS=="{{ mapping.path }}", SYMLINK="{{ 
 
 # USB
 {% for usb_device in usb_devices -%}
-  {% set name = usb_device.id -%}
   {% for raw_mapping in usb_device.map -%}
     {% set mapping = raw_mapping.split(',') | map('split', '=') | community.general.dict -%}
     {% if mapping.node == inventory_hostname -%}
+      {% set name = usb_device.id -%}
       {% set ids = mapping.id.split(':') -%}
 SUBSYSTEM=="usb", ATTRS{idVendor}=="{{ ids[0] }}", ATTRS{idProduct}=="{{ ids[1] }}", SYMLINK+="{{ name }}"
     {%- endif %}
