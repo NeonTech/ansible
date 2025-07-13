@@ -14,7 +14,7 @@ python -m venv $venv_dir
 . $venv_dir/bin/activate
 
 pip install --requirement $requirements
-ansible-galaxy collection install --requirements-file roles/$requirements
+ansible-galaxy collection install --requirements-file collections.txt
 
 vault_password_file=vault-password-file
 if [ ! -f $vault_password_file ]; then
