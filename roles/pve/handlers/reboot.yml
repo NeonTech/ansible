@@ -1,3 +1,0 @@
-- name: Reboot
-  throttle: 1
-  ansible.builtin.reboot:
