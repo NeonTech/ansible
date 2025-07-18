@@ -1,0 +1,65 @@
+- name: Download {{ lxc_pve_template }}
+  community.proxmox.proxmox_template:
+    # API
+    api_host: "{{ lxc_pve_api_host }}"
+    api_port: "{{ lxc_pve_api_port }}"
+    api_user: "{{ lxc_pve_api_user }}"
+    api_token_id: "{{ lxc_pve_api_token_id }}"
+    api_token_secret: "{{ lxc_pve_api_token }}"
+    # General
+    node: "{{ lxc_pve_node }}"
+    # Template
+    template: "{{ lxc_pve_template }}"
+    content_type: "{{ lxc_pve_template_type }}"
+    # Storage
+    storage: "{{ lxc_pve_storage_fs }}"
+    #
+    state: present
+
+- name: Create {{ lxc_hostname }}
+  community.proxmox.proxmox:
+    # API
+    api_host: "{{ lxc_pve_api_host }}"
+    api_port: "{{ lxc_pve_api_port }}"
+    api_user: "{{ lxc_pve_api_user }}"
+    api_token_id: "{{ lxc_pve_api_token_id }}"
+    api_token_secret: "{{ lxc_pve_api_token }}"
+    # General
+    node: "{{ lxc_pve_node }}"
+    vmid: "{{ lxc_pve_vmid }}"
+    hostname: "{{ lxc_hostname }}"
+    unprivileged: true
+    pubkey: "{{ lookup('file', lxc_ssh_public_key_file) }}"
+    # Template
+    ostemplate: "{{ lxc_pve_storage_fs }}:{{ lxc_pve_template_type }}/{{ lxc_pve_template }}"
+    ostype: "{{ lxc_os_type }}"
+    # Disks
+    disk_volume:
+      storage: "{{ lxc_disk_volume_storage }}"
+      size: "{{ lxc_disk_volume_size }}"
+    # CPU
+    cores: "{{ lxc_cpu_cores }}"
+    # Memory
+    memory: "{{ lxc_memory }}"
+    swap: "{{ lxc_memory_swap }}"
+    # Network
+    netif: "{{ lxc_pve_interfaces }}"
+    # DNS
+    # Confirm
+    onboot: true
+    #
+    update: true
+    state: present
+
+- name: Start {{ lxc_hostname }}
+  community.proxmox.proxmox:
+    # API
+    api_host: "{{ lxc_pve_api_host }}"
+    api_port: "{{ lxc_pve_api_port }}"
+    api_user: "{{ lxc_pve_api_user }}"
+    api_token_id: "{{ lxc_pve_api_token_id }}"
+    api_token_secret: "{{ lxc_pve_api_token }}"
+    # General
+    vmid: "{{ lxc_pve_vmid }}"
+    #
+    state: started

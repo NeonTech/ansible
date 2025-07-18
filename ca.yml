@@ -1,0 +1,11 @@
+- name: Certificate Authority LXC
+  hosts: localhost
+  connection: local
+  vars:
+    pve_node: sol-ceres-pve
+    lxc_hostname: ct-ca
+    lxc_pve_vmid: 11000
+    lxc_pve_interfaces:
+      net0: "name=eth0,bridge=virtual,firewall=1,ip6=auto"
+  roles:
+    - lxc
