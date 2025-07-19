@@ -1,0 +1,37 @@
+# Default variables are dependent on group variables and repository layout.
+
+# API
+pve_lxc_api_host: "{{ pve_api_host }}"
+pve_lxc_api_port: "{{ pve_api_port }}"
+pve_lxc_api_user: "{{ pve_api_user }}"
+pve_lxc_api_token_id: "{{ pve_api_token_id }}"
+pve_lxc_api_token: "{{ pve_api_token }}"
+
+# General
+pve_lxc_node: "{{ pve_node }}"
+pve_lxc_vmid: "{{ mandatory(msg='default value') }}"
+pve_lxc_hostname: "{{ mandatory(msg='default value') }}"
+pve_lxc_ssh_public_key_file: "{{ 'ssh/{}/{}_root_ed25519.pub'.format(env, pve_lxc_hostname) }}"
+
+# Template
+pve_lxc_template: debian-12-standard_12.7-1_amd64.tar.zst
+pve_lxc_template_type: vztmpl
+pve_lxc_os_type: debian
+
+# Storage
+pve_lxc_storage: "{{ pve_storage_shared }}"
+pve_lxc_storage_fs: "{{ pve_storage_shared_fs }}"
+
+# Disks
+pve_lxc_disk_volume_storage: "{{ pve_lxc_storage }}"
+pve_lxc_disk_volume_size: 8 # GiB
+
+# CPU
+pve_lxc_cpu_cores: 1
+
+# Memory
+pve_lxc_memory: 512 # MB
+pve_lxc_memory_swap: 512 # MB
+
+# Network
+pve_lxc_interfaces: {}

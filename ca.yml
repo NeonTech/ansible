@@ -3,9 +3,9 @@
   connection: local
   vars:
     pve_node: sol-ceres-pve
-    lxc_hostname: ct-ca
-    lxc_pve_vmid: 11000
-    lxc_pve_interfaces:
-      net0: "name=eth0,bridge=virtual,firewall=1,ip6=auto"
   roles:
-    - lxc
+    - role: pve_lxc
+      pve_lxc_vmid: 11000
+      pve_lxc_hostname: ct-ca
+      pve_lxc_interfaces:
+        net0: "name=eth0,bridge=virtual,firewall=1,hwaddr=BC:24:11:7D:78:FF,ip6=auto"
