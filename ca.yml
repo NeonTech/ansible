@@ -9,3 +9,17 @@
       pve_lxc_hostname: ct-ca
       pve_lxc_interfaces:
         net0: "name=eth0,bridge=virtual,firewall=1,hwaddr=BC:24:11:7D:78:FF,ip6=auto"
+
+- name: Certificate Authority Dependencies
+  hosts: ca
+  gather_facts: false
+  pre_tasks:
+    - name: Wait for LXC connection
+      ansible.builtin.wait_for_connection:
+    - name: Create user "{{ ca_user_name }}"
+      ansible.builtin.user:
+        name: "{{ ca_user_name }}"
+        uid: "{{ ca_user_id }}"
+        password: "!"
+        create_home: true
+        state: present

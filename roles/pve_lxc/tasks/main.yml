@@ -47,6 +47,9 @@
     # DNS
     # Confirm
     onboot: true
+    # Features
+    features:
+      - nesting=1
     #
     update: true
     state: present

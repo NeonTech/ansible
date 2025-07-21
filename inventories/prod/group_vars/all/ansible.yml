@@ -1,4 +1,6 @@
-env: prod
+#region Become
+ansible_become_method: su
+#endregion
 
 #region SSH
 ansible_ssh_args: >-
