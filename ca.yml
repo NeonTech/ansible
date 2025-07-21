@@ -10,7 +10,7 @@
       pve_lxc_interfaces:
         net0: "name=eth0,bridge=virtual,firewall=1,hwaddr=BC:24:11:7D:78:FF,ip6=auto"
 
-- name: Certificate Authority Dependencies
+- name: Certificate Authority
   hosts: ca
   gather_facts: false
   pre_tasks:
