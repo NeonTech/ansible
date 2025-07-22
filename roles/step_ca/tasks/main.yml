@@ -1,3 +1,80 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - yubikey-manager
+      - libpcsclite-dev
+      - gcc
+      - make
+      - pkg-config
+    state: present
+
+- name: Register step-ca version
+  ansible.builtin.command: step-ca version
+  changed_when: false
+  ignore_errors: true
+  register: step_ca_version_cmd
+
+- name: (Re)install Step CA
+  when: step_ca_version_cmd.rc != 0 or step_ca_version not in step_ca_version_cmd.stdout
+  block:
+    - name: Create temporary Step CA download file
+      ansible.builtin.tempfile:
+        suffix: "{{ step_ca_download_filename }}"
+        state: file
+      register: step_ca_download_file
+    - name: Download "{{ step_ca_download_filename }}"
+      ansible.builtin.get_url:
+        url: https://github.com/smallstep/certificates/releases/download/v{{ step_ca_version }}/{{ step_ca_download_filename }}
+        checksum: sha256:{{ step_ca_download_checksum }}
+        dest: "{{ step_ca_download_file.path }}"
+        mode: "0600" # -rw-------
+    - name: Uninstall previous Step CA version
+      ansible.builtin.file:
+        path: /usr/local/step-ca
+        state: absent
+    - name: Create Step CA directory
+      ansible.builtin.file:
+        path: /usr/local/step-ca
+        mode: "0755" # drwxr-xr-x
+        state: directory
+    - name: Install Step CA "{{ step_ca_version }}"
+      ansible.builtin.unarchive:
+        src: "{{ step_ca_download_file.path }}"
+        remote_src: true
+        dest: /usr/local/step-ca
+    # https://github.com/smallstep/certificates/issues/2013
+    - name: Patch .version.sh
+      ansible.builtin.replace:
+        path: /usr/local/step-ca/.version.sh
+        regexp: '^#!\/usr\/bin\/env sh$'
+        replace: "#!/usr/bin/env bash"
+    - name: Bootstrap Step CA
+      community.general.make:
+        chdir: /usr/local/step-ca
+        target: bootstrap
+    - name: Build Step CA
+      community.general.make:
+        chdir: /usr/local/step-ca
+        target: build
+        params:
+          GO_ENVS: CGO_ENABLED=1
+    - name: Add CAP_NET_BIND_SERVICE capability to Step CA
+      community.general.capabilities:
+        path: /usr/local/step-ca/bin/step-ca
+        capability: CAP_NET_BIND_SERVICE=+eip
+        state: present
+    - name: Create symbolic link with Step CA binary
+      ansible.builtin.file:
+        src: /usr/local/step-ca/bin/step-ca
+        dest: /usr/local/bin/step-ca
+        mode: "0755" # -rwxr-xr-x
+        state: link
+    - name: Delete temporary Step CA download file
+      ansible.builtin.file:
+        path: "{{ step_ca_download_file.path }}"
+        state: absent
+
 - name: Create user "{{ step_ca_user_name }}"
   ansible.builtin.user:
     name: "{{ step_ca_user_name }}"

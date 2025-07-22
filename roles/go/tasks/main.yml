@@ -27,7 +27,6 @@
         src: "{{ go_download_file.path }}"
         remote_src: true
         dest: /usr/local
-        mode: "0755" # drwxr-xr-x
     - name: Register Go binaries
       ansible.builtin.find:
         path: /usr/local/go/bin
