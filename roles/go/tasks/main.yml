@@ -1,13 +1,13 @@
-- name: Register go version
+- name: Register version
   ansible.builtin.command: go version
   changed_when: false
   ignore_errors: true
   register: go_version_cmd
 
-- name: (Re)install Go
+- name: (Re)install
   when: go_version_cmd.rc != 0 or "{} {}/{}".format(go_version, go_os, go_arch) not in go_version_cmd.stdout
   block:
-    - name: Create temporary Go download file
+    - name: Create temporary download file
       ansible.builtin.tempfile:
         suffix: "{{ go_download_filename }}"
         state: file
@@ -18,28 +18,28 @@
         checksum: sha256:{{ go_download_checksum }}
         dest: "{{ go_download_file.path }}"
         mode: "0600" # -rw-------
-    - name: Uninstall previous Go version
+    - name: Uninstall previous version
       ansible.builtin.file:
         path: /usr/local/go
         state: absent
-    - name: Install Go "{{ go_version }}"
+    - name: Install version "{{ go_version }}"
       ansible.builtin.unarchive:
         src: "{{ go_download_file.path }}"
         remote_src: true
         dest: /usr/local
-    - name: Register Go binaries
+    - name: Register binaries
       ansible.builtin.find:
         path: /usr/local/go/bin
         file_type: file
       register: go_bin
-    - name: Create symbolic links with Go binaries
+    - name: Create symbolic links with binaries
       ansible.builtin.file:
         src: "{{ item.path }}"
         dest: /usr/local/bin/{{ item.path | basename }}
         mode: "0755" # -rwxr-xr-x
         state: link
       loop: "{{ go_bin.files }}"
-    - name: Delete temporary Go download file
+    - name: Delete temporary download file
       ansible.builtin.file:
         path: "{{ go_download_file.path }}"
         state: absent

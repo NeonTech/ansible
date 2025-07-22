@@ -1,4 +1,4 @@
-- name: Download LXC template "{{ pve_lxc_template }}"
+- name: Download "{{ pve_lxc_template }}"
   community.proxmox.proxmox_template:
     # API
     api_host: "{{ pve_lxc_api_host }}"
@@ -16,7 +16,7 @@
     #
     state: present
 
-- name: Create LXC "{{ pve_lxc_hostname }}"
+- name: Create "{{ pve_lxc_hostname }}"
   community.proxmox.proxmox:
     # API
     api_host: "{{ pve_lxc_api_host }}"
@@ -54,7 +54,7 @@
     update: true
     state: present
 
-- name: Start LXC "{{ pve_lxc_hostname }}"
+- name: Start "{{ pve_lxc_hostname }}"
   community.proxmox.proxmox:
     # API
     api_host: "{{ pve_lxc_api_host }}"
