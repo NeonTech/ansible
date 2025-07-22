@@ -1,0 +1,7 @@
+- name: Create user "{{ step_ca_user_name }}"
+  ansible.builtin.user:
+    name: "{{ step_ca_user_name }}"
+    uid: "{{ step_ca_user_id }}"
+    password: "!"
+    create_home: true
+    state: present

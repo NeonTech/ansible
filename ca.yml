@@ -16,10 +16,7 @@
   pre_tasks:
     - name: Wait for LXC connection
       ansible.builtin.wait_for_connection:
-    - name: Create user "{{ ca_user_name }}"
-      ansible.builtin.user:
-        name: "{{ ca_user_name }}"
-        uid: "{{ ca_user_id }}"
-        password: "!"
-        create_home: true
-        state: present
+  roles:
+    - role: step_ca
+      step_ca_user_name: "{{ ca_user_name }}"
+      step_ca_user_id: "{{ ca_user_id }}"
