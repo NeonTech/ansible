@@ -1,17 +1,15 @@
-# Default variables are dependent on group variables and repository layout.
-
 # API
-pve_lxc_api_host: "{{ pve_api_host }}"
-pve_lxc_api_port: "{{ pve_api_port }}"
-pve_lxc_api_user: "{{ pve_api_user }}"
-pve_lxc_api_token_id: "{{ pve_api_token_id }}"
-pve_lxc_api_token: "{{ pve_api_token }}"
+pve_lxc_api_host: localhost
+pve_lxc_api_port: 8006
+pve_lxc_api_user: root@pam
+pve_lxc_api_token_id: "{{ mandatory(msg='default value') }}"
+pve_lxc_api_token: "{{ mandatory(msg='default secret') }}"
 
 # General
-pve_lxc_node: "{{ pve_node }}"
+pve_lxc_node: "{{ inventory_hostname }}"
 pve_lxc_vmid: "{{ mandatory(msg='default value') }}"
 pve_lxc_hostname: "{{ mandatory(msg='default value') }}"
-pve_lxc_ssh_public_key_file: "{{ 'ssh/{}/{}_root_ed25519.pub'.format(env, pve_lxc_hostname) }}"
+pve_lxc_ssh_public_key_file: "{{ mandatory(msg='default value') }}"
 
 # Template
 pve_lxc_template: debian-12-standard_12.7-1_amd64.tar.zst
@@ -19,8 +17,8 @@ pve_lxc_template_type: vztmpl
 pve_lxc_os_type: debian
 
 # Storage
-pve_lxc_storage: "{{ pve_storage_shared }}"
-pve_lxc_storage_fs: "{{ pve_storage_shared_fs }}"
+pve_lxc_storage: "{{ mandatory(msg='default value') }}"
+pve_lxc_storage_fs: "{{ mandatory(msg='default value') }}"
 
 # Disks
 pve_lxc_disk_volume_storage: "{{ pve_lxc_storage }}"
