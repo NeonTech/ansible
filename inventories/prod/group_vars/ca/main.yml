@@ -1,2 +1,6 @@
-ca_user_name: ca
+ca_user_name: ca # LDAP
+ca_user_password: "{{ vault_ca_user_password }}"
 ca_user_id: 2071 # LDAP
+
+ca_name: Certificate Trans Authority
+ca_dns: [ca.neontech.dev]
