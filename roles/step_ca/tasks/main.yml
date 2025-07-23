@@ -88,3 +88,51 @@
     password: "!"
     create_home: true
     state: present
+
+- name: Create configuration directory
+  ansible.builtin.file:
+    path: /etc/step-ca
+    owner: "{{ step_ca_user_name }}"
+    group: "{{ step_ca_user_name }}"
+    mode: "0700" # drwx------
+    state: directory
+
+- name: Register configuration file
+  ansible.builtin.stat:
+    path: /etc/step-ca/config/ca.json
+  register: step_ca_json
+
+- name: Initialize
+  when: not step_ca_json.stat.exists
+  become: true
+  become_user: "{{ step_ca_user_name }}"
+  block:
+    - name: Create temporary provisioner password file
+      ansible.builtin.tempfile:
+        suffix: step_ca_provisioner_password
+        state: file
+      register: step_ca_provisioner_password_file
+    - name: Copy provisioner password
+      ansible.builtin.copy:
+        content: "{{ step_ca_provisioner_password }}"
+        dest: "{{ step_ca_provisioner_password_file.path }}"
+        mode: "0600" # -rw------
+    - name: Initilize
+      environment:
+        STEPPATH: /etc/step-ca
+      ansible.builtin.command:
+        argv:
+          - step-ca
+          - init
+          - --name="{{ step_ca_name }}"
+          - --dns="{{ step_ca_dns | join(',') }}"
+          - --address="{{ step_ca_address }}"
+          - --provisioner="{{ step_ca_provisioner_name }}"
+          - --provisioner-password-file="{{ step_ca_provisioner_password_file.path }}"
+          - --deployment-type=standalone
+          - --remote-management
+      changed_when: true
+    - name: Delete temporary provisioner password file
+      ansible.builtin.file:
+        path: "{{ step_ca_provisioner_password_file.path }}"
+        state: absent

@@ -5,3 +5,10 @@ step_ca_download_checksum: 44d8e42508cea63c0572408c15e3f52cbbc18a8b3d3df5c213945
 
 step_ca_user_name: step_ca
 step_ca_user_id: 1000
+
+step_ca_name: Step CA
+step_ca_dns: [localhost]
+step_ca_address: :443
+
+step_ca_provisioner_name: admin
+step_ca_provisioner_password: "{{ mandatory(msg='default secret') }}"
