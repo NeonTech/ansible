@@ -36,7 +36,6 @@
     - role: step_ca
       step_ca_user_name: "{{ ca_user_name }}"
       step_ca_user_id: "{{ ca_user_id }}"
-      step_ca_name: "{{ ca_name }}"
       step_ca_dns: "{{ ca_dns }}"
       step_ca_provisioner_name: "{{ ca_user_name }}"
       step_ca_provisioner_password: "{{ ca_user_password }}"

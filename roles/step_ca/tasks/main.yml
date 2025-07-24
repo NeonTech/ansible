@@ -107,6 +107,16 @@
   become: true
   become_user: "{{ step_ca_user_name }}"
   block:
+    - name: Create temporary password file
+      ansible.builtin.tempfile:
+        suffix: step_ca_password
+        state: file
+      register: step_ca_password_file
+    - name: Create password
+      ansible.builtin.copy:
+        content: "{{ lookup('community.general.random_string') }}"
+        dest: "{{ step_ca_password_file.path }}"
+        mode: "0600" # -rw-------
     - name: Create temporary provisioner password file
       ansible.builtin.tempfile:
         suffix: step_ca_provisioner_password
@@ -120,18 +130,26 @@
     - name: Initilize
       environment:
         STEPPATH: /etc/step-ca
-      ansible.builtin.command:
-        argv:
-          - step-ca
-          - init
-          - --name="{{ step_ca_name }}"
-          - --dns="{{ step_ca_dns | join(',') }}"
-          - --address="{{ step_ca_address }}"
-          - --provisioner="{{ step_ca_provisioner_name }}"
-          - --provisioner-password-file="{{ step_ca_provisioner_password_file.path }}"
-          - --deployment-type=standalone
-          - --remote-management
+      ansible.builtin.command: >-
+        step
+        ca
+        init
+        --ssh
+        --deployment-type=standalone
+        --name="Step CA"
+        --dns="{{ step_ca_dns | join(',') }}"
+        --address="{{ step_ca_address }}"
+        --provisioner="{{ step_ca_provisioner_name }}"
+        --admin-subject="{{ step_ca_provisioner_name }}"
+        --provisioner-password-file="{{ step_ca_provisioner_password_file.path }}"
+        --password-file="{{ step_ca_password_file.path }}"
+        --remote-management
+        --acme
       changed_when: true
+    - name: Delete temporary password file
+      ansible.builtin.file:
+        path: "{{ step_ca_password_file.path }}"
+        state: absent
     - name: Delete temporary provisioner password file
       ansible.builtin.file:
         path: "{{ step_ca_provisioner_password_file.path }}"
