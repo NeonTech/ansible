@@ -45,3 +45,4 @@
       step_ca_provisioner_name: "{{ ca_user_name }}"
       step_ca_provisioner_password: "{{ ca_user_password }}"
       step_ca_yubikey_pin: "{{ ca_yubikey_pin }}"
+    - role: ca

@@ -1,5 +1,9 @@
 {
+{% if step_ca_port == 443 %}
   "ca-url": "https://{{ step_ca_host }}",
+{% else %}
+  "ca-url": "https://{{ step_ca_host }}:{{ step_ca_port }}",
+{% endif %}
   "ca-config": "/etc/step-ca/config/ca.json",
   "fingerprint": "{{ step_ca_fingerprint }}",
   "root": "/etc/step-ca/certs/root_ca.crt"

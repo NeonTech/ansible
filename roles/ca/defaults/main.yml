@@ -1,0 +1,3 @@
+ca_host: localhost
+ca_port: 443
+ca_fingerprint: "{{ mandatory(msg='default value') }}"

@@ -1,0 +1,22 @@
+- name: Define ansible_user_dir
+  when: ansible_user_dir is not defined
+  ansible.builtin.setup:
+    filter: ansible_user_dir
+
+- name: Register .step
+  ansible.builtin.stat:
+    path: "{{ ansible_user_dir }}/.step"
+  register: ca_step
+
+- name: Install
+  when: not ca_step.stat.exists
+  environment:
+    STEPPATH: "{{ ansible_user_dir }}/.step"
+  ansible.builtin.command: >-
+    step
+    ca
+    bootstrap
+    --ca-url https://{{ ca_host }}:{{ ca_port }}
+    --fingerprint {{ ca_fingerprint }}
+    --install
+  changed_when: true
