@@ -26,6 +26,9 @@
         # TODO Remove IPv4 support by implementing NAT64
         net0: "name=eth0,bridge=virtual,firewall=1,hwaddr=BC:24:11:7D:78:FF,ip=dhcp,ip6=auto"
 
+# TODO Add YubiKey device to LXC
+# TODO Add firewall rules to LXC
+
 - name: Certificate Authority
   hosts: ca
   gather_facts: false
@@ -36,6 +39,9 @@
     - role: step_ca
       step_ca_user_name: "{{ ca_user_name }}"
       step_ca_user_id: "{{ ca_user_id }}"
-      step_ca_dns: "{{ ca_dns }}"
+      step_ca_host: "{{ ca_host }}"
+      step_ca_port: "{{ ca_port }}"
+      step_ca_fingerprint: "{{ ca_fingerprint }}"
       step_ca_provisioner_name: "{{ ca_user_name }}"
       step_ca_provisioner_password: "{{ ca_user_password }}"
+      step_ca_yubikey_pin: "{{ ca_yubikey_pin }}"

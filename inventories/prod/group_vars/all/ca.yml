@@ -1,0 +1,3 @@
+ca_host: ca.neontech.dev
+ca_port: 443
+ca_fingerprint: c8ad3b1721b84e4915e53fe1e5a763a5bdd3beabfaf42005542906a7829f27af

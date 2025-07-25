@@ -2,4 +2,4 @@ ca_user_name: ca # LDAP
 ca_user_password: "{{ vault_ca_user_password }}"
 ca_user_id: 2071 # LDAP
 
-ca_dns: [ca.neontech.dev]
+ca_yubikey_pin: "{{ vault_ca_yubikey_pin }}"

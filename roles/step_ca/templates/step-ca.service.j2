@@ -1,0 +1,14 @@
+[Unit]
+Description=Step CA
+
+[Service]
+User={{ step_ca_user_name }}
+Group={{ step_ca_user_name }}
+Environment=STEPPATH=/etc/step-ca
+ExecStart=/usr/local/bin/step-ca /etc/step-ca/config/ca.json
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
