@@ -1,48 +1,16 @@
-- name: Certificate Authority LXC
-  hosts: localhost
-  connection: local
-  vars:
-    pve_node: sol-ceres-pve
-  roles:
-    - role: pve_lxc
-      # API
-      pve_lxc_api_host: "{{ pve_api_host }}"
-      pve_lxc_api_port: "{{ pve_api_port }}"
-      pve_lxc_api_user: "{{ pve_api_user }}"
-      pve_lxc_api_token_id: "{{ pve_api_token_id }}"
-      pve_lxc_api_token: "{{ pve_api_token }}"
-      # General
-      pve_lxc_node: "{{ pve_node }}"
-      pve_lxc_vmid: 11000
-      pve_lxc_hostname: ct-ca
-      pve_lxc_ssh_public_key_file: "{{ 'ssh/{}/{}_root_ed25519.pub'.format(env, pve_lxc_hostname) }}"
-      # Storage
-      pve_lxc_storage: "{{ pve_storage_shared }}"
-      pve_lxc_storage_fs: "{{ pve_storage_shared_fs }}"
-      # Disks
-      pve_lxc_disk_volume_size: 16 # GiB
-      # Network
-      pve_lxc_interfaces:
-        # TODO Remove IPv4 support by implementing NAT64
-        net0: "name=eth0,bridge=virtual,firewall=1,hwaddr=BC:24:11:7D:78:FF,ip=dhcp,ip6=auto"
-
-# TODO Add YubiKey device to LXC
 # TODO Add firewall rules to LXC
+# TODO Add YubiKey device to LXC
 
 - name: Certificate Authority
   hosts: ca
   gather_facts: false
   pre_tasks:
+    - name: LXC "{{ pve_lxc_hostname }}"
+      delegate_to: localhost
+      ansible.builtin.import_role:
+        name: pve_lxc
     - name: Wait for LXC connection
       ansible.builtin.wait_for_connection:
   roles:
-    - role: step_ca
-      step_ca_user_name: "{{ ca_user_name }}"
-      step_ca_user_id: "{{ ca_user_id }}"
-      step_ca_host: "{{ ca_host }}"
-      step_ca_port: "{{ ca_port }}"
-      step_ca_fingerprint: "{{ ca_fingerprint }}"
-      step_ca_provisioner_name: "{{ ca_user_name }}"
-      step_ca_provisioner_password: "{{ ca_user_password }}"
-      step_ca_yubikey_pin: "{{ ca_yubikey_pin }}"
-    - role: ca
+    - step_ca
+    - ca

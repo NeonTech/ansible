@@ -1,18 +1,19 @@
+# Version
 step_ca_version: 0.28.4
-
+# Download
 step_ca_download_filename: step-ca_{{ step_ca_version }}.tar.gz
 step_ca_download_checksum: 44d8e42508cea63c0572408c15e3f52cbbc18a8b3d3df5c213945d5465c56be0
-
-step_ca_user_name: step_ca
-step_ca_user_id: 1000
-
+# CA
 step_ca_host: localhost
 step_ca_port: 443
 step_ca_fingerprint: c8ad3b1721b84e4915e53fe1e5a763a5bdd3beabfaf42005542906a7829f27af
-
+# User
+step_ca_user_name: step_ca
+step_ca_user_id: 1000
+# Provisioner
 step_ca_provisioner_name: "{{ step_ca_user_name }}"
 step_ca_provisioner_password: "{{ mandatory(msg='default secret') }}"
-
+# YubiKey
 step_ca_yubikey_pin: "{{ mandatory(msg='default secret') }}"
 step_ca_yubikey_intermediate_slot: 83
 step_ca_yubikey_ssh_host_slot: 84

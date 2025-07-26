@@ -1,0 +1,2 @@
+# Disks
+pve_lxc_disk_volume_size: 16 # GiB
