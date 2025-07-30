@@ -1,3 +1,27 @@
+- name: Create group "{{ technitium_dns_user_name }}"
+  ansible.builtin.group:
+    name: "{{ technitium_dns_user_name }}"
+    gid: "{{ technitium_dns_user_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ technitium_dns_user_name }}"
+  ansible.builtin.user:
+    name: "{{ technitium_dns_user_name }}"
+    uid: "{{ technitium_dns_user_id }}"
+    group: "{{ technitium_dns_user_name }}"
+    system: true
+    create_home: true
+    home: /etc/technitium-dns
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Create systemd service
+  ansible.builtin.template:
+    src: technitium-dns.service.j2
+    dest: /etc/systemd/system/technitium-dns.service
+    mode: "0644" # -rw-r--r--
+
 - name: Register version
   check_mode: true
   ansible.builtin.copy:
@@ -21,6 +45,10 @@
         checksum: sha256:{{ technitium_dns_download_checksum }}
         dest: "{{ technitium_dns_download_file.path }}"
         mode: "0600" # -rw-------
+    - name: Stop systemd service
+      ansible.builtin.systemd_service:
+        name: technitium-dns
+        state: stopped
     - name: Uninstall previous version
       ansible.builtin.file:
         path: /opt/technitium/dns
@@ -45,28 +73,6 @@
       ansible.builtin.file:
         path: "{{ technitium_dns_download_file.path }}"
         state: absent
-
-- name: Create user "{{ technitium_dns_user_name }}"
-  ansible.builtin.user:
-    name: "{{ technitium_dns_user_name }}"
-    uid: "{{ technitium_dns_user_id }}"
-    password: "!"
-    create_home: true
-    state: present
-
-- name: Create configuration directory
-  ansible.builtin.file:
-    path: /etc/technitium-dns
-    owner: "{{ technitium_dns_user_name }}"
-    group: "{{ technitium_dns_user_name }}"
-    mode: "0700" # drwx------
-    state: directory
-
-- name: Create systemd service
-  ansible.builtin.template:
-    src: technitium-dns.service.j2
-    dest: /etc/systemd/system/technitium-dns.service
-    mode: "0644" # -rw-r--r--
 
 - name: Enable and start systemd service
   ansible.builtin.systemd_service:
