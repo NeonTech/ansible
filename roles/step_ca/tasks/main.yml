@@ -9,6 +9,30 @@
       - pkg-config
     state: present
 
+- name: Create group "{{ step_ca_user_name }}"
+  ansible.builtin.group:
+    name: "{{ step_ca_user_name }}"
+    gid: "{{ step_ca_user_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ step_ca_user_name }}"
+  ansible.builtin.user:
+    name: "{{ step_ca_user_name }}"
+    uid: "{{ step_ca_user_id }}"
+    group: "{{ step_ca_user_name }}"
+    system: true
+    create_home: true
+    home: /etc/step-ca
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Create systemd service
+  ansible.builtin.template:
+    src: step-ca.service.j2
+    dest: /etc/systemd/system/step-ca.service
+    mode: "0644" # -rw-r--r--
+
 - name: Register version
   ansible.builtin.command: step-ca version
   changed_when: false
@@ -29,6 +53,10 @@
         checksum: sha256:{{ step_ca_download_checksum }}
         dest: "{{ step_ca_download_file.path }}"
         mode: "0600" # -rw-------
+    - name: Stop systemd service
+      ansible.builtin.systemd_service:
+        name: step-ca
+        state: stopped
     - name: Uninstall previous version
       ansible.builtin.file:
         path: /usr/local/step-ca
@@ -59,11 +87,6 @@
         target: build
         params:
           GO_ENVS: CGO_ENABLED=1
-    - name: Add CAP_NET_BIND_SERVICE capability
-      community.general.capabilities:
-        path: /usr/local/step-ca/bin/step-ca
-        capability: CAP_NET_BIND_SERVICE=+eip
-        state: present
     - name: Register binaries
       ansible.builtin.find:
         path: /usr/local/step-ca/bin
@@ -81,22 +104,6 @@
         path: "{{ step_ca_download_file.path }}"
         state: absent
 
-- name: Create user "{{ step_ca_user_name }}"
-  ansible.builtin.user:
-    name: "{{ step_ca_user_name }}"
-    uid: "{{ step_ca_user_id }}"
-    password: "!"
-    create_home: true
-    state: present
-
-- name: Create configuration directory
-  ansible.builtin.file:
-    path: /etc/step-ca
-    owner: "{{ step_ca_user_name }}"
-    group: "{{ step_ca_user_name }}"
-    mode: "0700" # drwx------
-    state: directory
-
 - name: Register configuration file
   ansible.builtin.stat:
     path: /etc/step-ca/config/ca.json
@@ -104,8 +111,6 @@
 
 - name: Initialize
   when: not step_ca_json.stat.exists
-  become: true
-  become_user: "{{ step_ca_user_name }}"
   block:
     - name: Create temporary password file
       ansible.builtin.tempfile:
@@ -127,25 +132,26 @@
         content: "{{ step_ca_provisioner_password }}"
         dest: "{{ step_ca_provisioner_password_file.path }}"
         mode: "0600" # -rw-------
-    - name: Initilize
+    - name: Initialize
       environment:
         STEPPATH: /etc/step-ca
-      ansible.builtin.command: >-
-        step
-        ca
-        init
-        --ssh
-        --deployment-type=standalone
-        --name="Step CA"
-        --dns="{{ step_ca_host }}"
-        --address=":{{ step_ca_port }}"
-        --provisioner="{{ step_ca_provisioner_name }}"
-        --admin-subject="{{ step_ca_provisioner_name }}"
-        --provisioner-password-file="{{ step_ca_provisioner_password_file.path }}"
-        --password-file="{{ step_ca_password_file.path }}"
-        --remote-management
-        --acme
-      changed_when: true
+      ansible.builtin.command:
+        cmd: >-
+          step
+          ca
+          init
+          --ssh
+          --deployment-type=standalone
+          --name="Step CA"
+          --dns="{{ step_ca_host }}"
+          --address=":{{ step_ca_port }}"
+          --provisioner="{{ step_ca_provisioner_name }}"
+          --admin-subject="{{ step_ca_provisioner_name }}"
+          --provisioner-password-file="{{ step_ca_provisioner_password_file.path }}"
+          --password-file="{{ step_ca_password_file.path }}"
+          --remote-management
+          --acme
+        creates: /etc/step-ca/config/ca.json
     - name: Delete temporary password file
       ansible.builtin.file:
         path: "{{ step_ca_password_file.path }}"
@@ -155,42 +161,44 @@
         path: "{{ step_ca_provisioner_password_file.path }}"
         state: absent
 
-- name: Customize
-  become: true
-  become_user: "{{ step_ca_user_name }}"
-  block:
-    - name: Copy certs
-      ansible.builtin.copy:
-        src: certs
-        dest: /etc/step-ca
-        mode: "0600" # -rw-------
-        directory_mode: "0700" # drwx------
-    - name: Template ca.json
-      ansible.builtin.template:
-        src: ca.json.j2
-        dest: /etc/step-ca/config/ca.json
-        mode: "0600" # -rw-------
-    - name: Template defaults.json
-      ansible.builtin.template:
-        src: defaults.json.j2
-        dest: /etc/step-ca/config/defaults.json
-        mode: "0644" # -rw-r--r--
-    - name: Delete secrets
-      ansible.builtin.file:
-        path: /etc/step-ca/secrets
-        state: absent
-    - name: Copy templates
-      ansible.builtin.copy:
-        src: templates
-        dest: /etc/step-ca
-        mode: "0600" # -rw-------
-        directory_mode: "0700" # drwx------
+- name: Copy certs
+  ansible.builtin.copy:
+    src: certs
+    dest: /etc/step-ca
+    mode: "0600" # -rw-------
+    directory_mode: "0700" # drwx------
 
-- name: Create systemd service
+- name: Template ca.json
   ansible.builtin.template:
-    src: step-ca.service.j2
-    dest: /etc/systemd/system/step-ca.service
+    src: ca.json.j2
+    dest: /etc/step-ca/config/ca.json
+    mode: "0600" # -rw-------
+
+- name: Template defaults.json
+  ansible.builtin.template:
+    src: defaults.json.j2
+    dest: /etc/step-ca/config/defaults.json
     mode: "0644" # -rw-r--r--
+
+- name: Delete secrets
+  ansible.builtin.file:
+    path: /etc/step-ca/secrets
+    state: absent
+
+- name: Copy templates
+  ansible.builtin.copy:
+    src: templates
+    dest: /etc/step-ca
+    mode: "0600" # -rw-------
+    directory_mode: "0700" # drwx------
+
+- name: Change configuration directory owner and group
+  ansible.builtin.file:
+    path: /etc/step-ca
+    owner: "{{ step_ca_user_name }}"
+    group: "{{ step_ca_user_name }}"
+    recurse: true
+    state: directory
 
 - name: Enable and start systemd service
   ansible.builtin.systemd_service:
