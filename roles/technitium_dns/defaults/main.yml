@@ -1,0 +1,8 @@
+# Version
+technitium_dns_version: 13.6.0
+# Download
+technitium_dns_download_filename: DnsServerPortable.tar.gz
+technitium_dns_download_checksum: 89614c20fb282050f701bc785681aaf1d45a5208cf313759a093df95606014b7
+# User
+technitium_dns_user_name: technitium-dns
+technitium_dns_user_id: 1000

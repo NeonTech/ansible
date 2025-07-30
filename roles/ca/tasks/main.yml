@@ -1,5 +1,4 @@
-- name: Define ansible_user_dir
-  when: ansible_user_dir is not defined
+- name: Define ansible_user_dir fact
   ansible.builtin.setup:
     filter: ansible_user_dir
 

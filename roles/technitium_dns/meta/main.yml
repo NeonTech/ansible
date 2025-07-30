@@ -1,0 +1,3 @@
+dependencies:
+  - role: dotnet
+    dotnet_sdk: false

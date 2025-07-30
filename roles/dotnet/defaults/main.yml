@@ -1,0 +1,4 @@
+dotnet_version: 8.0 # LTS
+dotnet_sdk: true
+dotnet_asp: true
+dotnet_runtime: true

@@ -1,0 +1,30 @@
+- name: Define ansible_distribution facts
+  ansible.builtin.setup:
+    filter:
+      - ansible_distribution
+      - ansible_distribution_release
+      - ansible_distribution_major_version
+
+- name: Add Microsoft repository
+  ansible.builtin.deb822_repository:
+    name: packages-microsoft-com-prod
+    uris: https://packages.microsoft.com/{{ ansible_distribution | lower }}/{{ ansible_distribution_major_version }}/prod
+    signed_by: https://packages.microsoft.com/keys/microsoft.asc
+    types: [deb]
+    suites: ["{{ ansible_distribution_release | lower }}"]
+    components: [main]
+    enabled: true
+    state: present
+
+- name: Install .NET "{{ dotnet_version }}"
+  ansible.builtin.apt:
+    update_cache: true
+    name: >-
+      {{
+        [
+          dotnet_sdk | ternary('dotnet-sdk-' ~ dotnet_version, None),
+          dotnet_asp | ternary('aspnetcore-runtime-' ~ dotnet_version, None),
+          dotnet_runtime | ternary('dotnet-runtime-' ~ dotnet_version, None)
+        ] | select('string') | list
+      }}
+    state: present

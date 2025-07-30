@@ -6,3 +6,6 @@ sol-vault-pve
 
 [ca]
 ct-ca
+
+[dns]
+ct-dns
