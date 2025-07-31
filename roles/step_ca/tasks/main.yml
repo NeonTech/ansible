@@ -32,6 +32,8 @@
     src: step-ca.service.j2
     dest: /etc/systemd/system/step-ca.service
     mode: "0644" # -rw-r--r--
+  notify:
+    - Restart systemd service
 
 - name: Register version
   ansible.builtin.command: step-ca version
@@ -161,36 +163,36 @@
         path: "{{ step_ca_provisioner_password_file.path }}"
         state: absent
 
-- name: Copy certs
-  ansible.builtin.copy:
-    src: certs
-    dest: /etc/step-ca
-    mode: "0600" # -rw-------
-    directory_mode: "0700" # drwx------
-
-- name: Template ca.json
-  ansible.builtin.template:
-    src: ca.json.j2
-    dest: /etc/step-ca/config/ca.json
-    mode: "0600" # -rw-------
-
-- name: Template defaults.json
-  ansible.builtin.template:
-    src: defaults.json.j2
-    dest: /etc/step-ca/config/defaults.json
-    mode: "0644" # -rw-r--r--
-
-- name: Delete secrets
-  ansible.builtin.file:
-    path: /etc/step-ca/secrets
-    state: absent
-
-- name: Copy templates
-  ansible.builtin.copy:
-    src: templates
-    dest: /etc/step-ca
-    mode: "0600" # -rw-------
-    directory_mode: "0700" # drwx------
+- name: Customize
+  notify:
+    - Restart systemd service
+  block:
+    - name: Copy certs
+      ansible.builtin.copy:
+        src: certs
+        dest: /etc/step-ca
+        mode: "0600" # -rw-------
+        directory_mode: "0700" # drwx------
+    - name: Template ca.json
+      ansible.builtin.template:
+        src: ca.json.j2
+        dest: /etc/step-ca/config/ca.json
+        mode: "0600" # -rw-------
+    - name: Template defaults.json
+      ansible.builtin.template:
+        src: defaults.json.j2
+        dest: /etc/step-ca/config/defaults.json
+        mode: "0644" # -rw-r--r--
+    - name: Delete secrets
+      ansible.builtin.file:
+        path: /etc/step-ca/secrets
+        state: absent
+    - name: Copy templates
+      ansible.builtin.copy:
+        src: templates
+        dest: /etc/step-ca
+        mode: "0600" # -rw-------
+        directory_mode: "0700" # drwx------
 
 - name: Change configuration directory owner and group
   ansible.builtin.file:
