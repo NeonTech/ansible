@@ -11,7 +11,7 @@ ConditionFileNotEmpty=/etc/step-ca/config/ca.json
 [Service]
 Type=simple
 User={{ step_ca_user_name }}
-Group={{ step_ca_user_name }}
+Group={{ step_ca_group_name }}
 Environment=STEPPATH=/etc/step-ca
 WorkingDirectory=/etc/step-ca
 ExecStart=/usr/local/bin/step-ca /etc/step-ca/config/ca.json

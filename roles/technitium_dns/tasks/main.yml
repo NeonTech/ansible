@@ -1,7 +1,7 @@
-- name: Create group "{{ technitium_dns_user_name }}"
+- name: Create group "{{ technitium_dns_group_name }}"
   ansible.builtin.group:
-    name: "{{ technitium_dns_user_name }}"
-    gid: "{{ technitium_dns_user_id }}"
+    name: "{{ technitium_dns_group_name }}"
+    gid: "{{ technitium_dns_group_id }}"
     system: true
     state: present
 
@@ -9,7 +9,7 @@
   ansible.builtin.user:
     name: "{{ technitium_dns_user_name }}"
     uid: "{{ technitium_dns_user_id }}"
-    group: "{{ technitium_dns_user_name }}"
+    group: "{{ technitium_dns_group_name }}"
     system: true
     create_home: true
     home: /etc/technitium-dns

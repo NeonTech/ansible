@@ -9,10 +9,10 @@
       - pkg-config
     state: present
 
-- name: Create group "{{ step_ca_user_name }}"
+- name: Create group "{{ step_ca_group_name }}"
   ansible.builtin.group:
-    name: "{{ step_ca_user_name }}"
-    gid: "{{ step_ca_user_id }}"
+    name: "{{ step_ca_group_name }}"
+    gid: "{{ step_ca_group_id }}"
     system: true
     state: present
 
@@ -20,7 +20,7 @@
   ansible.builtin.user:
     name: "{{ step_ca_user_name }}"
     uid: "{{ step_ca_user_id }}"
-    group: "{{ step_ca_user_name }}"
+    group: "{{ step_ca_group_name }}"
     system: true
     create_home: true
     home: /etc/step-ca
@@ -198,7 +198,7 @@
   ansible.builtin.file:
     path: /etc/step-ca
     owner: "{{ step_ca_user_name }}"
-    group: "{{ step_ca_user_name }}"
+    group: "{{ step_ca_group_name }}"
     recurse: true
     state: directory
 

@@ -9,7 +9,7 @@ StartLimitBurst=3
 [Service]
 Type=simple
 User={{ technitium_dns_user_name }}
-Group={{ technitium_dns_user_name }}
+Group={{ technitium_dns_group_name }}
 WorkingDirectory=/opt/technitium/dns
 ExecStart=/usr/bin/dotnet /opt/technitium/dns/DnsServerApp.dll /etc/technitium-dns
 KillSignal=SIGINT
