@@ -4,10 +4,11 @@ pve_lxc_api_port: "{{ pve_api_port }}"
 pve_lxc_api_user: "{{ pve_api_user }}"
 pve_lxc_api_token_id: "{{ pve_api_token_id }}"
 pve_lxc_api_token: "{{ pve_api_token }}"
+
 # General
 pve_lxc_node: "{{ pve_node }}"
-pve_lxc_hostname: "{{ inventory_hostname }}"
 pve_lxc_ssh_public_key_file: "{{ 'ssh/{}/{}_root_ed25519.pub'.format(env, pve_lxc_hostname) }}"
+
 # Storage
 pve_lxc_storage: "{{ pve_storage_shared }}"
 pve_lxc_storage_fs: "{{ pve_storage_shared_fs }}"

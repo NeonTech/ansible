@@ -1,68 +1,72 @@
-- name: Download "{{ pve_lxc_template }}"
-  community.proxmox.proxmox_template:
-    # API
-    api_host: "{{ pve_lxc_api_host }}"
-    api_port: "{{ pve_lxc_api_port }}"
-    api_user: "{{ pve_lxc_api_user }}"
-    api_token_id: "{{ pve_lxc_api_token_id }}"
-    api_token_secret: "{{ pve_lxc_api_token }}"
-    # General
-    node: "{{ pve_lxc_node }}"
-    # Template
-    template: "{{ pve_lxc_template }}"
-    content_type: "{{ pve_lxc_template_type }}"
-    # Storage
-    storage: "{{ pve_lxc_storage_fs }}"
-    #
-    state: present
+- name: Initialize
+  delegate_to: localhost
+  block:
+    - name: Template
+      community.proxmox.proxmox_template:
+        # API
+        api_host: "{{ pve_lxc_api_host }}"
+        api_port: "{{ pve_lxc_api_port }}"
+        api_user: "{{ pve_lxc_api_user }}"
+        api_token_id: "{{ pve_lxc_api_token_id }}"
+        api_token_secret: "{{ pve_lxc_api_token }}"
+        # General
+        node: "{{ pve_lxc_node }}"
+        # Template
+        template: "{{ pve_lxc_template }}"
+        content_type: vztmpl
+        # Storage
+        storage: "{{ pve_lxc_storage_fs }}"
+        #
+        state: present
+    - name: Create
+      community.proxmox.proxmox:
+        # API
+        api_host: "{{ pve_lxc_api_host }}"
+        api_port: "{{ pve_lxc_api_port }}"
+        api_user: "{{ pve_lxc_api_user }}"
+        api_token_id: "{{ pve_lxc_api_token_id }}"
+        api_token_secret: "{{ pve_lxc_api_token }}"
+        # General
+        node: "{{ pve_lxc_node }}"
+        vmid: "{{ pve_lxc_vmid }}"
+        hostname: "{{ pve_lxc_hostname }}"
+        unprivileged: true
+        pubkey: "{{ lookup('file', pve_lxc_ssh_public_key_file) }}"
+        # Template
+        ostemplate: "{{ pve_lxc_storage_fs }}:vztmpl/{{ pve_lxc_template }}"
+        ostype: "{{ pve_lxc_template_type }}"
+        # Disks
+        disk_volume:
+          storage: "{{ pve_lxc_disk_volume_storage }}"
+          size: "{{ pve_lxc_disk_volume_size }}"
+        # CPU
+        cores: "{{ pve_lxc_cpu_cores }}"
+        # Memory
+        memory: "{{ pve_lxc_memory }}"
+        swap: "{{ pve_lxc_memory_swap }}"
+        # Network
+        netif: "{{ pve_lxc_interfaces }}"
+        # DNS
+        # Confirm
+        onboot: true
+        # Features
+        features:
+          - nesting=1
+        #
+        update: true
+        state: present
+    - name: Start
+      community.proxmox.proxmox:
+        # API
+        api_host: "{{ pve_lxc_api_host }}"
+        api_port: "{{ pve_lxc_api_port }}"
+        api_user: "{{ pve_lxc_api_user }}"
+        api_token_id: "{{ pve_lxc_api_token_id }}"
+        api_token_secret: "{{ pve_lxc_api_token }}"
+        # General
+        vmid: "{{ pve_lxc_vmid }}"
+        #
+        state: started
 
-- name: Create "{{ pve_lxc_hostname }}"
-  community.proxmox.proxmox:
-    # API
-    api_host: "{{ pve_lxc_api_host }}"
-    api_port: "{{ pve_lxc_api_port }}"
-    api_user: "{{ pve_lxc_api_user }}"
-    api_token_id: "{{ pve_lxc_api_token_id }}"
-    api_token_secret: "{{ pve_lxc_api_token }}"
-    # General
-    node: "{{ pve_lxc_node }}"
-    vmid: "{{ pve_lxc_vmid }}"
-    hostname: "{{ pve_lxc_hostname }}"
-    unprivileged: true
-    pubkey: "{{ lookup('file', pve_lxc_ssh_public_key_file) }}"
-    # Template
-    ostemplate: "{{ pve_lxc_storage_fs }}:{{ pve_lxc_template_type }}/{{ pve_lxc_template }}"
-    ostype: "{{ pve_lxc_os_type }}"
-    # Disks
-    disk_volume:
-      storage: "{{ pve_lxc_disk_volume_storage }}"
-      size: "{{ pve_lxc_disk_volume_size }}"
-    # CPU
-    cores: "{{ pve_lxc_cpu_cores }}"
-    # Memory
-    memory: "{{ pve_lxc_memory }}"
-    swap: "{{ pve_lxc_memory_swap }}"
-    # Network
-    netif: "{{ pve_lxc_interfaces }}"
-    # DNS
-    # Confirm
-    onboot: true
-    # Features
-    features:
-      - nesting=1
-    #
-    update: true
-    state: present
-
-- name: Start "{{ pve_lxc_hostname }}"
-  community.proxmox.proxmox:
-    # API
-    api_host: "{{ pve_lxc_api_host }}"
-    api_port: "{{ pve_lxc_api_port }}"
-    api_user: "{{ pve_lxc_api_user }}"
-    api_token_id: "{{ pve_lxc_api_token_id }}"
-    api_token_secret: "{{ pve_lxc_api_token }}"
-    # General
-    vmid: "{{ pve_lxc_vmid }}"
-    #
-    state: started
+- name: Wait for connection
+  ansible.builtin.wait_for_connection:

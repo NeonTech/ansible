@@ -1,8 +1,8 @@
 - name: Register version
   ansible.builtin.command: go version
+  register: go_version_cmd
   changed_when: false
   ignore_errors: true
-  register: go_version_cmd
 
 - name: (Re)install
   when: go_version_cmd.rc != 0 or "{} {}/{}".format(go_version, go_os, go_arch) not in go_version_cmd.stdout
@@ -27,6 +27,10 @@
         src: "{{ go_download_file.path }}"
         remote_src: true
         dest: /usr/local
+    - name: Delete temporary download file
+      ansible.builtin.file:
+        path: "{{ go_download_file.path }}"
+        state: absent
     - name: Register binaries
       ansible.builtin.find:
         path: /usr/local/go/bin
@@ -39,7 +43,3 @@
         mode: "0755" # -rwxr-xr-x
         state: link
       loop: "{{ go_bin.files }}"
-    - name: Delete temporary download file
-      ansible.builtin.file:
-        path: "{{ go_download_file.path }}"
-        state: absent

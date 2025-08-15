@@ -1,6 +1,2 @@
-sol-ceres-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM4AiTESxQKZz52x7zhtC4GkOyx0ZtOOPDaTLJSOTAIv
-sol-eris-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIECrVp6sSI7QZ9O5tAu5ukQ2xu/UfQkb+miBG217Sb0x
-sol-pluto-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEjS4AP6bGsLHCha3VfCWgnVPmvMFWQCge0vsk1xSN4B
-sol-vault-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF7M5MjpEQqynF5KCPfFP6wcL5RTKPehYhLBPapQbRb5
-ct-ca.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGMHGP874voDL+JDWuGuXWw/t3/vjVEOekTqZN0jICb7
-ct-dns.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP48x26wXatokC8J8lYXxrVMVf7cU3ejJJpPuOH35Uc0
+ct-ca.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGKs3zwP2xG9Pc2M0rjZAtmqzkDsgZFHKwRpiuSeAXEt
+ct-dns.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMK+c6VJWzdy6Ylomz5souuN99hknebEgMIl2hY+Evxg

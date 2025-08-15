@@ -66,15 +66,15 @@
         src: "{{ technitium_dns_download_file.path }}"
         remote_src: true
         dest: /opt/technitium/dns
+    - name: Delete temporary download file
+      ansible.builtin.file:
+        path: "{{ technitium_dns_download_file.path }}"
+        state: absent
     - name: Create .VERSION
       ansible.builtin.copy:
         content: "{{ technitium_dns_version }}"
         dest: /opt/technitium/dns/.VERSION
         mode: "0644" # rw-r--r--
-    - name: Delete temporary download file
-      ansible.builtin.file:
-        path: "{{ technitium_dns_download_file.path }}"
-        state: absent
 
 - name: Enable and start systemd service
   ansible.builtin.systemd_service:

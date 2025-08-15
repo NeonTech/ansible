@@ -6,15 +6,14 @@ pve_lxc_api_token_id: "{{ mandatory(msg='default value') }}"
 pve_lxc_api_token: "{{ mandatory(msg='default secret') }}"
 
 # General
-pve_lxc_node: "{{ inventory_hostname }}"
+pve_lxc_node: "{{ mandatory(msg='default value') }}"
 pve_lxc_vmid: "{{ mandatory(msg='default value') }}"
-pve_lxc_hostname: "{{ mandatory(msg='default value') }}"
+pve_lxc_hostname: "{{ inventory_hostname }}"
 pve_lxc_ssh_public_key_file: "{{ mandatory(msg='default value') }}"
 
 # Template
 pve_lxc_template: debian-12-standard_12.7-1_amd64.tar.zst
-pve_lxc_template_type: vztmpl
-pve_lxc_os_type: debian
+pve_lxc_template_type: debian
 
 # Storage
 pve_lxc_storage: "{{ mandatory(msg='default value') }}"

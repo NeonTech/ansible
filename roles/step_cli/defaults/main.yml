@@ -2,6 +2,7 @@
 step_cli_version: 0.28.7
 step_cli_os: linux
 step_cli_arch: amd64
+
 # Download
 step_cli_download_filename: step_{{ step_cli_os }}_{{ step_cli_version }}_{{ step_cli_arch }}.tar.gz
 step_cli_download_checksum: 52e586351a2e05342a53fbaa9f91ce7b11622872a8a7a68ec27e9198d2d03460

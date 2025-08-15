@@ -37,9 +37,9 @@
 
 - name: Register version
   ansible.builtin.command: step-ca version
+  register: step_ca_version_cmd
   changed_when: false
   ignore_errors: true
-  register: step_ca_version_cmd
 
 - name: (Re)install
   when: step_ca_version_cmd.rc != 0 or step_ca_version not in step_ca_version_cmd.stdout
@@ -73,6 +73,10 @@
         src: "{{ step_ca_download_file.path }}"
         remote_src: true
         dest: /usr/local/step-ca
+    - name: Delete temporary download file
+      ansible.builtin.file:
+        path: "{{ step_ca_download_file.path }}"
+        state: absent
     # https://github.com/smallstep/certificates/issues/2013
     - name: Patch .version.sh
       ansible.builtin.replace:
@@ -101,10 +105,6 @@
         mode: "0755" # -rwxr-xr-x
         state: link
       loop: "{{ step_ca_bin.files }}"
-    - name: Delete temporary download file
-      ansible.builtin.file:
-        path: "{{ step_ca_download_file.path }}"
-        state: absent
 
 - name: Register configuration file
   ansible.builtin.stat:

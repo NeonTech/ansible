@@ -4,13 +4,7 @@
 - name: Certificate Authority
   hosts: ca
   gather_facts: false
-  pre_tasks:
-    - name: LXC "{{ pve_lxc_hostname }}"
-      delegate_to: localhost
-      ansible.builtin.import_role:
-        name: pve_lxc
-    - name: Wait for LXC connection
-      ansible.builtin.wait_for_connection:
   roles:
+    - pve_lxc
     - step_ca
     - ca

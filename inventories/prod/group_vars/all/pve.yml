@@ -1,10 +1,12 @@
 pve_node: "{{ inventory_hostname }}"
+
 # API
 pve_api_host: "{{ pve_node }}.neontech.dev"
 pve_api_port: 8006
 pve_api_user: ansible@authentik-ldap
 pve_api_token_id: ansible
 pve_api_token: "{{ vault_pve_api_token }}"
+
 # Storage
 pve_storage_local: local-lvm
 pve_storage_local_fs: local

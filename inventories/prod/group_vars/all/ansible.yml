@@ -1,5 +1,3 @@
-# Become
-ansible_become_method: su
 # SSH
 ansible_ssh_args: >-
   -C

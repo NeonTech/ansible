@@ -2,6 +2,7 @@
 go_version: 1.24.5
 go_os: linux
 go_arch: amd64
+
 # Download
 go_download_filename: go{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz
 go_download_checksum: 10ad9e86233e74c0f6590fe5426895de6bf388964210eac34a6d83f38918ecdc
