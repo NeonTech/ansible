@@ -44,6 +44,14 @@
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
 
+- name: Deploy discord.acl
+  ansible.builtin.template:
+    src: roles/redis_server/templates/discord.acl.j2
+    dest: "{{ redis_server_users_dir.path }}/discord.acl"
+    owner: "{{ docker_rootless_user.name }}"
+    group: "{{ docker_rootless_user.name }}"
+    mode: "0644" # -rw-r--r--
+
 - name: Deploy users.acl
   ansible.builtin.assemble:
     src: "{{ redis_server_users_dir.path }}"

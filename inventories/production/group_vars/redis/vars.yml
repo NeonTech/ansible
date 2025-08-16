@@ -7,7 +7,7 @@ redis_server_replication_host: redis{{ redis_server_node_id }}.service.neontech.
 redis_server_master_host: "{{ redis_server_host }}"
 redis_server_master_port: "{{ redis_server_port }}"
 # tls
-redis_server_tls: true
+redis_server_tls: false
 redis_server_tls_clients: false
 redis_server_tls_username: tls
 redis_server_tls_password: "{{ vault_redis_server_tls_password }}"
@@ -24,3 +24,5 @@ redis_server_tls_acme_rfc2136_secret: "{{ vault_redis_server_tls_acme_rfc2136_se
 # users.acl
 redis_server_administrator_username: administrator
 redis_server_administrator_password: "{{ vault_redis_server_administrator_password }}"
+redis_server_discord_username: discord
+redis_server_discord_password: "{{ vault_redis_server_discord_password }}"

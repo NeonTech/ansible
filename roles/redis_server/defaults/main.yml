@@ -28,3 +28,5 @@ redis_server_tls_acme_rfc2136_algorithm: HMAC-SHA256
 # users.acl
 redis_server_administrator_username: administrator
 redis_server_administrator_password: "{{ mandatory(msg='default secret') }}"
+redis_server_discord_username: discord
+redis_server_discord_password: "{{ mandatory(msg='default secret') }}"
