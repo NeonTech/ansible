@@ -40,6 +40,5 @@
       ansible.builtin.file:
         src: "{{ item.path }}"
         dest: /usr/local/bin/{{ item.path | basename }}
-        mode: "0755" # -rwxr-xr-x
         state: link
       loop: "{{ go_bin.files }}"

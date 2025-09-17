@@ -1,0 +1,5 @@
+- name: Certificate Authority (CA)
+  ansible.builtin.import_playbook: ca.yml
+
+- name: Domain Name System (DNS)
+  ansible.builtin.import_playbook: dns.yml
