@@ -1,0 +1,15 @@
+# User
+nginx_user_name: "{{ ansible_user_id }}"
+nginx_user_id: "{{ ansible_user_uid }}"
+nginx_group_name: "{{ nginx_user_name }}"
+nginx_group_id: "{{ nginx_user_id }}"
+
+# NGINX
+nginx_log_dir: /var/log/nginx
+nginx_http: {}
+
+# SSL
+nginx_ssl_webroot: /var/www/acme
+nginx_ssl_certificate: /etc/nginx/certificates/fullchain.pem
+nginx_ssl_certificate_key: /etc/nginx/certificates/privkey.pem
+nginx_ssl_dhparam: /etc/nginx/certificates/dhparam.pem

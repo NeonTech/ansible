@@ -1,0 +1,103 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    update_cache: true
+    name: nginx
+    state: present
+
+- name: Create group "{{ nginx_group_name }}"
+  ansible.builtin.group:
+    name: "{{ nginx_group_name }}"
+    gid: "{{ nginx_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ nginx_user_name }}"
+  ansible.builtin.user:
+    name: "{{ nginx_user_name }}"
+    uid: "{{ nginx_user_id }}"
+    group: "{{ nginx_group_name }}"
+    system: true
+    create_home: true
+    home: /etc/nginx
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Update configuration
+  notify:
+    - Reload systemd service
+  block:
+    - name: Template nginx.conf
+      ansible.builtin.template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        mode: "0644" # -rw-r--r--
+    - name: Create http.d
+      ansible.builtin.file:
+        path: /etc/nginx/http.d
+        mode: "0755" # -rwxr-xr-x
+        state: directory
+    - name: Create http configuration
+      ansible.builtin.copy:
+        content: "{{ item.value }}"
+        dest: /etc/nginx/http.d/{{ item.key }}
+        mode: "0644" # -rw-r--r--
+      loop: "{{ nginx_http | dict2items }}"
+    - name: Delete unnecessary configuration
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/nginx/conf.d
+        - /etc/nginx/fastcgi.conf
+        - /etc/nginx/fastcgi_params
+        - /etc/nginx/koi-utf
+        - /etc/nginx/koi-win
+        - /etc/nginx/modules-available
+        - /etc/nginx/modules-enabled
+        - /etc/nginx/scgi_params
+        - /etc/nginx/sites-available
+        - /etc/nginx/sites-enabled
+        - /etc/nginx/snippets
+        - /etc/nginx/uwsgi_params
+        - /etc/nginx/win-utf
+        - /var/www/html
+    # "ssl" configuration
+    - name: Template acme_webroot
+      ansible.builtin.template:
+        src: acme_webroot.j2
+        dest: /etc/nginx/acme_webroot
+        mode: "0644" # -rw-r--r--
+    - name: Create webroot directory
+      ansible.builtin.file:
+        path: "{{ nginx_ssl_webroot }}"
+        mode: "0755" # -drwxr-xr-x
+        state: directory
+    - name: Template ssl
+      ansible.builtin.template:
+        src: ssl.j2
+        dest: /etc/nginx/ssl
+        mode: "0644" # -rw-r--r--
+    - name: Create certificates directory
+      ansible.builtin.file:
+        path: "{{ item | dirname }}"
+        mode: "0700" # -drwx------
+        state: directory
+      loop:
+        - "{{ nginx_ssl_certificate }}"
+        - "{{ nginx_ssl_certificate_key }}"
+        - "{{ nginx_ssl_dhparam }}"
+    - name: Create temporary certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl
+          req
+          -x509
+          -subj "/CN=localhost"
+          -out {{ nginx_ssl_certificate }}
+          -keyout {{ nginx_ssl_certificate_key }}
+          -noenc
+        creates: "{{ nginx_ssl_certificate }}"
+    - name: Create dhparam certificate
+      ansible.builtin.command:
+        cmd: openssl dhparam -out {{ nginx_ssl_dhparam }} 4096
+        creates: "{{ nginx_ssl_dhparam }}"

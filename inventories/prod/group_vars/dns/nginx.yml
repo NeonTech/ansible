@@ -1,0 +1,51 @@
+nginx_http:
+  dns.neontech.dev: >
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name dns.neontech.dev;
+
+      include acme_webroot;
+
+      location / {
+        return 301 https://$host$request_uri;
+      }
+    }
+
+    server {
+      listen 443 ssl;
+      listen [::]:443 ssl;
+      server_name dns.neontech.dev;
+
+      include ssl;
+
+      location / {
+        proxy_pass http://localhost:8053;
+        include proxy_params;
+      }
+    }
+  technitium-dns.neontech.dev: >
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name technitium-dns.neontech.dev;
+
+      include acme_webroot;
+
+      location / {
+        return 301 https://$host$request_uri;
+      }
+    }
+
+    server {
+      listen 443 ssl;
+      listen [::]:443 ssl;
+      server_name technitium-dns.neontech.dev;
+
+      include ssl;
+
+      location / {
+        proxy_pass http://localhost:5380;
+        include proxy_params;
+      }
+    }

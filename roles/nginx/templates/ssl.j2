@@ -1,0 +1,9 @@
+ssl_certificate {{ nginx_ssl_certificate }};
+ssl_certificate_key {{ nginx_ssl_certificate_key }};
+ssl_dhparam {{ nginx_ssl_dhparam }};
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers on;
+
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 5m;

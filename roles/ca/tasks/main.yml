@@ -28,8 +28,6 @@
     - name: Create share directory
       ansible.builtin.file:
         path: /usr/local/share/ca
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
         mode: "0755" # drwxr-xr-x
         state: directory
     - name: Share root certificate
@@ -37,6 +35,4 @@
         src: "{{ ansible_user_dir }}/.step/certs/root_ca.crt"
         remote_src: true
         dest: /usr/local/share/ca/{{ ca_fingerprint }}.crt
-        owner: "{{ ansible_user }}"
-        group: "{{ ansible_user }}"
         mode: "0644" # -rw-r--r--

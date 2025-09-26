@@ -7,3 +7,4 @@
     - pve_lxc
     - ca
     - technitium_dns
+    - nginx
