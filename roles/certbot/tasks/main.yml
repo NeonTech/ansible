@@ -64,19 +64,19 @@
         - deploy
     - name: Template pre hooks
       ansible.builtin.template:
-        src: "{{ item }}.sh.j2"
+        src: roles/{{ item }}/templates/_certbot-pre-hook.sh.j2
         dest: /etc/letsencrypt/renewal-hooks/pre/{{ item }}.sh
         mode: "0755" # -rwxr-xr-x
       loop: "{{ certbot_acme_hooks_pre }}"
     - name: Template post hooks
       ansible.builtin.template:
-        src: "{{ item }}.sh.j2"
+        src: roles/{{ item }}/templates/_certbot-post-hook.sh.j2
         dest: /etc/letsencrypt/renewal-hooks/post/{{ item }}.sh
         mode: "0755" # -rwxr-xr-x
       loop: "{{ certbot_acme_hooks_post }}"
     - name: Template deploy hooks
       ansible.builtin.template:
-        src: "{{ item }}.sh.j2"
+        src: roles/{{ item }}/templates/_certbot-deploy-hook.sh.j2
         dest: /etc/letsencrypt/renewal-hooks/deploy/{{ item }}.sh
         mode: "0755" # -rwxr-xr-x
       loop: "{{ certbot_acme_hooks_deploy }}"
