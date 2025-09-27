@@ -1,0 +1,6 @@
+# ACME
+certbot_acme_domains:
+  - dns.neontech.dev
+  - technitium-dns.neontech.dev
+certbot_acme_webroot: "{{ nginx_ssl_webroot }}"
+certbot_acme_hooks_deploy: [certbot-nginx-deploy-hook]

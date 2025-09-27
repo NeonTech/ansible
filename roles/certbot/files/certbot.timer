@@ -1,0 +1,10 @@
+[Unit]
+Description=Execute certbot.sh every 10 minutes
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=10min
+Unit=certbot.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,6 @@
+[Unit]
+Description=Execute certbot.sh
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/certbot.sh

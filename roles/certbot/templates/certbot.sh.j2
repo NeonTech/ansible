@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+set -o errexit -o nounset
+
+{% if certbot_acme_ca is not none %}
+REQUESTS_CA_BUNDLE={{ certbot_acme_ca }} \
+{% endif %}
+certbot certonly \
+{% for certbot_acme_domain in certbot_acme_domains %}
+  --domain "{{ certbot_acme_domain }}" \
+{% endfor %}
+{% if certbot_acme_webroot is not none %}
+  --webroot \
+  --webroot-path "{{ certbot_acme_webroot }}" \
+{% endif %}
+  --server "{{ certbot_acme_url }}" \
+  --non-interactive

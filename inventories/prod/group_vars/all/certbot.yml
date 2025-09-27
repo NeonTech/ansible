@@ -1,0 +1,3 @@
+# ACME
+certbot_acme_ca: /usr/local/share/ca/{{ ca_fingerprint }}.crt
+certbot_acme_url: https://{{ ca_host }}:{{ ca_port }}/acme/acme/directory

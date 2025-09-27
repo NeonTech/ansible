@@ -1,0 +1,10 @@
+certbot_version: 5.0.0
+
+# ACME
+certbot_acme_domains: []
+certbot_acme_ca: null
+certbot_acme_url: https://acme-v02.api.letsencrypt.org/directory
+certbot_acme_webroot: null
+certbot_acme_hooks_pre: []
+certbot_acme_hooks_post: []
+certbot_acme_hooks_deploy: []
