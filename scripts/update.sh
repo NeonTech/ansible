@@ -10,5 +10,6 @@ fi
 
 # https://pypi.org/project/pip-review
 pip-review --interactive
-
 pip freeze >$requirements
+
+ansible-galaxy install --role-file requirements.yml
