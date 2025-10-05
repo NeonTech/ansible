@@ -1,3 +1,7 @@
+host all         all         all     scram-sha-256
+host replication replication all     scram-sha-256
+
+{#
 include /bitnami/postgresql/conf/pg_hba.d
 
 {% if postgresql_server_tls %}
@@ -9,3 +13,4 @@ hostssl replication replication all     scram-sha-256
 hostnossl all         all         all     scram-sha-256
 hostnossl replication replication all     scram-sha-256
 {% endif %}
+#}
