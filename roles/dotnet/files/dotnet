@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+DOTNET_ROOT="${DOTNET_ROOT:-/usr/local/dotnet}"
+export DOTNET_ROOT
+exec "$DOTNET_ROOT/dotnet" "$@"

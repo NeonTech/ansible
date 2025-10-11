@@ -1,4 +1,8 @@
-dotnet_version: 8.0 # LTS
-dotnet_sdk: true
-dotnet_asp: true
-dotnet_runtime: true
+# Version
+dotnet_version: 8.0.414
+dotnet_os: linux
+dotnet_arch: x64
+
+# Download
+dotnet_download_filename: dotnet-sdk-{{ dotnet_version }}-{{ dotnet_os }}-{{ dotnet_arch }}.tar.gz
+dotnet_download_checksum: bdf6b151f787ac57d393e625e8b8fc8e19ac75902e76227da736f20e042cf7ff98bfd1a6669b77fdea7bfe678a0f23103e0cace1db83e9aee568ccd6f1b5b264

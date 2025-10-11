@@ -1,0 +1,18 @@
+- name: Allow locale generation
+  ansible.builtin.lineinfile:
+    path: /etc/locale.gen
+    regexp: "^#*\\s*{{ os_locale }}.{{ os_encoding }} {{ os_encoding }}"
+    line: "{{ os_locale }}.{{ os_encoding }} {{ os_encoding }}"
+    state: present
+
+- name: Set default locale
+  ansible.builtin.lineinfile:
+    path: /etc/default/locale
+    regexp: "^LANG="
+    line: LANG={{ os_locale }}.{{ os_encoding }}
+    state: present
+  notify:
+    - Apply default locale
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

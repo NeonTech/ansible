@@ -1,0 +1,134 @@
+- name: Define ansible_distribution_release fact
+  ansible.builtin.setup:
+    filter: ansible_distribution_release
+
+- name: Add PostgreSQL repository
+  ansible.builtin.deb822_repository:
+    name: postgresql
+    uris: https://apt.postgresql.org/pub/repos/apt
+    signed_by: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    types: [deb]
+    suites: ["{{ ansible_distribution_release }}-pgdg"]
+    components: [main]
+    enabled: true
+    state: present
+
+- name: Create group "{{ postgresql_group_name }}"
+  ansible.builtin.group:
+    name: "{{ postgresql_group_name }}"
+    gid: "{{ postgresql_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ postgresql_user_name }}"
+  ansible.builtin.user:
+    name: "{{ postgresql_user_name }}"
+    uid: "{{ postgresql_user_id }}"
+    group: "{{ postgresql_group_name }}"
+    system: true
+    create_home: true
+    home: /var/lib/postgresql
+    shell: /bin/bash
+    state: present
+
+- name: Install PostgreSQL "{{ postgresql_version }}"
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - python3-psycopg2
+      - postgresql-{{ postgresql_version }}
+
+- name: Update superuser password
+  become: true
+  become_method: ansible.builtin.su
+  become_user: "{{ postgresql_username }}"
+  community.postgresql.postgresql_user:
+    login_db: "{{ postgresql_database }}"
+    login_user: "{{ postgresql_username }}"
+    user: "{{ postgresql_username }}"
+    password: "{{ postgresql_password }}"
+    encrypted: true
+    state: present
+
+- name: Update configuration
+  notify:
+    - Restart systemd service
+  block:
+    - name: Update postgresql.conf
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/{{ postgresql_version }}/main/postgresql.conf
+        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s*=\\s*"
+        line: "{{ item.key }} = {{ item.value }}"
+      loop:
+        - key: listen_addresses
+          value: "'*'"
+        - key: password_encryption
+          value: scram-sha-256
+    - name: Create {{ postgresql_pg_hba_dir | basename }}
+      ansible.builtin.file:
+        path: "{{ postgresql_pg_hba_dir }}"
+        owner: "{{ postgresql_user_name }}"
+        group: "{{ postgresql_group_name }}"
+        mode: "0700" # drwx------
+        state: directory
+    - name: Template pg_hba.conf
+      ansible.builtin.template:
+        src: pg_hba.conf.j2
+        dest: /etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
+        mode: "0600" # -rw-------
+    # "ssl" configuration
+    - name: Create certificates directory
+      ansible.builtin.file:
+        path: "{{ item | dirname }}"
+        owner: "{{ postgresql_user_name }}"
+        group: "{{ postgresql_group_name }}"
+        mode: "0755" # -drwxr-xr-x
+        state: directory
+      loop:
+        - "{{ postgresql_ssl_certificate }}"
+        - "{{ postgresql_ssl_certificate_key }}"
+        - "{{ postgresql_ssl_dhparam }}"
+    - name: Create temporary certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl
+          req
+          -x509
+          -subj "/CN=localhost"
+          -out {{ postgresql_ssl_certificate }}
+          -keyout {{ postgresql_ssl_certificate_key }}
+          -noenc
+        creates: "{{ postgresql_ssl_certificate }}"
+    - name: Create dhparam
+      ansible.builtin.command:
+        cmd: openssl dhparam -out {{ postgresql_ssl_dhparam }} 4096
+        creates: "{{ postgresql_ssl_dhparam }}"
+    - name: Update certificate files owner and group
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ postgresql_user_name }}"
+        group: "{{ postgresql_group_name }}"
+        state: file
+      loop:
+        - "{{ postgresql_ssl_certificate }}"
+        - "{{ postgresql_ssl_certificate_key }}"
+        - "{{ postgresql_ssl_dhparam }}"
+    - name: Update "ssl" postgresql.conf
+      when: item.value is not none
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/{{ postgresql_version }}/main/postgresql.conf
+        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s*=\\s*"
+        line: "{{ item.key }} = {{ item.value }}"
+      loop:
+        - key: ssl
+          value: "on"
+        - key: ssl_prefer_server_ciphers
+          value: "on"
+        - key: ssl_ca_file
+          value: '{{ postgresql_ssl_ca | ternary("''" ~ postgresql_ssl_ca ~ "''", none) }}'
+        - key: ssl_cert_file
+          value: "'{{ postgresql_ssl_certificate }}'"
+        - key: ssl_key_file
+          value: "'{{ postgresql_ssl_certificate_key }}'"
+        - key: ssl_dh_params_file
+          value: "'{{ postgresql_ssl_dhparam }}'"

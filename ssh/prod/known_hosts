@@ -1,2 +1,3 @@
-ct-ca.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGKs3zwP2xG9Pc2M0rjZAtmqzkDsgZFHKwRpiuSeAXEt
-ct-dns.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKHHIBIv8yQtPl0+v4Lw+bifORZUcu1gZyt2V1wKC1iY
+ct-ca.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK6oeWvcbFqAdDSHfpgLFsaPpFrT+c2wqmf/MeIsnZbZ
+ct-dns.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBR646bIvg065wzkw+GjbCI1QXgYiEAY40vawESxH6ep
+ct-postgresql.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/KcVxQFRm8MwM3Y6PbQPz3PNnSvezUcB/eA2QfJ88

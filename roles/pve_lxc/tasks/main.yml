@@ -52,9 +52,17 @@
         # Features
         features:
           - nesting=1
+        # Options
+        startup:
+          - order={{ pve_lxc_order }}
+          - up={{ pve_lxc_startup }}
+          - down={{ pve_lxc_shutdown }}
         #
         update: true
         state: present
+    - name: Give Proxmox time to apply configuration
+      ansible.builtin.pause:
+        seconds: 10
     - name: Start
       community.proxmox.proxmox:
         # API

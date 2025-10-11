@@ -193,13 +193,19 @@
         mode: "0600" # -rw-------
         directory_mode: "0700" # drwx------
 
-- name: Change configuration directory owner and group
+- name: Update configuration directory owner and group
   ansible.builtin.file:
     path: /etc/step-ca
     owner: "{{ step_ca_user_name }}"
     group: "{{ step_ca_group_name }}"
     recurse: true
     state: directory
+
+- name: Template 50-pcsc-lite.rules
+  ansible.builtin.template:
+    src: 50-pcsc-lite.rules.j2
+    dest: /etc/polkit-1/rules.d/50-pcsc-lite.rules
+    mode: "0644" # -rw-r--r--
 
 - name: Enable and start systemd service
   ansible.builtin.systemd_service:

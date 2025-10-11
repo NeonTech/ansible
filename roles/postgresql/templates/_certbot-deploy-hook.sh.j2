@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+set -o errexit -o nounset
+
+cp "$RENEWED_LINEAGE/fullchain.pem" "{{ postgresql_ssl_certificate }}"
+cp "$RENEWED_LINEAGE/privkey.pem" "{{ postgresql_ssl_certificate_key }}"
+
+systemctl reload postgresql

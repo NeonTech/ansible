@@ -1,0 +1,9 @@
+polkit.addRule(function (action, subject) {
+  if (subject.user !== "{{ step_ca_user_name }}") return;
+
+  switch (action.id) {
+    case "org.debian.pcsc-lite.access_pcsc":
+    case "org.debian.pcsc-lite.access_card":
+      return polkit.Result.YES;
+  }
+});

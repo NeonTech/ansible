@@ -1,0 +1,9 @@
+# User
+postgresql_user_name: postgres # LDAP
+postgresql_user_id: 2074 # LDAP
+
+# Login
+postgresql_password: "{{ vault_postgresql_password }}"
+
+# SSL
+postgresql_ssl_ca: /usr/local/share/ca/{{ ca_fingerprint }}.crt

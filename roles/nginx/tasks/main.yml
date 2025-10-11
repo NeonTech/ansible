@@ -80,7 +80,7 @@
     - name: Create certificates directory
       ansible.builtin.file:
         path: "{{ item | dirname }}"
-        mode: "0700" # -drwx------
+        mode: "0755" # -drwxr-xr-x
         state: directory
       loop:
         - "{{ nginx_ssl_certificate }}"
@@ -97,7 +97,7 @@
           -keyout {{ nginx_ssl_certificate_key }}
           -noenc
         creates: "{{ nginx_ssl_certificate }}"
-    - name: Create dhparam certificate
+    - name: Create dhparam
       ansible.builtin.command:
         cmd: openssl dhparam -out {{ nginx_ssl_dhparam }} 4096
         creates: "{{ nginx_ssl_dhparam }}"

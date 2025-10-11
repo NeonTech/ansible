@@ -1,30 +1,56 @@
-- name: Define ansible_distribution facts
-  ansible.builtin.setup:
-    filter:
-      - ansible_distribution
-      - ansible_distribution_release
-      - ansible_distribution_major_version
-
-- name: Add Microsoft repository
-  ansible.builtin.deb822_repository:
-    name: packages-microsoft-com-prod
-    uris: https://packages.microsoft.com/{{ ansible_distribution | lower }}/{{ ansible_distribution_major_version }}/prod
-    signed_by: https://packages.microsoft.com/keys/microsoft.asc
-    types: [deb]
-    suites: ["{{ ansible_distribution_release | lower }}"]
-    components: [main]
-    enabled: true
-    state: present
-
-- name: Install .NET "{{ dotnet_version }}"
+- name: Install required packages
   ansible.builtin.apt:
     update_cache: true
-    name: >-
-      {{
-        [
-          dotnet_sdk | ternary('dotnet-sdk-' ~ dotnet_version, None),
-          dotnet_asp | ternary('aspnetcore-runtime-' ~ dotnet_version, None),
-          dotnet_runtime | ternary('dotnet-runtime-' ~ dotnet_version, None)
-        ] | select('string') | list
-      }}
+    name:
+      - libc6
+      - libgcc-s1
+      - libgssapi-krb5-2
+      - libicu76
+      - libssl3t64
+      - libstdc++6
+      - zlib1g
     state: present
+
+- name: Register version
+  ansible.builtin.command: dotnet --version
+  register: dotnet_version_cmd
+  changed_when: false
+  ignore_errors: true
+
+- name: (Re)install
+  when: dotnet_version_cmd.rc != 0 or dotnet_version_cmd.stdout != dotnet_version
+  block:
+    - name: Create temporary download file
+      ansible.builtin.tempfile:
+        suffix: "{{ dotnet_download_filename }}"
+        state: file
+      register: dotnet_download_file
+    - name: Download "{{ dotnet_download_filename }}"
+      ansible.builtin.get_url:
+        url: https://builds.dotnet.microsoft.com/dotnet/Sdk/{{ dotnet_version }}/{{ dotnet_download_filename }}
+        checksum: sha512:{{ dotnet_download_checksum }}
+        dest: "{{ dotnet_download_file.path }}"
+        mode: "0600" # -rw-------
+    - name: Uninstall previous version
+      ansible.builtin.file:
+        path: /usr/local/dotnet
+        state: absent
+    - name: Create installation directory
+      ansible.builtin.file:
+        path: /usr/local/dotnet
+        mode: "0755" # drwxr-xr-x
+        state: directory
+    - name: Install version "{{ dotnet_version }}"
+      ansible.builtin.unarchive:
+        src: "{{ dotnet_download_file.path }}"
+        remote_src: true
+        dest: /usr/local/dotnet
+    - name: Delete temporary download file
+      ansible.builtin.file:
+        path: "{{ dotnet_download_file.path }}"
+        state: absent
+    - name: Copy dotnet
+      ansible.builtin.copy:
+        src: dotnet
+        dest: /usr/local/bin/dotnet
+        mode: "0755" # -rwxr-xr-x

@@ -1,12 +1,11 @@
 # TODO Add firewall rules to LXC
 
-- name: Domain Name System
-  hosts: dns
+- name: PostgreSQL
+  hosts: postgresql
   gather_facts: false
   roles:
     - pve_lxc
     - os
     - ca
-    - technitium_dns
-    - nginx
+    - postgresql
     - certbot

@@ -1,0 +1,21 @@
+postgresql_version: 18
+
+# User
+postgresql_user_name: "{{ ansible_user_id }}"
+postgresql_user_id: "{{ ansible_user_uid }}"
+postgresql_group_name: "{{ postgresql_user_name }}"
+postgresql_group_id: "{{ postgresql_user_id }}"
+
+# Login
+postgresql_database: "{{ postgresql_user_name }}"
+postgresql_username: "{{ postgresql_user_name }}"
+postgresql_password: "{{ mandatory(msg='default secret') }}"
+
+# SSL
+postgresql_ssl_ca: null
+postgresql_ssl_certificate: /etc/postgresql/{{ postgresql_version }}/main/certificates/fullchain.pem
+postgresql_ssl_certificate_key: /etc/postgresql/{{ postgresql_version }}/main/certificates/privkey.pem
+postgresql_ssl_dhparam: /etc/postgresql/{{ postgresql_version }}/main/certificates/dhparam.pem
+
+# Configuration
+postgresql_pg_hba_dir: /etc/postgresql/{{ postgresql_version }}/main/pg_hba.d

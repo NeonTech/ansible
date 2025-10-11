@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+set -o errexit -o nounset
+
+HOOK_PATTERN=/usr/local/bin/certbot-*-{{ certbot_hook }}-hook.sh
+
+for hook in $HOOK_PATTERN; do
+    # If hook contains a literal * then no hooks exist
+    case "$hook" in
+    *'*'*)
+        echo "No hooks found matching: $HOOK_PATTERN"
+        exit 0
+        ;;
+    esac
+
+    echo "Executing: $hook"
+    "$hook"
+done

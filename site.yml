@@ -3,3 +3,6 @@
 
 - name: Domain Name System (DNS)
   ansible.builtin.import_playbook: dns.yml
+
+- name: PostgreSQL
+  ansible.builtin.import_playbook: postgresql.yml

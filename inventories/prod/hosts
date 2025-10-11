@@ -9,3 +9,6 @@ ct-ca
 
 [dns]
 ct-dns
+
+[postgresql]
+ct-postgresql

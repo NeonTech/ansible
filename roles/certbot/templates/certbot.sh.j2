@@ -9,9 +9,15 @@ certbot certonly \
 {% for certbot_acme_domain in certbot_acme_domains %}
   --domain "{{ certbot_acme_domain }}" \
 {% endfor %}
+{% if certbot_acme_standalone %}
+  --standalone \
+{% endif %}
 {% if certbot_acme_webroot is not none %}
   --webroot \
   --webroot-path "{{ certbot_acme_webroot }}" \
 {% endif %}
   --server "{{ certbot_acme_url }}" \
+  --pre-hook "/usr/local/bin/certbot-pre-hook.sh" \
+  --post-hook "/usr/local/bin/certbot-post-hook.sh" \
+  --deploy-hook "/usr/local/bin/certbot-deploy-hook.sh" \
   --non-interactive
