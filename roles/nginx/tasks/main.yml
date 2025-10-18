@@ -70,7 +70,7 @@
     - name: Create webroot directory
       ansible.builtin.file:
         path: "{{ nginx_ssl_webroot }}"
-        mode: "0755" # -drwxr-xr-x
+        mode: "0755" # drwxr-xr-x
         state: directory
     - name: Template ssl
       ansible.builtin.template:
@@ -80,7 +80,7 @@
     - name: Create certificates directory
       ansible.builtin.file:
         path: "{{ item | dirname }}"
-        mode: "0755" # -drwxr-xr-x
+        mode: "0755" # drwxr-xr-x
         state: directory
       loop:
         - "{{ nginx_ssl_certificate }}"

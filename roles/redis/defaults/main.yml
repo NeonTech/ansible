@@ -1,0 +1,15 @@
+# User
+redis_user_name: "{{ ansible_user_id }}"
+redis_user_id: "{{ ansible_user_uid }}"
+redis_group_name: "{{ redis_user_name }}"
+redis_group_id: "{{ redis_user_id }}"
+
+# Login
+redis_username: "{{ redis_user_name }}"
+redis_password: "{{ mandatory(msg='default secret') }}"
+
+# TLS
+redis_tls_ca: null
+redis_tls_certificate: /etc/redis/certificates/fullchain.pem
+redis_tls_certificate_key: /etc/redis/certificates/privkey.pem
+redis_tls_dhparam: /etc/redis/certificates/dhparam.pem

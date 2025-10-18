@@ -1,0 +1,141 @@
+- name: Define ansible_distribution_release fact
+  ansible.builtin.setup:
+    filter: ansible_distribution_release
+
+- name: Add Redis repository
+  ansible.builtin.deb822_repository:
+    name: redis
+    uris: https://packages.redis.io/deb
+    signed_by: https://packages.redis.io/gpg
+    types: [deb]
+    suites: ["{{ ansible_distribution_release }}"]
+    components: [main]
+    enabled: true
+    state: present
+
+- name: Create group "{{ redis_group_name }}"
+  ansible.builtin.group:
+    name: "{{ redis_group_name }}"
+    gid: "{{ redis_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ redis_user_name }}"
+  ansible.builtin.user:
+    name: "{{ redis_user_name }}"
+    uid: "{{ redis_user_id }}"
+    group: "{{ redis_group_name }}"
+    system: true
+    create_home: true
+    home: /var/lib/redis
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Install Redis
+  ansible.builtin.apt:
+    update_cache: true
+    name: redis
+    state: present
+
+- name: Update configuration
+  notify:
+    - Restart systemd service
+  block:
+    - name: Update redis.conf
+      ansible.builtin.lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s+"
+        # If item.value is falsy (none, false, "", 0, [], {}) then comment out item.key
+        line: "{{ item.value | ternary(item.key ~ ' ' ~ item.value, '# ' ~ item.key ~ ' <placeholder>') }}"
+        state: present
+      loop:
+        # TODO Set value to 0 to disable non-TLS port
+        - key: port
+          value: 9736
+        - key: appendonly
+          value: "yes"
+        # "acl" configuration
+        - key: aclfile
+          value: '"/etc/redis/redis.acl"'
+        # "tls" configuration
+        - key: tls-port
+          value: 6379
+        - key: tls-prefer-server-ciphers
+          value: "yes"
+        # TODO Set value to yes to force mTLS
+        - key: tls-auth-clients
+          value: optional
+        - key: tls-ca-cert-file
+          value: '{{ redis_tls_ca | ternary(''"'' ~ redis_tls_ca ~ ''"'', none) }}'
+        - key: tls-cert-file
+          value: '"{{ redis_tls_certificate }}"'
+        - key: tls-key-file
+          value: '"{{ redis_tls_certificate_key }}"'
+        - key: tls-dh-params-file
+          value: '"{{ redis_tls_dhparam }}"'
+    # "acl" configuration
+    - name: Copy "root" password
+      ansible.builtin.copy:
+        content: "{{ redis_password }}"
+        owner: "{{ redis_user_name }}"
+        group: "{{ redis_group_name }}"
+        dest: /etc/redis/{{ redis_username }}.password
+        mode: "0600" # -rw-------
+    - name: Create acl.d directory
+      ansible.builtin.file:
+        path: /etc/redis/acl.d
+        owner: "{{ redis_user_name }}"
+        group: "{{ redis_group_name }}"
+        mode: "0755" # drwxr-xr-x
+        state: directory
+    - name: Template "root" ACL
+      ansible.builtin.template:
+        src: root.acl.j2
+        dest: /etc/redis/acl.d/{{ redis_username }}.acl
+        owner: "{{ redis_user_name }}"
+        group: "{{ redis_group_name }}"
+        mode: "0600" # -rw-------
+    - name: Assemble redis.acl
+      ansible.builtin.assemble:
+        src: /etc/redis/acl.d
+        dest: /etc/redis/redis.acl
+        owner: "{{ redis_user_name }}"
+        group: "{{ redis_group_name }}"
+        mode: "0600" # -rw-------
+    # "tls" configuration
+    - name: Create certificates directory
+      ansible.builtin.file:
+        path: "{{ item | dirname }}"
+        owner: "{{ redis_user_name }}"
+        group: "{{ redis_group_name }}"
+        mode: "0755" # drwxr-xr-x
+        state: directory
+      loop:
+        - "{{ redis_tls_certificate }}"
+        - "{{ redis_tls_certificate_key }}"
+        - "{{ redis_tls_dhparam }}"
+    - name: Create temporary certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl
+          req
+          -x509
+          -subj "/CN=localhost"
+          -out {{ redis_tls_certificate }}
+          -keyout {{ redis_tls_certificate_key }}
+          -noenc
+        creates: "{{ redis_tls_certificate }}"
+    - name: Create dhparam
+      ansible.builtin.command:
+        cmd: openssl dhparam -out {{ redis_tls_dhparam }} 4096
+        creates: "{{ redis_tls_dhparam }}"
+    - name: Update certificate files owner and group
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ redis_user_name }}"
+        group: "{{ redis_group_name }}"
+        state: file
+      loop:
+        - "{{ redis_tls_certificate }}"
+        - "{{ redis_tls_certificate_key }}"
+        - "{{ redis_tls_dhparam }}"

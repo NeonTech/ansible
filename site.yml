@@ -6,3 +6,6 @@
 
 - name: PostgreSQL
   ansible.builtin.import_playbook: postgresql.yml
+
+- name: Redis
+  ansible.builtin.import_playbook: redis.yml

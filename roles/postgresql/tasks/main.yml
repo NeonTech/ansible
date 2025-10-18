@@ -37,6 +37,7 @@
     name:
       - python3-psycopg2
       - postgresql-{{ postgresql_version }}
+    state: present
 
 - name: Update superuser password
   become: true
@@ -57,13 +58,28 @@
     - name: Update postgresql.conf
       ansible.builtin.lineinfile:
         path: /etc/postgresql/{{ postgresql_version }}/main/postgresql.conf
-        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s*=\\s*"
-        line: "{{ item.key }} = {{ item.value }}"
+        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s*="
+        # If item.value is falsy (none, false, "", 0, [], {}) then comment out item.key
+        line: "{{ item.value | ternary(item.key ~ ' = ' ~ item.value, '# ' ~ item.key ~ ' = <placeholder>') }}"
+        state: present
       loop:
         - key: listen_addresses
           value: "'*'"
         - key: password_encryption
           value: scram-sha-256
+        # "ssl" configuration
+        - key: ssl
+          value: "on"
+        - key: ssl_prefer_server_ciphers
+          value: "on"
+        - key: ssl_ca_file
+          value: '{{ postgresql_ssl_ca | ternary("''" ~ postgresql_ssl_ca ~ "''", none) }}'
+        - key: ssl_cert_file
+          value: "'{{ postgresql_ssl_certificate }}'"
+        - key: ssl_key_file
+          value: "'{{ postgresql_ssl_certificate_key }}'"
+        - key: ssl_dh_params_file
+          value: "'{{ postgresql_ssl_dhparam }}'"
     - name: Create {{ postgresql_pg_hba_dir | basename }}
       ansible.builtin.file:
         path: "{{ postgresql_pg_hba_dir }}"
@@ -82,7 +98,7 @@
         path: "{{ item | dirname }}"
         owner: "{{ postgresql_user_name }}"
         group: "{{ postgresql_group_name }}"
-        mode: "0755" # -drwxr-xr-x
+        mode: "0755" # drwxr-xr-x
         state: directory
       loop:
         - "{{ postgresql_ssl_certificate }}"
@@ -113,22 +129,3 @@
         - "{{ postgresql_ssl_certificate }}"
         - "{{ postgresql_ssl_certificate_key }}"
         - "{{ postgresql_ssl_dhparam }}"
-    - name: Update "ssl" postgresql.conf
-      when: item.value is not none
-      ansible.builtin.lineinfile:
-        path: /etc/postgresql/{{ postgresql_version }}/main/postgresql.conf
-        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s*=\\s*"
-        line: "{{ item.key }} = {{ item.value }}"
-      loop:
-        - key: ssl
-          value: "on"
-        - key: ssl_prefer_server_ciphers
-          value: "on"
-        - key: ssl_ca_file
-          value: '{{ postgresql_ssl_ca | ternary("''" ~ postgresql_ssl_ca ~ "''", none) }}'
-        - key: ssl_cert_file
-          value: "'{{ postgresql_ssl_certificate }}'"
-        - key: ssl_key_file
-          value: "'{{ postgresql_ssl_certificate_key }}'"
-        - key: ssl_dh_params_file
-          value: "'{{ postgresql_ssl_dhparam }}'"

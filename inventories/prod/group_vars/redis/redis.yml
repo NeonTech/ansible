@@ -1,0 +1,9 @@
+# User
+redis_user_name: redis # LDAP
+redis_user_id: 2077 # LDAP
+
+# Login
+redis_password: "{{ vault_redis_password }}"
+
+# TLS
+redis_tls_ca: /usr/local/share/ca/{{ ca_fingerprint }}.crt

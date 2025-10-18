@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+
+set -o errexit -o nounset
+
+# Using redis-cli to reload certificates is initially impossible because of
+# self-signed certificates. Restart Redis on initial renewal then use redis-cli
+# for subsequent renewals.
+verified=false
+if
+    openssl verify \
+        -CAfile "{{ redis_tls_ca }}" \
+        -untrusted "$RENEWED_LINEAGE/chain.pem" \
+        "{{ redis_tls_certificate }}"
+then
+    verified=true
+fi
+
+cp "$RENEWED_LINEAGE/fullchain.pem" "{{ redis_tls_certificate }}"
+cp "$RENEWED_LINEAGE/privkey.pem" "{{ redis_tls_certificate_key }}"
+
+if [ $verified = "true" ]; then
+    REDISCLI_AUTH=$(cat /etc/redis/{{ redis_username }}.password) \
+    redis-cli \
+        --tls \
+        --cacert "{{ redis_tls_ca }}" \
+        --user "{{ redis_username }}" \
+        config set tls-cert-file "{{ redis_tls_certificate }}"
+else
+    systemctl restart redis
+fi

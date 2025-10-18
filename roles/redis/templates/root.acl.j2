@@ -1,0 +1,2 @@
+user default off
+user {{ redis_username }} on allcommands allkeys allchannels #{{ redis_password | hash("sha256") }}

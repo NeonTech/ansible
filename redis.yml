@@ -1,0 +1,11 @@
+# TODO Add firewall rules to LXC
+
+- name: Redis
+  hosts: redis
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - redis
+    - certbot

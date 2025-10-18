@@ -12,3 +12,6 @@ ct-dns
 
 [postgresql]
 ct-postgresql
+
+[redis]
+ct-redis
