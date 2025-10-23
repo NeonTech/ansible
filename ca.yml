@@ -2,7 +2,7 @@
 # TODO Add YubiKey device to LXC
 
 - name: Certificate Authority
-  hosts: ca
+  hosts: ct-ca
   gather_facts: false
   roles:
     - pve_lxc

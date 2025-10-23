@@ -1,7 +1,7 @@
 # TODO Add firewall rules to LXC
 
 - name: Redis
-  hosts: redis
+  hosts: ct-redis
   gather_facts: false
   roles:
     - pve_lxc

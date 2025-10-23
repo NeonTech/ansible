@@ -1,7 +1,7 @@
 # TODO Add firewall rules to LXC
 
 - name: Domain Name System
-  hosts: dns
+  hosts: ct-dns
   gather_facts: false
   roles:
     - pve_lxc

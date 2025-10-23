@@ -1,7 +1,7 @@
 # TODO Add firewall rules to LXC
 
 - name: PostgreSQL
-  hosts: postgresql
+  hosts: ct-postgresql
   gather_facts: false
   roles:
     - pve_lxc
