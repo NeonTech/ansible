@@ -1,0 +1,11 @@
+# User
+#
+# MariaDB uses MySQL user for compatibility
+mariadb_user_name: mysql # LDAP
+mariadb_user_id: 2075 # LDAP
+
+# Login
+mariadb_password: "{{ vault_mariadb_password }}"
+
+# SSL
+mariadb_ssl_ca: /usr/local/share/ca/{{ ca_fingerprint }}.crt

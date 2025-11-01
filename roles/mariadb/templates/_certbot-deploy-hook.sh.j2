@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+set -o errexit -o nounset
+
+cp "$RENEWED_LINEAGE/fullchain.pem" "{{ mariadb_ssl_certificate }}"
+cp "$RENEWED_LINEAGE/privkey.pem" "{{ mariadb_ssl_certificate_key }}"
+
+mariadb --execute="FLUSH SSL;"

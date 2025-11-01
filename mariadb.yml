@@ -1,0 +1,11 @@
+# TODO Add firewall rules to LXC
+
+- name: MariaDB
+  hosts: ct-mariadb
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - mariadb
+    - certbot

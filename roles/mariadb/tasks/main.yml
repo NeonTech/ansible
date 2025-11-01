@@ -1,0 +1,110 @@
+- name: Define ansible_distribution_release fact
+  ansible.builtin.setup:
+    filter: ansible_distribution_release
+
+- name: Add MariaDB repository
+  ansible.builtin.deb822_repository:
+    name: mariadb
+    uris: https://mirror.mariadb.org/repo/{{ mariadb_version }}/debian
+    signed_by: https://mariadb.org/mariadb_release_signing_key.asc
+    types: [deb]
+    suites: ["{{ ansible_distribution_release }}"]
+    components: [main]
+    enabled: true
+    state: present
+
+- name: Create group "{{ mariadb_group_name }}"
+  ansible.builtin.group:
+    name: "{{ mariadb_group_name }}"
+    gid: "{{ mariadb_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ mariadb_user_name }}"
+  ansible.builtin.user:
+    name: "{{ mariadb_user_name }}"
+    uid: "{{ mariadb_user_id }}"
+    group: "{{ mariadb_group_name }}"
+    system: true
+    create_home: false
+    home: /nonexistent
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Install MariaDB
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      # pymysql does not use auth_socket plugin:
+      # https://github.com/ansible-collections/community.mysql/issues/721
+      # - python3-pymysql
+      - python3-mysqldb
+      - mariadb-server
+    state: present
+
+- name: Update root password
+  community.mysql.mysql_user:
+    # localhost uses auth_socket plugin
+    login_user: "{{ mariadb_username }}"
+    login_host: localhost
+    check_implicit_admin: true
+    name: "{{ mariadb_username }}"
+    host: "%"
+    password: "{{ mariadb_password }}"
+    state: present
+
+- name: Update configuration
+  notify:
+    - Restart systemd service
+  block:
+    - name: Update 50-server.cnf
+      ansible.builtin.lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        regexp: "^#*\\s*{{ item.key | regex_escape }}\\s*="
+        # If item.value is falsy (none, false, "", 0, [], {}) then comment out item.key
+        line: "{{ item.value | ternary(item.key ~ ' = ' ~ item.value, '# ' ~ item.key ~ ' = <placeholder>') }}"
+        state: present
+      loop:
+        - key: bind-address
+          value: "0.0.0.0,::"
+        # "ssl" configuration
+        - key: ssl-ca
+          value: '{{ mariadb_ssl_ca | ternary("''" ~ mariadb_ssl_ca ~ "''", none) }}'
+        - key: ssl-cert
+          value: "{{ mariadb_ssl_certificate }}"
+        - key: ssl-key
+          value: "{{ mariadb_ssl_certificate_key }}"
+        # TODO Set value to "on" to enforce SSL
+        - key: require-secure-transport
+          value: "off"
+    # "ssl" configuration
+    - name: Create certificates directory
+      ansible.builtin.file:
+        path: "{{ item | dirname }}"
+        owner: "{{ mariadb_user_name }}"
+        group: "{{ mariadb_group_name }}"
+        mode: "0755" # drwxr-xr-x
+        state: directory
+      loop:
+        - "{{ mariadb_ssl_certificate }}"
+        - "{{ mariadb_ssl_certificate_key }}"
+    - name: Create temporary certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl
+          req
+          -x509
+          -subj "/CN=localhost"
+          -out {{ mariadb_ssl_certificate }}
+          -keyout {{ mariadb_ssl_certificate_key }}
+          -noenc
+        creates: "{{ mariadb_ssl_certificate }}"
+    - name: Update certificate files owner and group
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ mariadb_user_name }}"
+        group: "{{ mariadb_group_name }}"
+        state: file
+      loop:
+        - "{{ mariadb_ssl_certificate }}"
+        - "{{ mariadb_ssl_certificate_key }}"

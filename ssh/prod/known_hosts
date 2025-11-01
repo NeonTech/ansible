@@ -1,4 +1,5 @@
 ct-ca.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK6oeWvcbFqAdDSHfpgLFsaPpFrT+c2wqmf/MeIsnZbZ
 ct-dns.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBR646bIvg065wzkw+GjbCI1QXgYiEAY40vawESxH6ep
+ct-mariadb.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG/GYn+KLkmdaop0P6ZcNZxc+Di0KA3NeDWzUt6L2bcY
 ct-postgresql.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/KcVxQFRm8MwM3Y6PbQPz3PNnSvezUcB/eA2QfJ88
 ct-redis.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE9t5rDW7q8rtC9M8JPNh+Lbh2FN+XY9nvURb39zQfOH
