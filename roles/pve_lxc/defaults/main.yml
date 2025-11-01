@@ -27,8 +27,8 @@ pve_lxc_disk_volume_size: 16 # GiB
 pve_lxc_cpu_cores: 1
 
 # Memory
-pve_lxc_memory: 512 # MB
-pve_lxc_memory_swap: 512 # MB
+pve_lxc_memory: 1024 # MB
+pve_lxc_memory_swap: 0 # MB
 
 # Network
 pve_lxc_interfaces: {}
