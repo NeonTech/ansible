@@ -1,0 +1,11 @@
+# TODO Add firewall rules to LXC
+
+- name: MySQL
+  hosts: ct-mysql
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - mysql
+    - certbot

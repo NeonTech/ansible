@@ -1,0 +1,99 @@
+- name: Define ansible_distribution_release fact
+  ansible.builtin.setup:
+    filter: ansible_distribution_release
+
+- name: Add MySQL repository
+  ansible.builtin.deb822_repository:
+    name: mysql
+    uris: https://repo.mysql.com/apt/debian
+    signed_by: "{{ mysql_keyring }}"
+    types: [deb]
+    suites: "{{ ansible_distribution_release }}"
+    components: [mysql-innovation]
+    enabled: true
+    state: present
+
+- name: Create group "{{ mysql_group_name }}"
+  ansible.builtin.group:
+    name: "{{ mysql_group_name }}"
+    gid: "{{ mysql_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ mysql_user_name }}"
+  ansible.builtin.user:
+    name: "{{ mysql_user_name }}"
+    uid: "{{ mysql_user_id }}"
+    group: "{{ mysql_group_name }}"
+    system: true
+    create_home: false
+    home: /nonexistent
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Install MySQL
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      # pymysql does not use auth_socket plugin:
+      # https://github.com/ansible-collections/community.mysql/issues/721
+      # - python3-pymysql
+      - python3-mysqldb
+      - mysql-server
+    state: present
+
+- name: Update root password
+  community.mysql.mysql_user:
+    # localhost uses auth_socket plugin
+    login_user: "{{ mysql_username }}"
+    login_host: localhost
+    check_implicit_admin: true
+    name: "{{ mysql_username }}"
+    host: "%"
+    # MySQL no longer supports mysql_native_password used by "password" parameter
+    plugin: caching_sha2_password
+    plugin_auth_string: "{{ mysql_password }}"
+    # Use a random, but idempotent, salt per inventory_hostname
+    salt: "{{ lookup('ansible.builtin.password', '/dev/null', seed=inventory_hostname, length=20) }}"
+    state: present
+
+- name: Update configuration
+  notify:
+    - Restart systemd service
+  block:
+    # "ssl" configuration
+    - name: Template ssl.cnf
+      ansible.builtin.template:
+        src: ssl.cnf.j2
+        dest: /etc/mysql/mysql.conf.d/ssl.cnf
+        mode: "0644" # -rw-r--r--
+    - name: Create certificates directory
+      ansible.builtin.file:
+        path: "{{ item | dirname }}"
+        owner: "{{ mysql_user_name }}"
+        group: "{{ mysql_group_name }}"
+        mode: "0755" # drwxr-xr-x
+        state: directory
+      loop:
+        - "{{ mysql_ssl_certificate }}"
+        - "{{ mysql_ssl_certificate_key }}"
+    - name: Create temporary certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl
+          req
+          -x509
+          -subj "/CN=localhost"
+          -out {{ mysql_ssl_certificate }}
+          -keyout {{ mysql_ssl_certificate_key }}
+          -noenc
+        creates: "{{ mysql_ssl_certificate }}"
+    - name: Update certificate files owner and group
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ mysql_user_name }}"
+        group: "{{ mysql_group_name }}"
+        state: file
+      loop:
+        - "{{ mysql_ssl_certificate }}"
+        - "{{ mysql_ssl_certificate_key }}"

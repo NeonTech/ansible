@@ -1,0 +1,9 @@
+# User
+mysql_user_name: mysql # LDAP
+mysql_user_id: 2075 # LDAP
+
+# Login
+mysql_password: "{{ vault_mysql_password }}"
+
+# SSL
+mysql_ssl_ca: /usr/local/share/ca/{{ ca_fingerprint }}.crt

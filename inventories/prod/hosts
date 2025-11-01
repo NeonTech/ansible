@@ -1,6 +1,7 @@
 ct-ca
 ct-dns
 ct-mariadb
+ct-mysql
 ct-postgresql
 ct-redis
 
