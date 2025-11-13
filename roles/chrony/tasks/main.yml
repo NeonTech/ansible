@@ -1,0 +1,55 @@
+- name: Install chrony
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name: chrony
+    state: present
+
+- name: Update configuration
+  become: true
+  notify:
+    - Restart systemd service
+  block:
+    - name: Template chrony.conf
+      ansible.builtin.template:
+        src: chrony.conf.j2
+        dest: "{{ chrony_conf_file }}"
+        mode: "0644" # -rw-r--r--
+    # "nts" configuration
+    - name: Create certificates directory
+      ansible.builtin.file:
+        path: "{{ item | dirname }}"
+        owner: "{{ chrony_user_name }}"
+        group: "{{ chrony_group_name }}"
+        mode: "0755" # drwxr-xr-x
+        state: directory
+      loop:
+        - "{{ chrony_nts_certificate }}"
+        - "{{ chrony_nts_certificate_key }}"
+    - name: Create temporary certificate
+      ansible.builtin.command:
+        cmd: >-
+          openssl
+          req
+          -x509
+          -subj "/CN=localhost"
+          -out {{ chrony_nts_certificate }}
+          -keyout {{ chrony_nts_certificate_key }}
+          -noenc
+        creates: "{{ chrony_nts_certificate }}"
+    - name: Update certificate files owner and group
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: "{{ chrony_user_name }}"
+        group: "{{ chrony_group_name }}"
+        state: file
+      loop:
+        - "{{ chrony_nts_certificate }}"
+        - "{{ chrony_nts_certificate_key }}"
+
+- name: Start and enable chronyd
+  become: true
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: true

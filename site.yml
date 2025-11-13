@@ -4,6 +4,9 @@
 - name: Domain Name System (DNS)
   ansible.builtin.import_playbook: dns.yml
 
+- name: Network Time Protocol (NTP)
+  ansible.builtin.import_playbook: ntp.yml
+
 - name: MariaDB
   ansible.builtin.import_playbook: mariadb.yml
 

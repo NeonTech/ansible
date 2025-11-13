@@ -4,3 +4,8 @@ ct-mariadb.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG/GYn+KLkmdaop0P6Zc
 ct-mysql.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMZEfMCH1v4qifz/gu416mgwruVwPQXZhTFuml3Py7oh
 ct-postgresql.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/KcVxQFRm8MwM3Y6PbQPz3PNnSvezUcB/eA2QfJ88
 ct-redis.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE9t5rDW7q8rtC9M8JPNh+Lbh2FN+XY9nvURb39zQfOH
+sol-ceres-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGpmJAXWO8XYxJN6ltHRac3MnRo7+NQEHf2cDL+Vsn0N
+sol-eris-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIENbkbpgG7fBOAxKGXcUtfG/WmFbMSN2uhGixdaPs/yc
+sol-haumea-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFadtM+VzExOrP51WioZKUwh0LrISNLiN/64IXxMu00V
+sol-pluto-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIELWed7XBRyrABss8iUElW47rzFb1epxG2Bx5YBcD2jn
+vm-ntp.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDjrwG/SHXUWeF3ciMQIS99Ep2rsiPLBfnWEu2SRlGwq

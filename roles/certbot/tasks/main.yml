@@ -1,4 +1,5 @@
 - name: Install required packages
+  become: true
   ansible.builtin.apt:
     update_cache: true
     name:
@@ -11,6 +12,7 @@
     state: present
 
 - name: Create systemd timer
+  become: true
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: /etc/systemd/system/{{ item }}
@@ -29,6 +31,7 @@
 
 - name: (Re)install
   when: certbot_version_cmd.rc != 0 or certbot_version not in certbot_version_cmd.stdout
+  become: true
   block:
     - name: Stop systemd timer
       ansible.builtin.systemd_service:
@@ -46,6 +49,7 @@
         state: link
 
 - name: Update configuration
+  become: true
   notify:
     - Restart systemd timer
   block:
@@ -85,6 +89,7 @@
       loop: "{{ certbot_acme_hooks_deploy }}"
 
 - name: Enable and start systemd timer
+  become: true
   ansible.builtin.systemd_service:
     name: certbot.timer
     enabled: true

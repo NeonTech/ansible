@@ -19,10 +19,12 @@
         dest: "{{ step_cli_download_file.path }}"
         mode: "0600" # -rw-------
     - name: Uninstall previous version
+      become: true
       ansible.builtin.file:
         path: /usr/local/step
         state: absent
     - name: Install version "{{ step_cli_version }}"
+      become: true
       ansible.builtin.unarchive:
         src: "{{ step_cli_download_file.path }}"
         remote_src: true
@@ -32,6 +34,7 @@
         path: "{{ step_cli_download_file.path }}"
         state: absent
     - name: Rename installation directory
+      become: true
       ansible.builtin.command:
         cmd: mv /usr/local/step_{{ step_cli_version }} /usr/local/step
         removes: /usr/local/step_{{ step_cli_version }}
@@ -42,6 +45,7 @@
         file_type: file
       register: step_cli_bin
     - name: Create symbolic links with binaries
+      become: true
       ansible.builtin.file:
         src: "{{ item.path }}"
         dest: /usr/local/bin/{{ item.path | basename }}

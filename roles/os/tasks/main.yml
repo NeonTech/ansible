@@ -1,4 +1,5 @@
 - name: Allow locale generation
+  become: true
   ansible.builtin.lineinfile:
     path: /etc/locale.gen
     regexp: "^#*\\s*{{ os_locale }}.{{ os_encoding }} {{ os_encoding }}"
@@ -6,6 +7,7 @@
     state: present
 
 - name: Set default locale
+  become: true
   ansible.builtin.lineinfile:
     path: /etc/default/locale
     regexp: "^LANG="

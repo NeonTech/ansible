@@ -1,6 +1,6 @@
-- name: Restart systemd timer
+- name: Restart systemd service
   become: true
   ansible.builtin.systemd_service:
-    name: certbot.timer
+    name: chrony
     daemon_reload: true
-    state: started
+    state: restarted

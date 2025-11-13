@@ -4,9 +4,10 @@ ct-mariadb
 ct-mysql
 ct-postgresql
 ct-redis
+vm-ntp
 
 [pve]
 sol-ceres-pve
 sol-eris-pve
 sol-pluto-pve
-sol-vault-pve
+sol-haumea-pve

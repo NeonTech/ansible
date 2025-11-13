@@ -1,0 +1,22 @@
+chrony_conf_file: /etc/chrony/chrony.conf
+
+# User
+chrony_user_name: _chrony
+chrony_group_name: _chrony
+
+# Time sources
+chrony_servers: [time.cloudflare.com iburst nts]
+
+# System clock
+chrony_drift_file: /var/lib/chrony/chrony.drift
+chrony_makestep_threshold: 0.1
+chrony_makestep_updates: 3
+
+# NTP server
+chrony_allows: []
+chrony_nts_dump_dir: /var/lib/chrony
+chrony_nts_certificate: "{{ chrony_conf_file | dirname }}/certificates/fullchain.pem"
+chrony_nts_certificate_key: "{{ chrony_conf_file | dirname }}/certificates/privkey.pem"
+
+# Logging
+chrony_log_dir: /var/log/chrony

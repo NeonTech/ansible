@@ -1,0 +1,17 @@
+# API
+pve_cloudinit_api_host: "{{ pve_api_host }}"
+pve_cloudinit_api_port: "{{ pve_api_port }}"
+pve_cloudinit_api_user: "{{ pve_api_user }}"
+pve_cloudinit_api_token_id: "{{ pve_api_token_id }}"
+pve_cloudinit_api_token: "{{ pve_api_token }}"
+
+# General
+pve_cloudinit_node: "{{ pve_node }}"
+pve_cloudinit_ssh_public_key_file: "{{ 'ssh/{}/{}_{}_ed25519.pub'.format(env, pve_cloudinit_hostname, ansible_ssh_user) }}"
+
+# Storage
+pve_cloudinit_storage: "{{ pve_storage_shared }}"
+pve_cloudinit_storage_fs: "{{ pve_storage_shared_fs }}"
+
+# CPU
+pve_cloudinit_cpu: x86-64-v3

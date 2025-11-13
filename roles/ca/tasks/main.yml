@@ -1,38 +1,42 @@
-- name: Define ansible_user_dir fact
+- name: Define Ansible user facts
   ansible.builtin.setup:
-    filter: ansible_user_dir
-
-- name: Register .step
-  ansible.builtin.stat:
-    path: "{{ ansible_user_dir }}/.step"
-  register: ca_step
+    filter:
+      - ansible_user_dir
+      - ansible_user_gid
+      - ansible_user_uid
 
 - name: Install
-  when: not ca_step.stat.exists
+  become: true
   environment:
     STEPPATH: "{{ ansible_user_dir }}/.step"
-  ansible.builtin.command: >-
-    step
-    ca
-    bootstrap
-    --ca-url https://{{ ca_host }}:{{ ca_port }}
-    --fingerprint {{ ca_fingerprint }}
-    {% if ansible_user == 'root' %}
-    --install
-    {% endif %}
-  changed_when: true
+  ansible.builtin.command:
+    cmd: >-
+      step
+      ca
+      bootstrap
+      --ca-url https://{{ ca_host }}:{{ ca_port }}
+      --fingerprint {{ ca_fingerprint }}
+      --install
+    creates: "{{ ansible_user_dir }}/.step"
+- name: Update .step owner and group
+  become: true
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.step"
+    owner: "{{ ansible_user_uid }}"
+    group: "{{ ansible_user_gid }}"
+    recurse: true
+    state: directory
 
-- name: Share
-  when: ansible_user == 'root'
-  block:
-    - name: Create share directory
-      ansible.builtin.file:
-        path: /usr/local/share/ca
-        mode: "0755" # drwxr-xr-x
-        state: directory
-    - name: Share root certificate
-      ansible.builtin.copy:
-        src: "{{ ansible_user_dir }}/.step/certs/root_ca.crt"
-        remote_src: true
-        dest: /usr/local/share/ca/{{ ca_fingerprint }}.crt
-        mode: "0644" # -rw-r--r--
+- name: Create share directory
+  become: true
+  ansible.builtin.file:
+    path: /usr/local/share/ca
+    mode: "0755" # drwxr-xr-x
+    state: directory
+- name: Share root certificate
+  become: true
+  ansible.builtin.copy:
+    src: "{{ ansible_user_dir }}/.step/certs/root_ca.crt"
+    remote_src: true
+    dest: /usr/local/share/ca/{{ ca_fingerprint }}.crt
+    mode: "0644" # -rw-r--r--

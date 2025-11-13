@@ -1,0 +1,140 @@
+- name: Initialize VM
+  delegate_to: localhost
+  block:
+    - name: Create VM
+      community.proxmox.proxmox_kvm:
+        # API
+        api_host: "{{ pve_cloudinit_api_host }}"
+        api_port: "{{ pve_cloudinit_api_port }}"
+        api_user: "{{ pve_cloudinit_api_user }}"
+        api_token_id: "{{ pve_cloudinit_api_token_id }}"
+        api_token_secret: "{{ pve_cloudinit_api_token }}"
+        # General
+        node: "{{ pve_cloudinit_node }}"
+        vmid: "{{ pve_cloudinit_vmid }}"
+        name: "{{ pve_cloudinit_hostname }}"
+        sshkeys: "{{ lookup('file', pve_cloudinit_ssh_public_key_file) }}"
+        # cloud-init
+        ide:
+          ide0: "{{ pve_cloudinit_storage }}:cloudinit"
+        serial:
+          serial0: socket
+        vga: serial0
+        # CPU
+        cpu: "{{ pve_cloudinit_cpu }}"
+        cores: "{{ pve_cloudinit_cpu_cores }}"
+        # Memory
+        memory: "{{ pve_cloudinit_memory }}"
+        # Network
+        net: "{{ pve_cloudinit_network_devices }}"
+        ipconfig: "{{ pve_cloudinit_network_addresses }}"
+        # Options
+        scsihw: virtio-scsi-single
+        ostype: "{{ pve_cloudinit_image_type }}"
+        agent: true
+        boot: order=scsi0
+        onboot: true
+        startup: order={{ pve_cloudinit_order }},up={{ pve_cloudinit_startup }},down={{ pve_cloudinit_shutdown }}
+        #
+        state: present
+    - name: Register VM
+      delegate_to: "{{ pve_cloudinit_node }}"
+      ansible.builtin.command: qm config {{ pve_cloudinit_vmid }}
+      register: pve_cloudinit_vm
+      changed_when: false
+
+    - name: Register storage (filesystem) information
+      community.proxmox.proxmox_storage_info:
+        # API
+        api_host: "{{ pve_cloudinit_api_host }}"
+        api_port: "{{ pve_cloudinit_api_port }}"
+        api_user: "{{ pve_cloudinit_api_user }}"
+        api_token_id: "{{ pve_cloudinit_api_token_id }}"
+        api_token_secret: "{{ pve_cloudinit_api_token }}"
+        # General
+        storage: "{{ pve_cloudinit_storage_fs }}"
+      register: pve_cloudinit_storage_fs_info
+    - name: Set snippets image fact
+      vars:
+        pve_cloudinit_snippets: "{{ pve_cloudinit_storage_fs_info.proxmox_storages[0].path ~ '/snippets' }}"
+        pve_cloudinit_snippets_namespace: "{{ pve_cloudinit_snippets ~ '/' ~ pve_cloudinit_vmid ~ '-cloudinit-' }}"
+      ansible.builtin.set_fact:
+        pve_cloudinit_snippets_image: "{{ pve_cloudinit_snippets_namespace ~ 'image' }}"
+    - name: Download image
+      delegate_to: "{{ pve_cloudinit_node }}"
+      ansible.builtin.get_url:
+        url: "{{ pve_cloudinit_image_url }}"
+        checksum: "{{ pve_cloudinit_image_checksum }}"
+        dest: "{{ pve_cloudinit_snippets_image }}"
+        mode: "0644" # -rw-r--r--
+
+    - name: Create image disk
+      # Run when no lines from stdout start with 'scsi0'
+      when: pve_cloudinit_vm.stdout_lines | select('search', '^scsi0') | list | length == 0
+      delegate_to: "{{ pve_cloudinit_node }}"
+      ansible.builtin.command: >-
+        qm set {{ pve_cloudinit_vmid }}
+          --scsi0 {{ pve_cloudinit_storage }}:0,import-from={{ pve_cloudinit_snippets_image }}
+      changed_when: true
+    - name: Update image disk
+      community.proxmox.proxmox_disk:
+        # API
+        api_host: "{{ pve_cloudinit_api_host }}"
+        api_port: "{{ pve_cloudinit_api_port }}"
+        api_user: "{{ pve_cloudinit_api_user }}"
+        api_token_id: "{{ pve_cloudinit_api_token_id }}"
+        api_token_secret: "{{ pve_cloudinit_api_token }}"
+        # General
+        vmid: "{{ pve_cloudinit_vmid }}"
+        # Disk
+        disk: scsi0
+        backup: true
+        iothread: true
+        discard: "on"
+        ssd: true
+        #
+        state: present
+    - name: Resize image disk
+      community.proxmox.proxmox_disk:
+        # API
+        api_host: "{{ pve_cloudinit_api_host }}"
+        api_port: "{{ pve_cloudinit_api_port }}"
+        api_user: "{{ pve_cloudinit_api_user }}"
+        api_token_id: "{{ pve_cloudinit_api_token_id }}"
+        api_token_secret: "{{ pve_cloudinit_api_token }}"
+        # General
+        vmid: "{{ pve_cloudinit_vmid }}"
+        # Disk
+        disk: scsi0
+        size: "{{ pve_cloudinit_image_disk_size }}"
+        #
+        state: resized
+
+    - name: Start VM
+      community.proxmox.proxmox_kvm:
+        # API
+        api_host: "{{ pve_cloudinit_api_host }}"
+        api_port: "{{ pve_cloudinit_api_port }}"
+        api_user: "{{ pve_cloudinit_api_user }}"
+        api_token_id: "{{ pve_cloudinit_api_token_id }}"
+        api_token_secret: "{{ pve_cloudinit_api_token }}"
+        # General
+        vmid: "{{ pve_cloudinit_vmid }}"
+        #
+        state: started
+
+- name: Wait for connection
+  ansible.builtin.wait_for_connection:
+
+- name: Install qemu-guest-agent
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name: qemu-guest-agent
+    state: present
+- name: Enable and start qemu-guest-agent
+  become: true
+  ansible.builtin.systemd_service:
+    name: qemu-guest-agent
+    enabled: true
+    state: started

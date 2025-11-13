@@ -1,0 +1,39 @@
+# API
+pve_cloudinit_api_host: localhost
+pve_cloudinit_api_port: 8006
+pve_cloudinit_api_user: root@pam
+pve_cloudinit_api_token_id: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_api_token: "{{ mandatory(msg='default secret') }}"
+
+# General
+pve_cloudinit_node: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_vmid: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_hostname: "{{ inventory_hostname }}"
+pve_cloudinit_ssh_public_key_file: "{{ mandatory(msg='default value') }}"
+
+# Image
+pve_cloudinit_image_url: https://cloud.debian.org/images/cloud/trixie/20251006-2257/debian-13-generic-amd64-20251006-2257.qcow2
+pve_cloudinit_image_checksum: sha256:392485ecf3b9636519c969d985ceb84f96538ec6218ec02b4412cc56b17321d4
+pve_cloudinit_image_type: l26
+# Image (disk)
+pve_cloudinit_image_disk_size: 16G
+
+# Storage
+pve_cloudinit_storage: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_storage_fs: "{{ mandatory(msg='default value') }}"
+
+# CPU
+pve_cloudinit_cpu: x86-64-v4
+pve_cloudinit_cpu_cores: 1
+
+# Memory
+pve_cloudinit_memory: 1024 # MiB
+
+# Network
+pve_cloudinit_network_devices: {}
+pve_cloudinit_network_addresses: {}
+
+# Startup/Shutdown Order
+pve_cloudinit_order: 1
+pve_cloudinit_startup: 0 # Seconds
+pve_cloudinit_shutdown: 60 # Seconds

@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+set -o errexit -o nounset
+
+cp "$RENEWED_LINEAGE/fullchain.pem" "{{ chrony_nts_certificate }}"
+cp "$RENEWED_LINEAGE/privkey.pem" "{{ chrony_nts_certificate_key }}"
+
+systemctl restart chrony

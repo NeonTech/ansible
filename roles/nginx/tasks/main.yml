@@ -80,6 +80,8 @@
     - name: Create certificates directory
       ansible.builtin.file:
         path: "{{ item | dirname }}"
+        owner: root
+        group: root
         mode: "0755" # drwxr-xr-x
         state: directory
       loop:
