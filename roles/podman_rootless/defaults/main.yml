@@ -1,0 +1,19 @@
+# User
+podman_rootless_user_name: "{{ ansible_user_id }}"
+podman_rootless_user_id: "{{ ansible_user_uid }}"
+podman_rootless_user_home: /home/{{ podman_rootless_user_name }}
+
+# subuid
+podman_rootless_subuid_start: 100000
+podman_rootless_subuid_count: 65536
+
+# Group
+podman_rootless_group_name: "{{ podman_rootless_user_name }}"
+podman_rootless_group_id: "{{ podman_rootless_user_id }}"
+
+# subgid
+podman_rootless_subgid_start: "{{ podman_rootless_subuid_start }}"
+podman_rootless_subgid_count: "{{ podman_rootless_subuid_count }}"
+
+# SSH
+podman_rootless_ssh_public_key_file: "{{ mandatory(msg='default value') }}"

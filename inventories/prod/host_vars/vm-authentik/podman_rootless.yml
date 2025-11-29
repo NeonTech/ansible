@@ -1,0 +1,2 @@
+# SSH
+podman_rootless_ssh_public_key_file: "{{ 'ssh/{}/{}_{}_ed25519.pub'.format(env, inventory_hostname, authentik_user_name) }}"

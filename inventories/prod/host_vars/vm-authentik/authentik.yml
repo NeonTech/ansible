@@ -1,0 +1,16 @@
+# User
+authentik_user_name: authentik # LDAP
+authentik_user_id: 2081 # LDAP
+
+# PostgreSQL
+authentik_postgresql_host: postgresql.neontech.dev
+authentik_postgresql_password: "{{ vault_authentik_postgresql_password }}"
+
+# SSL
+authentik_ssl_ca: /usr/local/share/ca/{{ ca_fingerprint }}.crt
+
+# Server/Worker
+authentik_secret_key: "{{ vault_authentik_secret_key }}"
+
+# LDAP
+authentik_ldap_token: "{{ vault_authentik_ldap_token }}"

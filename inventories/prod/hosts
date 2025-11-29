@@ -4,7 +4,11 @@ ct-mariadb
 ct-mysql
 ct-postgresql
 ct-redis
+vm-authentik
 vm-ntp
+
+[pbs]
+sol-sedna-pbs
 
 [pve]
 sol-ceres-pve

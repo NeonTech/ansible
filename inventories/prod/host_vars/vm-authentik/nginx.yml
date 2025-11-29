@@ -1,0 +1,62 @@
+nginx_http:
+  authentik.neontech.dev: >
+    upstream authentik-server {
+      server localhost:9000;
+      # Improve performance by keeping some connections alive.
+      keepalive 10;
+    }
+
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name authentik.neontech.dev;
+
+      include acme_webroot;
+
+      location / {
+        return 301 https://$host$request_uri;
+      }
+    }
+
+    server {
+      listen 443 ssl;
+      listen [::]:443 ssl;
+      server_name authentik.neontech.dev;
+
+      include ssl;
+      include hsts;
+
+      location / {
+        proxy_pass http://authentik-server;
+        include proxy_params;
+        include proxy_websocket;
+      }
+    }
+  ldap.neontech.dev: >
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name ldap.neontech.dev;
+
+      include acme_webroot;
+
+      location / {
+        # Closes the connection without sending a response header.
+        return 444;
+      }
+    }
+
+nginx_stream:
+  ldap.neontech.dev: >
+    upstream authentik-ldap {
+      server localhost:3389;
+    }
+
+    server {
+      listen 636 ssl;
+      listen [::]:636 ssl;
+
+      include ssl;
+
+      proxy_pass authentik-ldap;
+    }

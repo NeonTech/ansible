@@ -1,20 +1,31 @@
+# region Critical
 - name: Certificate Authority (CA)
   ansible.builtin.import_playbook: ca.yml
-
 - name: Domain Name System (DNS)
   ansible.builtin.import_playbook: dns.yml
-
 - name: Network Time Protocol (NTP)
   ansible.builtin.import_playbook: ntp.yml
+# endregion
 
+# region Databases
 - name: MariaDB
   ansible.builtin.import_playbook: mariadb.yml
-
 - name: MySQL
   ansible.builtin.import_playbook: mysql.yml
-
 - name: PostgreSQL
   ansible.builtin.import_playbook: postgresql.yml
-
 - name: Redis
   ansible.builtin.import_playbook: redis.yml
+# endregion
+
+# region Applications
+- name: Authentik
+  ansible.builtin.import_playbook: authentik.yml
+# endregion
+
+# region Proxmox
+- name: Proxmox Backup Server (PBS)
+  ansible.builtin.import_playbook: pbs.yml
+- name: Proxmox Virtual Environment (PVE)
+  ansible.builtin.import_playbook: pve.yml
+# endregion

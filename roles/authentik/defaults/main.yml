@@ -1,0 +1,30 @@
+# User
+authentik_user_name: "{{ ansible_user_id }}"
+authentik_user_id: "{{ ansible_user_uid }}"
+authentik_group_name: "{{ authentik_user_name }}"
+authentik_group_id: "{{ authentik_user_id }}"
+
+# PostgreSQL
+authentik_postgresql_host: localhost
+authentik_postgresql_port: 5432
+authentik_postgresql_database: authentik
+authentik_postgresql_username: authentik
+authentik_postgresql_password: null
+
+# SSL
+authentik_ssl_ca: "{{ mandatory(msg='default value') }}"
+
+# Server/Worker
+authentik_image: ghcr.io/goauthentik/server
+authentik_image_digest: 8322e449feefcc2416f0401038d5a1a28552c4403b079a59d3b4d978d8f3f530 # 2025.10.2
+authentik_secret_key: null
+
+# LDAP
+authentik_ldap_image: ghcr.io/goauthentik/ldap
+authentik_ldap_image_digest: a5060a2f1ae7d3abf095a3947ca9ef19e225428f68729b497149f6c8699a6f36 # 2025.10.2
+authentik_ldap_token: null
+
+# RADIUS
+authentik_radius_image: ghcr.io/goauthentik/radius
+authentik_radius_image_digest: c6125d65a65a38c3757c857552dd5d4ec839a59537d11063204665949043bd12 # 2025.10.2
+authentik_radius_token: null

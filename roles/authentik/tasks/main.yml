@@ -1,0 +1,171 @@
+- name: Quadlets
+  # FIXME Using remote_user does not work; the connected user remains equal to
+  # ansible_ssh_user (current default is root) rather than value of remote_user.
+  # Setting ansible_ssh_user directly achieves the same result.
+  vars:
+    ansible_ssh_user: "{{ authentik_user_name }}"
+  notify:
+    - Restart systemd service
+  block:
+    - name: Create authentik pod quadlet
+      containers.podman.podman_pod:
+        name: authentik
+        userns: keep-id
+        ports:
+          - 9000:9000 # HTTP
+          - 3389:3389 # LDAP
+          - 1182:1182 # RADIUS
+          - 9300:9300 # Metrics (Server)
+          - 9301:9301 # Metrics (Worker)
+          - 9302:9302 # Metrics (LDAP)
+          - 9303:9303 # Metrics (RADIUS)
+        # Enable systemd to start generated unit on boot
+        quadlet_options:
+          - |-
+            [Install]
+            WantedBy=default.target
+        state: quadlet
+
+    # Server/Worker
+    - name: Create server/worker directories
+      ansible.builtin.file:
+        path: /etc/authentik/{{ item }}
+        mode: "0755" # drwxr-xr-x
+        state: directory
+      loop:
+        - media
+        - templates
+        - certs
+    - name: Create authentik-secret-key secret
+      containers.podman.podman_secret:
+        name: authentik-secret-key
+        data: "{{ authentik_secret_key }}"
+        state: "{{ authentik_secret_key | ternary('present', 'absent') }}"
+    - name: Create authentik-postgresql-password secret
+      containers.podman.podman_secret:
+        name: authentik-postgresql-password
+        data: "{{ authentik_postgresql_password }}"
+        state: "{{ authentik_postgresql_password | ternary('present', 'absent') }}"
+    - name: Create authentik-server container quadlet
+      containers.podman.podman_container:
+        name: authentik-server
+        pod: authentik.pod
+        image: "{{ authentik_image }}@sha256:{{ authentik_image_digest }}"
+        command: server
+        user: "{{ authentik_user_id }}:{{ authentik_group_id }}"
+        env:
+          AUTHENTIK_SECRET_KEY: file:///run/secrets/authentik-secret-key
+          # Listen
+          AUTHENTIK_LISTEN__METRICS: 0.0.0.0:9300
+          # PostgreSQL
+          AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_postgresql_host }}"
+          AUTHENTIK_POSTGRESQL__PORT: "{{ authentik_postgresql_port }}"
+          AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_postgresql_database }}"
+          AUTHENTIK_POSTGRESQL__USER: "{{ authentik_postgresql_username }}"
+          AUTHENTIK_POSTGRESQL__PASSWORD: file:///run/secrets/authentik-postgresql-password
+          AUTHENTIK_POSTGRESQL__SSLMODE: verify-full
+          AUTHENTIK_POSTGRESQL__SSLROOTCERT: /etc/ssl/certs/authentik.crt
+        volumes:
+          - /etc/authentik/media:/media
+          - /etc/authentik/templates:/templates
+          - "{{ authentik_ssl_ca }}:/etc/ssl/certs/authentik.crt"
+        secrets:
+          - authentik-secret-key
+          - authentik-postgresql-password
+        quadlet_options:
+          # Add a 10 minute startup timeout to negate systemd terminating
+          # startup too early when the network and/or storage is too slow.
+          - |-
+            [Service]
+            TimeoutStartSec=600
+        state: quadlet
+    - name: Create authentik-worker container quadlet
+      containers.podman.podman_container:
+        name: authentik-worker
+        pod: authentik.pod
+        image: "{{ authentik_image }}@sha256:{{ authentik_image_digest }}"
+        command: worker
+        user: "{{ authentik_user_id }}:{{ authentik_group_id }}"
+        env:
+          AUTHENTIK_SECRET_KEY: file:///run/secrets/authentik-secret-key
+          # Listen
+          AUTHENTIK_LISTEN__METRICS: 0.0.0.0:9301
+          # PostgreSQL
+          AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_postgresql_host }}"
+          AUTHENTIK_POSTGRESQL__PORT: "{{ authentik_postgresql_port }}"
+          AUTHENTIK_POSTGRESQL__NAME: "{{ authentik_postgresql_database }}"
+          AUTHENTIK_POSTGRESQL__USER: "{{ authentik_postgresql_username }}"
+          AUTHENTIK_POSTGRESQL__PASSWORD: file:///run/secrets/authentik-postgresql-password
+          AUTHENTIK_POSTGRESQL__SSLMODE: verify-full
+          AUTHENTIK_POSTGRESQL__SSLROOTCERT: /etc/ssl/certs/authentik.crt
+        volumes:
+          - /etc/authentik/media:/media
+          - /etc/authentik/templates:/templates
+          - "{{ authentik_ssl_ca }}:/etc/ssl/certs/authentik.crt"
+          - /etc/authentik/certs:/certs
+        secrets:
+          - authentik-secret-key
+          - authentik-postgresql-password
+        quadlet_options:
+          # Add a 10 minute startup timeout to negate systemd terminating
+          # startup too early when the network and/or storage is too slow.
+          - |-
+            [Service]
+            TimeoutStartSec=600
+        state: quadlet
+
+    # LDAP
+    - name: Create authentik-ldap-token secret
+      containers.podman.podman_secret:
+        name: authentik-ldap-token
+        data: "{{ authentik_ldap_token }}"
+        state: "{{ authentik_ldap_token | ternary('present', 'absent') }}"
+    - name: Create authentik-ldap container quadlet
+      containers.podman.podman_container:
+        name: authentik-ldap
+        pod: authentik.pod
+        image: "{{ authentik_ldap_image }}@sha256:{{ authentik_ldap_image_digest }}"
+        user: "{{ authentik_user_id }}:{{ authentik_group_id }}"
+        env:
+          AUTHENTIK_HOST: http://localhost:9000
+          AUTHENTIK_INSECURE: "true"
+          AUTHENTIK_TOKEN: file:///run/secrets/authentik-ldap-token
+          # Listen
+          AUTHENTIK_LISTEN__METRICS: 0.0.0.0:9302
+        secrets:
+          - authentik-ldap-token
+        quadlet_options:
+          # Add a 10 minute startup timeout to negate systemd terminating
+          # startup too early when the network and/or storage is too slow.
+          - |-
+            [Service]
+            TimeoutStartSec=600
+        state: quadlet
+
+    # RADIUS
+    - name: Create authentik-radius-token secret
+      containers.podman.podman_secret:
+        name: authentik-radius-token
+        data: "{{ authentik_radius_token }}"
+        state: "{{ authentik_radius_token | ternary('present', 'absent') }}"
+    - name: Create authentik-radius container quadlet
+      containers.podman.podman_container:
+        name: authentik-radius
+        pod: authentik.pod
+        image: "{{ authentik_radius_image }}@sha256:{{ authentik_radius_image_digest }}"
+        user: "{{ authentik_user_id }}:{{ authentik_group_id }}"
+        env:
+          AUTHENTIK_HOST: http://localhost:9000
+          AUTHENTIK_INSECURE: "true"
+          AUTHENTIK_TOKEN: file:///run/secrets/authentik-radius-token
+          # Listen
+          AUTHENTIK_LISTEN__METRICS: 0.0.0.0:9303
+        secrets:
+          - authentik-radius-token
+        quadlet_options:
+          # Add a 10 minute startup timeout to negate systemd terminating
+          # startup too early when the network and/or storage is too slow.
+          - |-
+            [Service]
+            TimeoutStartSec=600
+        state: quadlet

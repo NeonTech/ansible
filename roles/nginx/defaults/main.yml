@@ -5,8 +5,8 @@ nginx_group_name: "{{ nginx_user_name }}"
 nginx_group_id: "{{ nginx_user_id }}"
 
 # NGINX
-nginx_log_dir: /var/log/nginx
 nginx_http: {}
+nginx_stream: {}
 
 # SSL
 nginx_ssl_webroot: /var/www/acme

@@ -1,0 +1,10 @@
+dependencies:
+  - role: podman_rootless
+    vars:
+      # User
+      podman_rootless_user_name: "{{ authentik_user_name }}"
+      podman_rootless_user_id: "{{ authentik_user_id }}"
+      podman_rootless_user_home: /etc/authentik
+      # Group
+      podman_rootless_group_name: "{{ authentik_group_name }}"
+      podman_rootless_group_id: "{{ authentik_group_id }}"

@@ -1,0 +1,56 @@
+- name: Install podman
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    name: podman
+    state: present
+
+- name: Create group "{{ podman_rootless_group_name }}"
+  become: true
+  ansible.builtin.group:
+    name: "{{ podman_rootless_group_name }}"
+    gid: "{{ podman_rootless_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ podman_rootless_user_name }}"
+  become: true
+  ansible.builtin.user:
+    name: "{{ podman_rootless_user_name }}"
+    uid: "{{ podman_rootless_user_id }}"
+    group: "{{ podman_rootless_group_name }}"
+    system: true
+    create_home: true
+    home: "{{ podman_rootless_user_home }}"
+    shell: /bin/bash
+    state: present
+
+- name: Add subordinate user and group IDs
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/sub{{ item.type }}
+    regexp: "^{{ item.name }}:"
+    line: "{{ item.name }}:{{ item.start }}:{{ item.count }}"
+    state: present
+  loop:
+    - type: uid
+      name: "{{ podman_rootless_user_name }}"
+      start: "{{ podman_rootless_subuid_start }}"
+      count: "{{ podman_rootless_subuid_count }}"
+    - type: gid
+      name: "{{ podman_rootless_group_name }}"
+      start: "{{ podman_rootless_subgid_start }}"
+      count: "{{ podman_rootless_subgid_count }}"
+
+- name: Add SSH public key
+  become: true
+  ansible.posix.authorized_key:
+    key: "{{ lookup('file', podman_rootless_ssh_public_key_file) }}"
+    user: "{{ podman_rootless_user_name }}"
+    state: present
+
+- name: Enable lingering
+  become: true
+  ansible.builtin.command:
+    cmd: loginctl enable-linger {{ podman_rootless_user_name }}
+    creates: /var/lib/systemd/linger/{{ podman_rootless_user_name }}

@@ -1,0 +1,12 @@
+# TODO Add firewall rules to LXC
+
+- name: Authentik
+  hosts: vm-authentik
+  gather_facts: false
+  roles:
+    - pve_cloudinit
+    - os
+    - ca
+    - authentik
+    - nginx
+    - certbot

@@ -1,0 +1,18 @@
+# General
+pve_cloudinit_vmid: 201001
+
+# CPU
+pve_cloudinit_cpu_cores: 2
+
+# Memory
+pve_cloudinit_memory: 2048
+
+# Network
+pve_cloudinit_network_devices:
+  net0: virtio=BC:24:11:84:BD:BB,bridge=public,firewall=1
+  net1: virtio=BC:24:11:3D:CC:E3,bridge=data,firewall=1
+pve_cloudinit_network_addresses:
+  # TODO Remove IPv4 support by implementing NAT64
+  ipconfig0: ip6=auto,ip=dhcp
+  # TODO Remove IPv4 support by implementing NAT64
+  ipconfig1: ip6=auto,ip=dhcp

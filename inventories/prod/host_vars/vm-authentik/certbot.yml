@@ -1,0 +1,6 @@
+# ACME
+certbot_acme_domains:
+  - authentik.neontech.dev
+  - ldap.neontech.dev
+certbot_acme_webroot: "{{ nginx_ssl_webroot }}"
+certbot_acme_hooks_deploy: [nginx]

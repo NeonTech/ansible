@@ -1,4 +1,5 @@
 {
   "ansible.python.interpreterPath": "${workspaceFolder}/.venv/bin/python",
-  "shellcheck.useWorkspaceRootAsCwd": true
+  "shellcheck.useWorkspaceRootAsCwd": true,
+  "shellcheck.customArgs": ["-x"]
 }

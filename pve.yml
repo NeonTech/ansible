@@ -1,0 +1,4 @@
+- name: Proxmox Virtual Environment
+  hosts: pve
+  roles:
+    - ca

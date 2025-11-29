@@ -1,5 +1,11 @@
 nginx_http:
   dns.neontech.dev: >
+    upstream dns {
+      server localhost:8053;
+      # Improve performance by keeping some connections alive.
+      keepalive 10;
+    }
+
     server {
       listen 80;
       listen [::]:80;
@@ -18,13 +24,20 @@ nginx_http:
       server_name dns.neontech.dev;
 
       include ssl;
+      include hsts;
 
       location / {
-        proxy_pass http://localhost:8053;
+        proxy_pass http://dns;
         include proxy_params;
       }
     }
   technitium-dns.neontech.dev: >
+    upstream technitium-dns {
+      server localhost:5380;
+      # Improve performance by keeping some connections alive.
+      keepalive 10;
+    }
+
     server {
       listen 80;
       listen [::]:80;
@@ -43,9 +56,10 @@ nginx_http:
       server_name technitium-dns.neontech.dev;
 
       include ssl;
+      include hsts;
 
       location / {
-        proxy_pass http://localhost:5380;
+        proxy_pass http://technitium-dns;
         include proxy_params;
       }
     }

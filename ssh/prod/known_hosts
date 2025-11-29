@@ -8,4 +8,6 @@ sol-ceres-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGpmJAXWO8XYxJN6l
 sol-eris-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIENbkbpgG7fBOAxKGXcUtfG/WmFbMSN2uhGixdaPs/yc
 sol-haumea-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFadtM+VzExOrP51WioZKUwh0LrISNLiN/64IXxMu00V
 sol-pluto-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIELWed7XBRyrABss8iUElW47rzFb1epxG2Bx5YBcD2jn
+sol-sedna-pbs.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGNQ3jVNGL/Jeu8lq3VqQiHIwOBtIfKcCxWdagQ1ax1D
+vm-authentik.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbz6Ad2B+tmOBv9dxwk+MCzSmqIHTA6qYMZQh2NYYkO
 vm-ntp.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDjrwG/SHXUWeF3ciMQIS99Ep2rsiPLBfnWEu2SRlGwq
