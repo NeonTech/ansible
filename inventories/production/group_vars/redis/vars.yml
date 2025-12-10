@@ -26,3 +26,5 @@ redis_server_administrator_username: administrator
 redis_server_administrator_password: "{{ vault_redis_server_administrator_password }}"
 redis_server_discord_username: discord
 redis_server_discord_password: "{{ vault_redis_server_discord_password }}"
+redis_server_yamtrack_username: yamtrack
+redis_server_yamtrack_password: "{{ vault_redis_server_yamtrack_password }}"

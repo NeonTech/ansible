@@ -36,21 +36,17 @@
     state: directory
   register: redis_server_users_dir
 
-- name: Deploy redis.acl
+- name: Deploy all ACLs
   ansible.builtin.template:
-    src: roles/redis_server/templates/redis.acl.j2
-    dest: "{{ redis_server_users_dir.path }}/redis.acl"
+    src: roles/redis_server/templates/{{ item }}.acl.j2
+    dest: "{{ redis_server_users_dir.path }}/{{ item }}.acl"
     owner: "{{ docker_rootless_user.name }}"
     group: "{{ docker_rootless_user.name }}"
     mode: "0644" # -rw-r--r--
-
-- name: Deploy discord.acl
-  ansible.builtin.template:
-    src: roles/redis_server/templates/discord.acl.j2
-    dest: "{{ redis_server_users_dir.path }}/discord.acl"
-    owner: "{{ docker_rootless_user.name }}"
-    group: "{{ docker_rootless_user.name }}"
-    mode: "0644" # -rw-r--r--
+  loop:
+    - redis
+    - discord
+    - yamtrack
 
 - name: Deploy users.acl
   ansible.builtin.assemble:

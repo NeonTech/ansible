@@ -2,6 +2,8 @@
 
 set -o errexit -o nounset
 
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+
 venv_dir=./.venv
 python -m venv $venv_dir
 # shellcheck source=./.venv/bin/activate
