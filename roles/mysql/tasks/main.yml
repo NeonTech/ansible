@@ -8,7 +8,7 @@
     uris: https://repo.mysql.com/apt/debian
     signed_by: "{{ mysql_keyring }}"
     types: [deb]
-    suites: "{{ ansible_distribution_release }}"
+    suites: "{{ ansible_facts['distribution_release'] }}"
     components: [mysql-innovation]
     enabled: true
     state: present

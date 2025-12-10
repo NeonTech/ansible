@@ -8,7 +8,7 @@
     uris: https://mirror.mariadb.org/repo/{{ mariadb_version }}/debian
     signed_by: https://mariadb.org/mariadb_release_signing_key.asc
     types: [deb]
-    suites: ["{{ ansible_distribution_release }}"]
+    suites: ["{{ ansible_facts['distribution_release'] }}"]
     components: [main]
     enabled: true
     state: present

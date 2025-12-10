@@ -8,7 +8,7 @@
     uris: https://packages.redis.io/deb
     signed_by: https://packages.redis.io/gpg
     types: [deb]
-    suites: ["{{ ansible_distribution_release }}"]
+    suites: ["{{ ansible_facts['distribution_release'] }}"]
     components: [main]
     enabled: true
     state: present

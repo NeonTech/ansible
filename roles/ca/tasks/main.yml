@@ -8,7 +8,7 @@
 - name: Install
   become: true
   environment:
-    STEPPATH: "{{ ansible_user_dir }}/.step"
+    STEPPATH: "{{ ansible_facts['user_dir'] }}/.step"
   ansible.builtin.command:
     cmd: >-
       step
@@ -17,13 +17,13 @@
       --ca-url https://{{ ca_host }}:{{ ca_port }}
       --fingerprint {{ ca_fingerprint }}
       --install
-    creates: "{{ ansible_user_dir }}/.step"
+    creates: "{{ ansible_facts['user_dir'] }}/.step"
 - name: Update .step owner and group
   become: true
   ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.step"
-    owner: "{{ ansible_user_uid }}"
-    group: "{{ ansible_user_gid }}"
+    path: "{{ ansible_facts['user_dir'] }}/.step"
+    owner: "{{ ansible_facts['user_uid'] }}"
+    group: "{{ ansible_facts['user_gid'] }}"
     recurse: true
     state: directory
 
@@ -36,7 +36,7 @@
 - name: Share root certificate
   become: true
   ansible.builtin.copy:
-    src: "{{ ansible_user_dir }}/.step/certs/root_ca.crt"
+    src: "{{ ansible_facts['user_dir'] }}/.step/certs/root_ca.crt"
     remote_src: true
     dest: /usr/local/share/ca/{{ ca_fingerprint }}.crt
     mode: "0644" # -rw-r--r--
