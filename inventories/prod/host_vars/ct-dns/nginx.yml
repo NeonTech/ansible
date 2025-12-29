@@ -1,5 +1,5 @@
 nginx_http:
-  dns.neontech.dev: >
+  dns.neontech.dev: |
     upstream dns {
       server localhost:8053;
       # Improve performance by keeping some connections alive.
@@ -31,7 +31,7 @@ nginx_http:
         include proxy_params;
       }
     }
-  technitium-dns.neontech.dev: >
+  technitium-dns.neontech.dev: |
     upstream technitium-dns {
       server localhost:5380;
       # Improve performance by keeping some connections alive.

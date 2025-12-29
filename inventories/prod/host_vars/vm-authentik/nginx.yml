@@ -1,5 +1,5 @@
 nginx_http:
-  authentik.neontech.dev: >
+  authentik.neontech.dev: |
     upstream authentik-server {
       server localhost:9000;
       # Improve performance by keeping some connections alive.
@@ -32,7 +32,7 @@ nginx_http:
         include proxy_websocket;
       }
     }
-  ldap.neontech.dev: >
+  ldap.neontech.dev: |
     server {
       listen 80;
       listen [::]:80;
@@ -47,7 +47,7 @@ nginx_http:
     }
 
 nginx_stream:
-  ldap.neontech.dev: >
+  ldap.neontech.dev: |
     upstream authentik-ldap {
       server localhost:3389;
     }

@@ -1,0 +1,98 @@
+nginx_stream:
+  rocinante.neontech.dev: |
+    #region kubectl
+    upstream kubernetes_kubectl {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:6443;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:6443;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:6443;
+    }
+
+    server {
+      listen 6443 default_server;
+      listen [::]:6443 default_server;
+      server_name _;
+
+      proxy_buffer_size 128k;
+      proxy_pass kubernetes_kubectl;
+    }
+    #endregion
+
+    #region Talos
+    upstream kubernetes_talos {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:50000;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:50000;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:50000;
+    }
+
+    server {
+      listen 50000 default_server;
+      listen [::]:50000 default_server;
+      server_name _;
+
+      proxy_buffer_size 128k;
+      proxy_pass kubernetes_talos;
+    }
+    #endregion
+
+    #region HTTP
+    upstream kubernetes_http {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:30080;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:30080;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:30080;
+
+      server vm-ceres-k8s-w.rocinante.neontech.dev:30080;
+      server vm-eris-k8s-w.rocinante.neontech.dev:30080;
+      server vm-pluto-k8s-w.rocinante.neontech.dev:30080;
+    }
+
+    server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+      server_name _;
+
+      proxy_buffer_size 128k;
+      proxy_pass kubernetes_http;
+    }
+    #endregion
+
+    #region HTTPS
+    upstream kubernetes_https {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:30443;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:30443;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:30443;
+
+      server vm-ceres-k8s-w.rocinante.neontech.dev:30443;
+      server vm-eris-k8s-w.rocinante.neontech.dev:30443;
+      server vm-pluto-k8s-w.rocinante.neontech.dev:30443;
+    }
+
+    server {
+      listen 443 default_server;
+      listen [::]:443 default_server;
+      server_name _;
+
+      proxy_buffer_size 128k;
+      proxy_pass kubernetes_https;
+    }
+    #endregion
+
+    #region Minecraft
+    upstream kubernetes_minecraft {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:30565;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:30565;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:30565;
+
+      server vm-ceres-k8s-w.rocinante.neontech.dev:30565;
+      server vm-eris-k8s-w.rocinante.neontech.dev:30565;
+      server vm-pluto-k8s-w.rocinante.neontech.dev:30565;
+    }
+
+    server {
+      listen 25565 default_server;
+      listen [::]:25565 default_server;
+      server_name _;
+
+      proxy_buffer_size 128k;
+      proxy_pass kubernetes_minecraft;
+    }
+    #endregion

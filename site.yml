@@ -21,6 +21,8 @@
 # region Applications
 - name: Authentik
   ansible.builtin.import_playbook: authentik.yml
+- name: Ingress
+  ansible.builtin.import_playbook: ingress.yml
 # endregion
 
 # region Proxmox

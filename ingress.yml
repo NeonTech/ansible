@@ -1,0 +1,10 @@
+# TODO Add firewall rules to LXC
+
+- name: Ingress
+  hosts: ct-ingress
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - nginx
