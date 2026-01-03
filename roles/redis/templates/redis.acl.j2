@@ -1,0 +1,13 @@
+{% if redis_acl_password is none %}
+user default off nocommands resetkeys resetchannels resetpass
+{% else %}
+user default on allcommands allkeys allchannels #{{ redis_acl_password | hash("sha256") }}
+{% endif %}
+{% if redis_tls_acl_password is none %}
+user {{ redis_tls_acl_username }} off nocommands resetkeys resetchannels resetpass
+{% else %}
+user {{ redis_tls_acl_username }} on +config resetkeys resetchannels #{{ redis_tls_acl_password | hash("sha256") }}
+{% endif %}
+{% for key, value in redis_acl.items() %}
+user {{ key }} {{ value }}
+{% endfor %}

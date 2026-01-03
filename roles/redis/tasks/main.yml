@@ -49,6 +49,8 @@
         line: "{{ item.value | ternary(item.key ~ ' ' ~ item.value, '# ' ~ item.key ~ ' <placeholder>') }}"
         state: present
       loop:
+        - key: bind
+          value: "0.0.0.0 ::"
         # TODO Set value to 0 to disable non-TLS port
         - key: port
           value: 9736
@@ -74,30 +76,17 @@
         - key: tls-dh-params-file
           value: '"{{ redis_tls_dhparam }}"'
     # "acl" configuration
-    - name: Copy "root" password
+    - name: Copy "tls" password
+      when: redis_tls_acl_password is not none
       ansible.builtin.copy:
-        content: "{{ redis_password }}"
+        content: "{{ redis_tls_acl_password }}"
+        dest: /etc/redis/{{ redis_tls_acl_username }}.password
         owner: "{{ redis_user_name }}"
         group: "{{ redis_group_name }}"
-        dest: /etc/redis/{{ redis_username }}.password
         mode: "0600" # -rw-------
-    - name: Create acl.d directory
-      ansible.builtin.file:
-        path: /etc/redis/acl.d
-        owner: "{{ redis_user_name }}"
-        group: "{{ redis_group_name }}"
-        mode: "0755" # drwxr-xr-x
-        state: directory
-    - name: Template "root" ACL
+    - name: Template redis.acl
       ansible.builtin.template:
-        src: root.acl.j2
-        dest: /etc/redis/acl.d/{{ redis_username }}.acl
-        owner: "{{ redis_user_name }}"
-        group: "{{ redis_group_name }}"
-        mode: "0600" # -rw-------
-    - name: Assemble redis.acl
-      ansible.builtin.assemble:
-        src: /etc/redis/acl.d
+        src: redis.acl.j2
         dest: /etc/redis/redis.acl
         owner: "{{ redis_user_name }}"
         group: "{{ redis_group_name }}"
