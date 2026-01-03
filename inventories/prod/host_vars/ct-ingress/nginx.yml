@@ -86,3 +86,41 @@ nginx_stream:
       proxy_pass kubernetes_minecraft;
     }
     #endregion
+
+    #region Neko (tcpmux)
+    upstream kubernetes_neko_tcpmux {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:30024;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:30024;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:30024;
+
+      server vm-ceres-k8s-w.rocinante.neontech.dev:30024;
+      server vm-eris-k8s-w.rocinante.neontech.dev:30024;
+      server vm-pluto-k8s-w.rocinante.neontech.dev:30024;
+    }
+
+    server {
+      listen 10024;
+      listen [::]:10024;
+
+      proxy_pass kubernetes_neko_tcpmux;
+    }
+    #endregion
+
+    #region Neko (udpmux)
+    upstream kubernetes_neko_udpmux {
+      server vm-ceres-k8s-cp.rocinante.neontech.dev:30025;
+      server vm-eris-k8s-cp.rocinante.neontech.dev:30025;
+      server vm-pluto-k8s-cp.rocinante.neontech.dev:30025;
+
+      server vm-ceres-k8s-w.rocinante.neontech.dev:30025;
+      server vm-eris-k8s-w.rocinante.neontech.dev:30025;
+      server vm-pluto-k8s-w.rocinante.neontech.dev:30025;
+    }
+
+    server {
+      listen 10025 udp;
+      listen [::]:10025 udp;
+
+      proxy_pass kubernetes_neko_udpmux;
+    }
+    #endregion
