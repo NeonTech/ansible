@@ -4,6 +4,10 @@
 mariadb_user_name: mysql # LDAP
 mariadb_user_id: 2075 # LDAP
 
+# Server
+mariadb_bind_address: "0.0.0.0,::"
+mariadb_max_connections: 1000
+
 # Login
 mariadb_password: "{{ vault_mariadb_password }}"
 

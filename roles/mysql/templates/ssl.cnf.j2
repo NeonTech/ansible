@@ -1,8 +1,0 @@
-[mysqld]
-{% if mysql_ssl_ca is not none %}
-ssl_ca = {{ mysql_ssl_ca }}
-{% endif %}
-ssl_cert={{ mysql_ssl_certificate }}
-ssl_key={{ mysql_ssl_certificate_key }}
-# TODO Set value to "ON" to enforce SSL
-require_secure_transport=OFF

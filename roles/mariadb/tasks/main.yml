@@ -42,7 +42,7 @@
       - mariadb-server
     state: present
 
-- name: Update root password
+- name: Configure remote "root" user
   community.mysql.mysql_user:
     # localhost uses auth_socket plugin
     login_user: "{{ mariadb_username }}"
@@ -51,6 +51,7 @@
     name: "{{ mariadb_username }}"
     host: "%"
     password: "{{ mariadb_password }}"
+    priv: "*.*:ALL,GRANT"
     state: present
 
 - name: Update configuration
@@ -66,7 +67,9 @@
         state: present
       loop:
         - key: bind-address
-          value: "0.0.0.0,::"
+          value: "{{ mariadb_bind_address }}"
+        - key: max_connections
+          value: "{{ mariadb_max_connections }}"
         # "ssl" configuration
         - key: ssl-ca
           value: '{{ mariadb_ssl_ca | ternary("''" ~ mariadb_ssl_ca ~ "''", none) }}'

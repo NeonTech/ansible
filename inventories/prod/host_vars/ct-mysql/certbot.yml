@@ -1,4 +1,0 @@
-# ACME
-certbot_acme_domains: [mysql.neontech.dev]
-certbot_acme_standalone: true
-certbot_acme_hooks_deploy: [mysql]

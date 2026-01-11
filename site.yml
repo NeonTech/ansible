@@ -10,8 +10,6 @@
 # region Databases
 - name: MariaDB
   ansible.builtin.import_playbook: mariadb.yml
-- name: MySQL
-  ansible.builtin.import_playbook: mysql.yml
 - name: PostgreSQL
   ansible.builtin.import_playbook: postgresql.yml
 - name: Redis

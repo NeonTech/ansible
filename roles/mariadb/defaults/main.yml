@@ -6,6 +6,10 @@ mariadb_user_id: "{{ ansible_user_uid }}"
 mariadb_group_name: "{{ mariadb_user_name }}"
 mariadb_group_id: "{{ mariadb_user_id }}"
 
+# Server
+mariadb_bind_address: null
+mariadb_max_connections: null
+
 # Login
 mariadb_username: root
 mariadb_password: "{{ mandatory(msg='default secret') }}"

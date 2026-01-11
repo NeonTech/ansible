@@ -2,7 +2,6 @@ ct-ca
 ct-dns
 ct-ingress
 ct-mariadb
-ct-mysql
 ct-postgresql
 ct-redis
 vm-authentik
