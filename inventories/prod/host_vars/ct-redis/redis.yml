@@ -12,3 +12,5 @@ redis_acl_password: "{{ vault_redis_acl_password }}"
 redis_acl:
   # TODO Apply principle of least privilege and use a seperate user for each Discord bot
   discord: "on allcommands allkeys allchannels #{{ vault_redis_acl_discord_password | hash('sha256') }}"
+  # TODO Apply principle of least privilege
+  weblate: "on allcommands allkeys allchannels #{{ vault_redis_acl_weblate_password | hash('sha256') }}"
