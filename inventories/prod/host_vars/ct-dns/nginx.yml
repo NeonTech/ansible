@@ -1,6 +1,7 @@
 nginx_http:
   dns.neontech.dev: |
-    upstream dns {
+    #region DNS-over-HTTPS
+    upstream dns_over_https {
       server localhost:8053;
       # Improve performance by keeping some connections alive.
       keepalive 10;
@@ -27,10 +28,11 @@ nginx_http:
       include hsts;
 
       location / {
-        proxy_pass http://dns;
+        proxy_pass http://dns_over_https;
         include proxy_params;
       }
     }
+    #endregion
   technitium-dns.neontech.dev: |
     upstream technitium-dns {
       server localhost:5380;
@@ -63,3 +65,18 @@ nginx_http:
         include proxy_params;
       }
     }
+
+nginx_stream:
+  dns.neontech.dev: |
+    #region DNS-over-TCP
+    upstream dns_over_tcp {
+      server localhost:53800;
+    }
+
+    server {
+      listen 53 proxy_protocol;
+      listen [::]:53 proxy_protocol;
+
+      proxy_pass dns_over_tcp;
+    }
+    #endregion
