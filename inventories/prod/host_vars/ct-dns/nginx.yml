@@ -68,15 +68,17 @@ nginx_http:
 
 nginx_stream:
   dns.neontech.dev: |
-    #region DNS-over-TCP
-    upstream dns_over_tcp {
+    #region DNS-over-TLS
+    upstream dns_over_tls {
       server localhost:53800;
     }
 
     server {
-      listen 53 proxy_protocol;
-      listen [::]:53 proxy_protocol;
+      listen 853 ssl proxy_protocol;
+      listen [::]:853 ssl proxy_protocol;
 
-      proxy_pass dns_over_tcp;
+      include ssl;
+
+      proxy_pass dns_over_tls;
     }
     #endregion
