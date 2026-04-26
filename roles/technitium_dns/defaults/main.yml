@@ -1,9 +1,9 @@
 # Version
-technitium_dns_version: 13.6.0
+technitium_dns_version: 15.0.1
 
 # Download
 technitium_dns_download_filename: DnsServerPortable.tar.gz
-technitium_dns_download_checksum: 89614c20fb282050f701bc785681aaf1d45a5208cf313759a093df95606014b7
+technitium_dns_download_checksum: 2eaa47654eb6e58bf08821bd170dceb59bbd035468c744bc47ba12154df28b48
 
 # User
 technitium_dns_user_name: "{{ ansible_user_id }}"
