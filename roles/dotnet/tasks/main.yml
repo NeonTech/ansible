@@ -28,7 +28,7 @@
     - name: Download "{{ dotnet_download_filename }}"
       ansible.builtin.get_url:
         url: https://builds.dotnet.microsoft.com/dotnet/Sdk/{{ dotnet_version }}/{{ dotnet_download_filename }}
-        checksum: sha512:{{ dotnet_download_checksum }}
+        checksum: "{{ dotnet_download_checksum }}"
         dest: "{{ dotnet_download_file.path }}"
         mode: "0600" # -rw-------
     - name: Uninstall previous version

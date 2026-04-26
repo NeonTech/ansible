@@ -44,7 +44,7 @@
     - name: Download "{{ technitium_dns_download_filename }}"
       ansible.builtin.get_url:
         url: https://download.technitium.com/dns/archive/{{ technitium_dns_version }}/{{ technitium_dns_download_filename }}
-        checksum: sha256:{{ technitium_dns_download_checksum }}
+        checksum: "{{ technitium_dns_download_checksum }}"
         dest: "{{ technitium_dns_download_file.path }}"
         mode: "0600" # -rw-------
     - name: Stop systemd service

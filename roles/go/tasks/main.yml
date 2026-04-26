@@ -15,7 +15,7 @@
     - name: Download "{{ go_download_filename }}"
       ansible.builtin.get_url:
         url: https://go.dev/dl/{{ go_download_filename }}
-        checksum: sha256:{{ go_download_checksum }}
+        checksum: "{{ go_download_checksum }}"
         dest: "{{ go_download_file.path }}"
         mode: "0600" # -rw-------
     - name: Uninstall previous version

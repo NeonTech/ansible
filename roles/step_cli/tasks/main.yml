@@ -15,7 +15,7 @@
     - name: Download "{{ step_cli_download_filename }}"
       ansible.builtin.get_url:
         url: "https://github.com/smallstep/cli/releases/download/v{{ step_cli_version }}/{{ step_cli_download_filename }}"
-        checksum: sha256:{{ step_cli_download_checksum }}
+        checksum: "{{ step_cli_download_checksum }}"
         dest: "{{ step_cli_download_file.path }}"
         mode: "0600" # -rw-------
     - name: Uninstall previous version

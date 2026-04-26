@@ -52,7 +52,7 @@
     - name: Download "{{ step_ca_download_filename }}"
       ansible.builtin.get_url:
         url: https://github.com/smallstep/certificates/releases/download/v{{ step_ca_version }}/{{ step_ca_download_filename }}
-        checksum: sha256:{{ step_ca_download_checksum }}
+        checksum: "{{ step_ca_download_checksum }}"
         dest: "{{ step_ca_download_file.path }}"
         mode: "0600" # -rw-------
     - name: Stop systemd service
