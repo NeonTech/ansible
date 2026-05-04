@@ -11,7 +11,7 @@
       - gcc
     state: present
 
-- name: Create systemd timer
+- name: Create systemd units
   become: true
   ansible.builtin.copy:
     src: "{{ item }}"
@@ -21,7 +21,7 @@
     - certbot.service
     - certbot.timer
   notify:
-    - Restart systemd timer
+    - Restart systemd units
 
 - name: Register version
   ansible.builtin.command: certbot --version
@@ -51,7 +51,7 @@
 - name: Update configuration
   become: true
   notify:
-    - Restart systemd timer
+    - Restart systemd units
   block:
     - name: Template certbot.sh
       ansible.builtin.template:

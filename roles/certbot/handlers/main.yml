@@ -1,6 +1,9 @@
-- name: Restart systemd timer
+- name: Restart systemd units
   become: true
   ansible.builtin.systemd_service:
-    name: certbot.timer
+    name: "{{ item }}"
     daemon_reload: true
-    state: started
+    state: restarted
+  loop:
+    - certbot.service
+    - certbot.timer

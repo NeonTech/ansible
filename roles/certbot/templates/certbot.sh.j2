@@ -17,6 +17,7 @@ certbot certonly \
   --webroot-path "{{ certbot_acme_webroot }}" \
 {% endif %}
   --server "{{ certbot_acme_url }}" \
+  --agree-tos \
   --pre-hook "/usr/local/bin/certbot-pre-hook.sh" \
   --post-hook "/usr/local/bin/certbot-post-hook.sh" \
   --deploy-hook "/usr/local/bin/certbot-deploy-hook.sh" \
