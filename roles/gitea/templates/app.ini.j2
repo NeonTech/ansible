@@ -1,0 +1,43 @@
+WORK_PATH = /var/lib/gitea
+
+[server]
+ROOT_URL = {{ gitea_server_root_url }}
+
+[database]
+DB_TYPE = {{ gitea_database_type }}
+{% if gitea_database_host is not none %}
+HOST = {{ gitea_database_host }}
+{% endif %}
+{% if gitea_database_name is not none %}
+NAME = {{ gitea_database_name }}
+{% endif %}
+{% if gitea_database_username is not none %}
+USER = {{ gitea_database_username }}
+{% endif %}
+{% if gitea_database_password is not none %}
+PASSWD = {{ gitea_database_password }}
+{% endif %}
+{% if gitea_database_ssl_mode is not none %}
+SSL_MODE = {{ gitea_database_ssl_mode }}
+{% endif %}
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY = {{ gitea_security_secret_key }}
+INTERNAL_TOKEN = {{ gitea_security_internal_token }}
+
+[oauth2]
+JWT_SECRET = {{ gitea_oauth2_jwt_secret }}
+
+[service]
+{% if gitea_service_registration is sameas true %}
+DISABLE_REGISTRATION = false
+{% elif gitea_service_registration == 'internal' %}
+DISABLE_REGISTRATION = false
+ALLOW_ONLY_INTERNAL_REGISTRATION = true
+{% elif gitea_service_registration == 'external' %}
+DISABLE_REGISTRATION = false
+ALLOW_ONLY_EXTERNAL_REGISTRATION = true
+{% else %}
+DISABLE_REGISTRATION = true
+{% endif %}

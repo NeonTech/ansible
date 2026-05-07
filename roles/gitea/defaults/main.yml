@@ -1,0 +1,35 @@
+# Version
+gitea_version: 1.26.1
+gitea_os: linux
+gitea_arch: amd64
+
+# Download
+gitea_download_filename: gitea-{{ gitea_version }}-{{ gitea_os }}-{{ gitea_arch }}
+gitea_download_checksum: sha256:324ffd2cc85d567ecd821ad3e19de4abe1c7f94a082b382c1453d4ca7bcf2a7b
+
+# User
+gitea_user_name: "{{ ansible_user_id }}"
+gitea_user_id: "{{ ansible_user_uid }}"
+gitea_group_name: "{{ gitea_user_name }}"
+gitea_group_id: "{{ gitea_user_id }}"
+
+# Server
+gitea_server_root_url: http://localhost:3000/
+
+# Database
+gitea_database_type: sqlite3
+gitea_database_host: null
+gitea_database_name: null
+gitea_database_username: null
+gitea_database_password: null
+gitea_database_ssl_mode: null
+
+# Security
+gitea_security_secret_key: "{{ mandatory(msg='default secret') }}"
+gitea_security_internal_token: "{{ mandatory(msg='default secret') }}"
+
+# OAuth2
+gitea_oauth2_jwt_secret: "{{ mandatory(msg='default secret') }}"
+
+# Service
+gitea_service_registration: true

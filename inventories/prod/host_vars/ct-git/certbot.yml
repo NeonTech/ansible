@@ -1,0 +1,5 @@
+# ACME
+certbot_acme_domains:
+  - git.neontech.dev
+certbot_acme_webroot: "{{ nginx_ssl_webroot }}"
+certbot_acme_hooks_deploy: [nginx]

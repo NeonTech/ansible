@@ -1,0 +1,37 @@
+nginx_http:
+  git.neontech.dev: |
+    upstream gitea {
+      server localhost:3000;
+      # Improve performance by keeping some connections alive.
+      keepalive 10;
+    }
+
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name git.neontech.dev;
+
+      include acme_webroot;
+
+      location / {
+        return 301 https://$host$request_uri;
+      }
+    }
+
+    server {
+      listen 443 ssl;
+      listen [::]:443 ssl;
+      server_name git.neontech.dev;
+
+      include ssl;
+      include hsts;
+
+      location / {
+        proxy_pass http://gitea;
+        include proxy_params;
+        include proxy_websocket;
+
+        # Avoid "413 Request Entity Too Large"
+        client_max_body_size 512M;
+      }
+    }

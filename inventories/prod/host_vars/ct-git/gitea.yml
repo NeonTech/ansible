@@ -1,0 +1,24 @@
+# User
+gitea_user_name: gitea # LDAP
+gitea_user_id: 2049 # LDAP
+
+# Server
+gitea_server_root_url: https://git.neontech.dev/
+
+# Database
+gitea_database_type: postgres
+gitea_database_host: postgresql.neontech.dev
+gitea_database_name: gitea
+gitea_database_username: gitea
+gitea_database_password: "{{ vault_gitea_database_password }}"
+gitea_database_ssl_mode: verify-full
+
+# Security
+gitea_security_secret_key: "{{ vault_gitea_security_secret_key }}"
+gitea_security_internal_token: "{{ vault_gitea_security_internal_token }}"
+
+# OAuth2
+gitea_oauth2_jwt_secret: "{{ vault_gitea_oauth2_jwt_secret }}"
+
+# Service
+gitea_service_registration: external

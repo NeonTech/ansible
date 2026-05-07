@@ -1,0 +1,10 @@
+- name: Git
+  hosts: ct-git
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - gitea
+    - nginx
+    - certbot

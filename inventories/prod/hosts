@@ -1,5 +1,6 @@
 ct-ca
 ct-dns
+ct-git
 ct-ingress
 ct-mariadb
 ct-postgresql
