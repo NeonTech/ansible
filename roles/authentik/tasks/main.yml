@@ -46,6 +46,10 @@
         name: authentik-postgresql-password
         data: "{{ authentik_postgresql_password }}"
         state: "{{ authentik_postgresql_password | ternary('present', 'absent') }}"
+    - name: Pull authentik server/worker image
+      containers.podman.podman_image:
+        name: "{{ authentik_image }}@sha256:{{ authentik_image_digest }}"
+        state: present
     - name: Create authentik-server container quadlet
       containers.podman.podman_container:
         name: authentik-server
@@ -120,6 +124,10 @@
         name: authentik-ldap-token
         data: "{{ authentik_ldap_token }}"
         state: "{{ authentik_ldap_token | ternary('present', 'absent') }}"
+    - name: Pull authentik-ldap image
+      containers.podman.podman_image:
+        name: "{{ authentik_ldap_image }}@sha256:{{ authentik_ldap_image_digest }}"
+        state: present
     - name: Create authentik-ldap container quadlet
       containers.podman.podman_container:
         name: authentik-ldap
@@ -148,6 +156,10 @@
         name: authentik-radius-token
         data: "{{ authentik_radius_token }}"
         state: "{{ authentik_radius_token | ternary('present', 'absent') }}"
+    - name: Pull authentik-radius image
+      containers.podman.podman_image:
+        name: "{{ authentik_radius_image }}@sha256:{{ authentik_radius_image_digest }}"
+        state: present
     - name: Create authentik-radius container quadlet
       containers.podman.podman_container:
         name: authentik-radius
