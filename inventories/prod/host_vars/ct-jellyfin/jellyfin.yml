@@ -1,0 +1,3 @@
+# User
+jellyfin_user_name: jellyfin # LDAP
+jellyfin_user_id: 2030 # LDAP

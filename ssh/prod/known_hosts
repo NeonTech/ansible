@@ -2,12 +2,14 @@ ct-ca.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK6oeWvcbFqAdDSHfpgLFsaPp
 ct-dns.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBR646bIvg065wzkw+GjbCI1QXgYiEAY40vawESxH6ep
 ct-git.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINz8hEoqFymp46UMP7lQ3yiNu7g5Xdkh5WQIZFL0DdwZ
 ct-ingress.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF7VVJQ/Y3u34BsD3OCa850yTGHnLwpEy4dEWdrfOQOC
+ct-jellyfin.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOdKw9RrfJ9F/kSlbvQkuQRCc/a/rYNuDO/96T/cOrdm
 ct-mariadb.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG/GYn+KLkmdaop0P6ZcNZxc+Di0KA3NeDWzUt6L2bcY
 ct-postgresql.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/KcVxQFRm8MwM3Y6PbQPz3PNnSvezUcB/eA2QfJ88
 ct-redis.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE9t5rDW7q8rtC9M8JPNh+Lbh2FN+XY9nvURb39zQfOH
 sol-ceres-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGpmJAXWO8XYxJN6ltHRac3MnRo7+NQEHf2cDL+Vsn0N
 sol-eris-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIENbkbpgG7fBOAxKGXcUtfG/WmFbMSN2uhGixdaPs/yc
 sol-haumea-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFadtM+VzExOrP51WioZKUwh0LrISNLiN/64IXxMu00V
+sol-orcus-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIp/zyoZlpfiyGnbM0/N6XBKygkKtDdg6tPnfDTZKCFL
 sol-pluto-pve.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIELWed7XBRyrABss8iUElW47rzFb1epxG2Bx5YBcD2jn
 sol-sedna-pbs.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGNQ3jVNGL/Jeu8lq3VqQiHIwOBtIfKcCxWdagQ1ax1D
 vm-authentik.neontech.dev ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG7FVg4O9EtXtuFFXPaQH8vFgwb3GIw9NLDxukxy2BHE

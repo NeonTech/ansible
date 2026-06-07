@@ -1,0 +1,13 @@
+# TODO Add firewall rules to LXC
+# TODO Add renderD128 device to LXC
+
+- name: Jellyfin
+  hosts: ct-jellyfin
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - jellyfin
+    - nginx
+    - certbot

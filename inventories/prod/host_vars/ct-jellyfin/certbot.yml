@@ -1,0 +1,7 @@
+# ACME
+certbot_acme_domains: [jellyfin.neontech.dev]
+certbot_acme_webroot: "{{ nginx_ssl_webroot }}"
+certbot_acme_hooks_deploy: [nginx]
+# TODO Use private CA when all Jellyfin clients are supported
+certbot_acme_ca: null
+certbot_acme_url: https://acme-v02.api.letsencrypt.org/directory

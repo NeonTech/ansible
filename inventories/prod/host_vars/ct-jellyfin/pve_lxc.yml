@@ -1,0 +1,20 @@
+# General
+pve_lxc_vmid: 102000
+
+# Storage
+pve_lxc_storage: "{{ pve_storage_local }}"
+pve_lxc_storage_fs: "{{ pve_storage_local_fs }}"
+
+# Disks
+pve_lxc_disk_volume_size: 512 # GiB
+
+# CPU
+pve_lxc_cpu_cores: 8
+
+# Memory
+pve_lxc_memory: 16384 # MB
+
+# Network
+pve_lxc_interfaces:
+  # TODO Remove IPv4 support by implementing NAT64
+  net0: name=eth0,bridge=public,firewall=1,hwaddr=BC:24:11:B7:DE:EB,ip=dhcp,ip6=auto

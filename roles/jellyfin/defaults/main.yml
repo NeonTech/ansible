@@ -1,0 +1,5 @@
+# User
+jellyfin_user_name: "{{ ansible_user_id }}"
+jellyfin_user_id: "{{ ansible_user_uid }}"
+jellyfin_group_name: "{{ jellyfin_user_name }}"
+jellyfin_group_id: "{{ jellyfin_user_id }}"

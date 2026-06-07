@@ -1,0 +1,46 @@
+- name: Define ansible_distribution facts
+  ansible.builtin.setup:
+    filter:
+      - ansible_distribution
+      - ansible_distribution_release
+
+- name: Register Debian package architecture
+  ansible.builtin.command: dpkg --print-architecture
+  register: jellyfin_arch
+  changed_when: false
+
+- name: Add Jellyfin repository
+  ansible.builtin.deb822_repository:
+    name: jellyfin
+    uris: https://repo.jellyfin.org/{{ ansible_facts['distribution'] | lower }}
+    signed_by: https://repo.jellyfin.org/jellyfin_team.gpg.key
+    types: [deb]
+    suites: "{{ ansible_facts['distribution_release'] }}"
+    components: [main]
+    architectures: ["{{ jellyfin_arch.stdout }}"]
+    enabled: true
+    state: present
+
+- name: Create group "{{ jellyfin_group_name }}"
+  ansible.builtin.group:
+    name: "{{ jellyfin_group_name }}"
+    gid: "{{ jellyfin_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ jellyfin_user_name }}"
+  ansible.builtin.user:
+    name: "{{ jellyfin_user_name }}"
+    uid: "{{ jellyfin_user_id }}"
+    group: "{{ jellyfin_group_name }}"
+    system: true
+    create_home: true
+    home: /etc/jellyfin
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Install Jellyfin
+  ansible.builtin.apt:
+    update_cache: true
+    name: jellyfin
+    state: present

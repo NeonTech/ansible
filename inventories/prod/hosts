@@ -2,6 +2,7 @@ ct-ca
 ct-dns
 ct-git
 ct-ingress
+ct-jellyfin
 ct-mariadb
 ct-postgresql
 ct-redis
@@ -14,5 +15,6 @@ sol-sedna-pbs
 [pve]
 sol-ceres-pve
 sol-eris-pve
+sol-orcus-pve
 sol-pluto-pve
 sol-haumea-pve
