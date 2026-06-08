@@ -19,3 +19,52 @@ pve_cloudinit_network_addresses:
   ipconfig0: ip6=auto,ip=dhcp
   # TODO Remove IPv4 support by implementing NAT64
   ipconfig1: ip6=auto,ip=dhcp
+
+# Firewall
+pve_cloudinit_firewall_rules:
+  - pos: 0
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: icmp
+    log: nolog
+    comment: icmp (ipv4)
+  - pos: 1
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: ipv6-icmp
+    log: nolog
+    comment: icmp (ipv6)
+  - pos: 2
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 22
+    log: nolog
+    comment: ssh
+  - pos: 3
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 80
+    log: nolog
+    comment: http
+  - pos: 4
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 443
+    log: nolog
+    comment: https
+  - pos: 5
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 636
+    log: nolog
+    comment: ldaps

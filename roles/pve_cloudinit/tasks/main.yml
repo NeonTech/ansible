@@ -110,6 +110,21 @@
         #
         state: resized
 
+    - name: Firewall VM
+      community.proxmox.proxmox_firewall:
+        # API
+        api_host: "{{ pve_cloudinit_api_host }}"
+        api_port: "{{ pve_cloudinit_api_port }}"
+        api_user: "{{ pve_cloudinit_api_user }}"
+        api_token_id: "{{ pve_cloudinit_api_token_id }}"
+        api_token_secret: "{{ pve_cloudinit_api_token }}"
+        # General
+        vmid: "{{ pve_cloudinit_vmid }}"
+        level: vm
+        rules: "{{ pve_cloudinit_firewall_rules }}"
+        #
+        update: true
+        state: present
     - name: Start VM
       community.proxmox.proxmox_kvm:
         # API

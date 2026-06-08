@@ -1,5 +1,3 @@
-# TODO Add firewall rules to LXC
-
 - name: Authentik
   hosts: vm-authentik
   gather_facts: false

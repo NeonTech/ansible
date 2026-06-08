@@ -37,3 +37,6 @@ pve_cloudinit_network_addresses: {}
 pve_cloudinit_order: 1
 pve_cloudinit_startup: 0 # Seconds
 pve_cloudinit_shutdown: 60 # Seconds
+
+# Firewall
+pve_cloudinit_firewall_rules: []

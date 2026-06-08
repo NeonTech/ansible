@@ -7,3 +7,84 @@ pve_lxc_interfaces:
   net0: name=eth0,bridge=public,firewall=1,hwaddr=BC:24:11:F0:6D:03,ip=dhcp,ip6=auto
   # TODO Remove IPv4 support by implementing NAT64
   net1: name=eth1,bridge=k8s,firewall=1,hwaddr=BC:24:11:8A:5C:D0,ip=dhcp,ip6=auto
+
+# Firewall
+pve_lxc_firewall_rules:
+  - pos: 0
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: icmp
+    log: nolog
+    comment: icmp (ipv4)
+  - pos: 1
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: ipv6-icmp
+    log: nolog
+    comment: icmp (ipv6)
+  - pos: 2
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 22
+    log: nolog
+    comment: ssh
+  - pos: 3
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 80
+    log: nolog
+    comment: http
+  - pos: 4
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 443
+    log: nolog
+    comment: https
+  - pos: 5
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 6443
+    log: nolog
+    comment: kubectl
+  - pos: 6
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 50000
+    log: nolog
+    comment: talos
+  - pos: 7
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 25565
+    log: nolog
+    comment: minecraft
+  - pos: 8
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 10024
+    log: nolog
+    comment: neko (tcp)
+  - pos: 9
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: udp
+    dport: 10025
+    log: nolog
+    comment: neko (udp)

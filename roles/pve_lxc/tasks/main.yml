@@ -63,6 +63,21 @@
     - name: Give Proxmox time to apply configuration
       ansible.builtin.pause:
         seconds: 10
+    - name: Firewall
+      community.proxmox.proxmox_firewall:
+        # API
+        api_host: "{{ pve_lxc_api_host }}"
+        api_port: "{{ pve_lxc_api_port }}"
+        api_user: "{{ pve_lxc_api_user }}"
+        api_token_id: "{{ pve_lxc_api_token_id }}"
+        api_token_secret: "{{ pve_lxc_api_token }}"
+        # General
+        vmid: "{{ pve_lxc_vmid }}"
+        level: vm
+        rules: "{{ pve_lxc_firewall_rules }}"
+        #
+        update: true
+        state: present
     - name: Start
       community.proxmox.proxmox:
         # API

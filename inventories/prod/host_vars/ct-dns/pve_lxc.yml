@@ -5,3 +5,68 @@ pve_lxc_vmid: 101001
 pve_lxc_interfaces:
   # TODO Remove IPv4 support by implementing NAT64
   net0: name=eth0,bridge=public,firewall=1,hwaddr=BC:24:11:DC:A5:69,ip=dhcp,ip6=auto
+
+# Firewall
+pve_lxc_firewall_rules:
+  - pos: 0
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: icmp
+    log: nolog
+    comment: icmp (ipv4)
+  - pos: 1
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: ipv6-icmp
+    log: nolog
+    comment: icmp (ipv6)
+  - pos: 2
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 22
+    log: nolog
+    comment: ssh
+  - pos: 3
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 80
+    log: nolog
+    comment: http
+  - pos: 4
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 443
+    log: nolog
+    comment: https
+  - pos: 5
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 53
+    log: nolog
+    comment: dns (tcp)
+  - pos: 6
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: udp
+    dport: 53
+    log: nolog
+    comment: dns (udp)
+  - pos: 7
+    enable: true
+    type: in
+    action: ACCEPT
+    proto: tcp
+    dport: 853
+    log: nolog
+    comment: dns-over-tls

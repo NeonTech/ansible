@@ -37,3 +37,6 @@ pve_lxc_interfaces: {}
 pve_lxc_order: 1
 pve_lxc_startup: 0 # Seconds
 pve_lxc_shutdown: 60 # Seconds
+
+# Firewall
+pve_lxc_firewall_rules: []
