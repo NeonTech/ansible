@@ -74,11 +74,12 @@ nginx_stream:
     }
 
     server {
-      listen 853 ssl proxy_protocol;
-      listen [::]:853 ssl proxy_protocol;
+      listen 853 ssl;
+      listen [::]:853 ssl;
 
       include ssl;
 
       proxy_pass dns_over_tls;
+      proxy_protocol on;
     }
     #endregion
