@@ -20,6 +20,9 @@ pve_cloudinit_network_addresses:
   # TODO Remove IPv4 support by implementing NAT64
   ipconfig1: ip6=auto,ip=dhcp
 
+# Startup/Shutdown Order
+pve_cloudinit_order: 40
+
 # Firewall
 pve_cloudinit_firewall_rules:
   - pos: 0
