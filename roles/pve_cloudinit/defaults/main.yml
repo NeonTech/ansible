@@ -33,7 +33,8 @@ pve_cloudinit_memory: 1024 # MiB
 pve_cloudinit_network_devices: {}
 pve_cloudinit_network_addresses: {}
 
-# Startup/Shutdown Order
+# Startup/Shutdown
+pve_cloudinit_onboot: true
 pve_cloudinit_order: 1
 pve_cloudinit_startup: 0 # Seconds
 pve_cloudinit_shutdown: 60 # Seconds

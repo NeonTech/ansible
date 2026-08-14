@@ -48,7 +48,7 @@
         netif: "{{ pve_lxc_interfaces }}"
         # DNS
         # Confirm
-        onboot: true
+        onboot: "{{ pve_lxc_onboot }}"
         # Features
         features:
           - nesting=1

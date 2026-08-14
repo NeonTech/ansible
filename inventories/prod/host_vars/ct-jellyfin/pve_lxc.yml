@@ -19,7 +19,8 @@ pve_lxc_interfaces:
   # TODO Remove IPv4 support by implementing NAT64
   net0: name=eth0,bridge=public,firewall=1,hwaddr=BC:24:11:B7:DE:EB,ip=dhcp,ip6=auto
 
-# Startup/Shutdown Order
+# Startup/Shutdown
+pve_lxc_onboot: false
 pve_lxc_order: 50
 
 # Firewall

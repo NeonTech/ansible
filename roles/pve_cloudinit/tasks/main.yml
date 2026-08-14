@@ -33,7 +33,7 @@
         ostype: "{{ pve_cloudinit_image_type }}"
         agent: true
         boot: order=scsi0
-        onboot: true
+        onboot: "{{ pve_cloudinit_onboot }}"
         startup: order={{ pve_cloudinit_order }},up={{ pve_cloudinit_startup }},down={{ pve_cloudinit_shutdown }}
         #
         state: present

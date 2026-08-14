@@ -33,7 +33,8 @@ pve_lxc_memory_swap: 0 # MB
 # Network
 pve_lxc_interfaces: {}
 
-# Startup/Shutdown Order
+# Startup/Shutdown
+pve_lxc_onboot: true
 pve_lxc_order: 1
 pve_lxc_startup: 0 # Seconds
 pve_lxc_shutdown: 60 # Seconds
