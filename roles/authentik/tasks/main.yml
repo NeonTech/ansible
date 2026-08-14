@@ -93,6 +93,8 @@
         env:
           AUTHENTIK_SECRET_KEY: file:///run/secrets/authentik-secret-key
           # Listen
+          AUTHENTIK_LISTEN__HTTP: "[::]:8000"
+          AUTHENTIK_LISTEN__HTTPS: "[::]:8443"
           AUTHENTIK_LISTEN__METRICS: 0.0.0.0:9301
           # PostgreSQL
           AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_postgresql_host }}"

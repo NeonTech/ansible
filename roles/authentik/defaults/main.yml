@@ -16,15 +16,15 @@ authentik_ssl_ca: "{{ mandatory(msg='default value') }}"
 
 # Server/Worker
 authentik_image: ghcr.io/goauthentik/server
-authentik_image_digest: 7806ae1ae3423624fe90331e8b3dcca0afc155fac890c696dd92ddac6dc3a384 # 2026.2.3
+authentik_image_digest: ed120caf710ccf82ef0026f0bc74e51615bc95ebff228a7a2d6fc60c441c3868 # 2026.5.6
 authentik_secret_key: null
 
 # LDAP
 authentik_ldap_image: ghcr.io/goauthentik/ldap
-authentik_ldap_image_digest: 91f982a01cf78291d142071e4d03fb18fcfbb47d6166c53fcf96ca17d3eb3c54 # 2026.2.3
+authentik_ldap_image_digest: 68a595f5a7b75fb3615f1609725adaf1d45f743aafece715d943b9706074c307 # 2026.5.6
 authentik_ldap_token: null
 
 # RADIUS
 authentik_radius_image: ghcr.io/goauthentik/radius
-authentik_radius_image_digest: 9c745bf3c11fc965b1a7cf6a8f2565ffafa0d25b0ffea173b9d0fae2d032fc9b # 2026.2.3
+authentik_radius_image_digest: 078e04a4a4ca1fa7fc71550bdd5be3044cceab6ba8e11ae851612d8211e7c25a # 2026.5.6
 authentik_radius_token: null

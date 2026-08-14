@@ -1,9 +1,9 @@
 # Version
-dotnet_version: 10.0.203
+dotnet_version: 10.0.400
 dotnet_os: linux
 dotnet_arch: x64
 
 # Download
 dotnet_download_filename: dotnet-sdk-{{ dotnet_version }}-{{ dotnet_os }}-{{ dotnet_arch }}.tar.gz
 # yamllint disable-line rule:line-length
-dotnet_download_checksum: sha512:fdc36a27285b6f39b625814454f4dd3e76f2259c1279d0317d7fa297514bba607de323290d42caf67f62b9081ab26b6edb079e00f2b8c709c5826d3349a451d9
+dotnet_download_checksum: sha512:1033977dd837150e0814cf0c5d5b17ceb63925fda7ba2158b47258a4bd7c048cf82eac3bc1166f3146f53124a3f5fba09db1de1260d2ce96399860303b404b48

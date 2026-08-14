@@ -1,9 +1,9 @@
 # Version
-step_ca_version: 0.28.4
+step_ca_version: 0.30.2
 
 # Download
 step_ca_download_filename: step-ca_{{ step_ca_version }}.tar.gz
-step_ca_download_checksum: sha256:44d8e42508cea63c0572408c15e3f52cbbc18a8b3d3df5c213945d5465c56be0
+step_ca_download_checksum: sha256:944b205d5ba89f393cbdc09d68ab7ce485f5b44f44c28025d30508af956c1cba
 
 # CA
 step_ca_host: localhost

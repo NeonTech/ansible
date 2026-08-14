@@ -1,4 +1,4 @@
-certbot_version: 5.0.0
+certbot_version: 5.7.0
 
 # ACME
 certbot_acme_domains: []

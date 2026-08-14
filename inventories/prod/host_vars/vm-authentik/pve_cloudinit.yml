@@ -5,10 +5,10 @@ pve_cloudinit_vmid: 201001
 pve_cloudinit_image_disk_size: 32G
 
 # CPU
-pve_cloudinit_cpu_cores: 2
+pve_cloudinit_cpu_cores: 4
 
 # Memory
-pve_cloudinit_memory: 2048
+pve_cloudinit_memory: 4096
 
 # Network
 pve_cloudinit_network_devices:

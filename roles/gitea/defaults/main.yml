@@ -1,11 +1,11 @@
 # Version
-gitea_version: 1.26.1
+gitea_version: 1.27.2
 gitea_os: linux
 gitea_arch: amd64
 
 # Download
 gitea_download_filename: gitea-{{ gitea_version }}-{{ gitea_os }}-{{ gitea_arch }}
-gitea_download_checksum: sha256:324ffd2cc85d567ecd821ad3e19de4abe1c7f94a082b382c1453d4ca7bcf2a7b
+gitea_download_checksum: sha256:aa4e624ca6aa58a824a75562caecc2d206fcab8c70bc8fab765b456f182844fd
 
 # User
 gitea_user_name: "{{ ansible_user_id }}"

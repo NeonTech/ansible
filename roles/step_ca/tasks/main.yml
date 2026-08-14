@@ -77,12 +77,6 @@
       ansible.builtin.file:
         path: "{{ step_ca_download_file.path }}"
         state: absent
-    # https://github.com/smallstep/certificates/issues/2013
-    - name: Patch .version.sh
-      ansible.builtin.replace:
-        path: /usr/local/step-ca/.version.sh
-        regexp: '^#!\/usr\/bin\/env sh$'
-        replace: "#!/usr/bin/env bash"
     - name: Bootstrap
       community.general.make:
         chdir: /usr/local/step-ca
