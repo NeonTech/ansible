@@ -2,3 +2,9 @@
   hosts: pve
   roles:
     - ca
+  tasks:
+    - name: Install sensors
+      ansible.builtin.apt:
+        update_cache: true
+        name: lm-sensors
+        state: present
