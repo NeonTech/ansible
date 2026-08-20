@@ -6,8 +6,13 @@ After=multi-user.target
 Type=oneshot
 User=root
 Group=root
-ExecStartPre=/bin/sleep 60
+ExecStart=/bin/sleep 60
+{% if cpufreq_scaling_governor is not none %}
 ExecStart=/bin/sh -c 'echo {{ cpufreq_scaling_governor }} | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor > /dev/null'
+{% endif %}
+{% if cpufreq_energy_performance_preference is not none %}
+ExecStart=/bin/sh -c 'echo {{ cpufreq_energy_performance_preference }} | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference > /dev/null'
+{% endif %}
 
 [Install]
 WantedBy=multi-user.target

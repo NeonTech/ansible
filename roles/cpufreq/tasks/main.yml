@@ -1,31 +1,60 @@
-- name: Register scaling available governors
-  ansible.builtin.slurp:
-    src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
-  register: cpufreq_scaling_available_governors
+- name: Scaling governor
+  when: cpufreq_scaling_governor is not none
+  block:
+    - name: Register scaling available governors
+      ansible.builtin.slurp:
+        src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
+      register: cpufreq_scaling_available_governors
+    - name: Verify scaling governor
+      ansible.builtin.assert:
+        that: cpufreq_scaling_governor in (cpufreq_scaling_available_governors.content | b64decode).split()
+        fail_msg: >-
+          {{ cpufreq_scaling_governor }} is not an available scaling governor:
+          {{ (cpufreq_scaling_available_governors.content | b64decode).split() }}
+    - name: Register current scaling governor
+      ansible.builtin.slurp:
+        src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+      register: cpufreq_scaling_governor_current
+    - name: Set scaling governor
+      when: (cpufreq_scaling_governor_current.content | b64decode | trim) != cpufreq_scaling_governor
+      ansible.builtin.shell:
+        # set -o pipefail would require using /bin/bash instead of /bin/sh
+        #
+        # echo literal should never fail and since tee is the last command
+        # its exit code is the pipeline's exit code without pipefail.
+        #
+        # noqa risky-shell-pipe
+        cmd: echo {{ cpufreq_scaling_governor }} | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor > /dev/null
+      changed_when: true
 
-- name: Verify scaling governor
-  ansible.builtin.assert:
-    that: cpufreq_scaling_governor in (cpufreq_scaling_available_governors.content | b64decode).split()
-    fail_msg: >-
-      {{ cpufreq_scaling_governor }} is not an available CPU scaling governor:
-      {{ (cpufreq_scaling_available_governors.content | b64decode).split() }}
-
-- name: Register current scaling governor
-  ansible.builtin.slurp:
-    src: /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  register: cpufreq_scaling_governor_current
-
-- name: Set scaling governor
-  when: (cpufreq_scaling_governor_current.content | b64decode | trim) != cpufreq_scaling_governor
-  ansible.builtin.shell:
-    # set -o pipefail would require using /bin/bash instead of /bin/sh
-    #
-    # echo literal should never fail and since tee is the last command
-    # its exit code is the pipeline's exit code without pipefail.
-    #
-    # noqa risky-shell-pipe
-    cmd: echo {{ cpufreq_scaling_governor }} | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor > /dev/null
-  changed_when: true
+- name: Energy performance preference
+  when: cpufreq_energy_performance_preference is not none
+  block:
+    - name: Register energy performance available preferences
+      ansible.builtin.slurp:
+        src: /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_available_preferences
+      register: cpufreq_energy_performance_available_preferences
+    - name: Verify energy performance preference
+      ansible.builtin.assert:
+        that: cpufreq_energy_performance_preference in (cpufreq_energy_performance_available_preferences.content | b64decode).split()
+        fail_msg: >-
+          {{ cpufreq_energy_performance_preference }} is not an available energy performance preference:
+          {{ (cpufreq_energy_performance_available_preferences.content | b64decode).split() }}
+    - name: Register current energy performance preference
+      ansible.builtin.slurp:
+        src: /sys/devices/system/cpu/cpu0/cpufreq/energy_performance_preference
+      register: cpufreq_energy_performance_preference_current
+    - name: Set energy performance preference
+      when: (cpufreq_energy_performance_preference_current.content | b64decode | trim) != cpufreq_energy_performance_preference
+      ansible.builtin.shell:
+        # set -o pipefail would require using /bin/bash instead of /bin/sh
+        #
+        # echo literal should never fail and since tee is the last command
+        # its exit code is the pipeline's exit code without pipefail.
+        #
+        # noqa risky-shell-pipe
+        cmd: echo {{ cpufreq_energy_performance_preference }} | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference > /dev/null
+      changed_when: true
 
 - name: Create systemd service
   ansible.builtin.template:

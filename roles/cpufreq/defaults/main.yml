@@ -1,1 +1,2 @@
-cpufreq_scaling_governor: performance
+cpufreq_scaling_governor: null
+cpufreq_energy_performance_preference: null
