@@ -1,4 +1,4 @@
-mariadb_version: 12.3.2
+mariadb_version: 12.3.3
 
 # User
 mariadb_user_name: "{{ ansible_user_id }}"

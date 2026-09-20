@@ -61,6 +61,10 @@
           AUTHENTIK_SECRET_KEY: file:///run/secrets/authentik-secret-key
           # Listen
           AUTHENTIK_LISTEN__METRICS: 0.0.0.0:9300
+          # Podman rootless (pasta) NATs this connection through an internal
+          # address that is not guaranteed to be stable. Firewall(s) should be
+          # used to restrict port access.
+          AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS: 0.0.0.0/0,::/0
           # PostgreSQL
           AUTHENTIK_POSTGRESQL__HOST: "{{ authentik_postgresql_host }}"
           AUTHENTIK_POSTGRESQL__PORT: "{{ authentik_postgresql_port }}"
@@ -77,11 +81,25 @@
           - authentik-secret-key
           - authentik-postgresql-password
         quadlet_options:
-          # Add a 10 minute startup timeout to negate systemd terminating
-          # startup too early when the network and/or storage is too slow.
+          # FIXME:
+          # 1) Podman rootless recursively chowns a container's rootfs
+          # whenever a container is created that uses a non-default user
+          # namespace to reconcile on-disk storage with that namespace's ID
+          # mapping. This happens regardless of whether the container's runtime
+          # UID/GID matches the image's default.
+          # 2) authentik's server/worker image has 10,000s of small files
+          # (Python site-packages) which makes recursive chown especially slow;
+          # ldap/radius are much smaller Go binary images and pay a smaller cost
+          # from the same mechanism.
+          # 3) Recursive chown is a fully serial stream of tiny synchronous
+          # metadata ops which is a poor workload for network storage like Ceph.
+          #
+          # Due to the above factors creating a new container currently takes an
+          # unreasonable amount of time. Add a high timeout to prevent systemd
+          # from prematurely terminating startup.
           - |-
             [Service]
-            TimeoutStartSec=600
+            TimeoutStartSec=3600
         state: quadlet
     - name: Create authentik-worker container quadlet
       containers.podman.podman_container:
@@ -113,11 +131,25 @@
           - authentik-secret-key
           - authentik-postgresql-password
         quadlet_options:
-          # Add a 10 minute startup timeout to negate systemd terminating
-          # startup too early when the network and/or storage is too slow.
+          # FIXME:
+          # 1) Podman rootless recursively chowns a container's rootfs
+          # whenever a container is created that uses a non-default user
+          # namespace to reconcile on-disk storage with that namespace's ID
+          # mapping. This happens regardless of whether the container's runtime
+          # UID/GID matches the image's default.
+          # 2) authentik's server/worker image has 10,000s of small files
+          # (Python site-packages) which makes recursive chown especially slow;
+          # ldap/radius are much smaller Go binary images and pay a smaller cost
+          # from the same mechanism.
+          # 3) Recursive chown is a fully serial stream of tiny synchronous
+          # metadata ops which is a poor workload for network storage like Ceph.
+          #
+          # Due to the above factors creating a new container currently takes an
+          # unreasonable amount of time. Add a high timeout to prevent systemd
+          # from prematurely terminating startup.
           - |-
             [Service]
-            TimeoutStartSec=600
+            TimeoutStartSec=3600
         state: quadlet
 
     # LDAP
@@ -145,11 +177,25 @@
         secrets:
           - authentik-ldap-token
         quadlet_options:
-          # Add a 10 minute startup timeout to negate systemd terminating
-          # startup too early when the network and/or storage is too slow.
+          # FIXME:
+          # 1) Podman rootless recursively chowns a container's rootfs
+          # whenever a container is created that uses a non-default user
+          # namespace to reconcile on-disk storage with that namespace's ID
+          # mapping. This happens regardless of whether the container's runtime
+          # UID/GID matches the image's default.
+          # 2) authentik's server/worker image has 10,000s of small files
+          # (Python site-packages) which makes recursive chown especially slow;
+          # ldap/radius are much smaller Go binary images and pay a smaller cost
+          # from the same mechanism.
+          # 3) Recursive chown is a fully serial stream of tiny synchronous
+          # metadata ops which is a poor workload for network storage like Ceph.
+          #
+          # Due to the above factors creating a new container currently takes an
+          # unreasonable amount of time. Add a high timeout to prevent systemd
+          # from prematurely terminating startup.
           - |-
             [Service]
-            TimeoutStartSec=600
+            TimeoutStartSec=3600
         state: quadlet
 
     # RADIUS
@@ -177,9 +223,23 @@
         secrets:
           - authentik-radius-token
         quadlet_options:
-          # Add a 10 minute startup timeout to negate systemd terminating
-          # startup too early when the network and/or storage is too slow.
+          # FIXME:
+          # 1) Podman rootless recursively chowns a container's rootfs
+          # whenever a container is created that uses a non-default user
+          # namespace to reconcile on-disk storage with that namespace's ID
+          # mapping. This happens regardless of whether the container's runtime
+          # UID/GID matches the image's default.
+          # 2) authentik's server/worker image has 10,000s of small files
+          # (Python site-packages) which makes recursive chown especially slow;
+          # ldap/radius are much smaller Go binary images and pay a smaller cost
+          # from the same mechanism.
+          # 3) Recursive chown is a fully serial stream of tiny synchronous
+          # metadata ops which is a poor workload for network storage like Ceph.
+          #
+          # Due to the above factors creating a new container currently takes an
+          # unreasonable amount of time. Add a high timeout to prevent systemd
+          # from prematurely terminating startup.
           - |-
             [Service]
-            TimeoutStartSec=600
+            TimeoutStartSec=3600
         state: quadlet

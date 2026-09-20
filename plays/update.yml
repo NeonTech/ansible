@@ -1,0 +1,21 @@
+- name: Update
+  hosts: all
+  serial: 1
+  become: true
+  tasks:
+    - name: Update non-Proxmox Debian hosts
+      when: >-
+        'pve' not in group_names and 'pbs' not in group_names
+        and ansible_facts['distribution'] == 'Debian'
+      block:
+        - name: Perform apt-get dist-upgrade
+          ansible.builtin.apt:
+            update_cache: true
+            upgrade: dist
+        - name: Check if reboot is required
+          ansible.builtin.stat:
+            path: /var/run/reboot-required
+          register: update_reboot_required
+        - name: Reboot
+          when: update_reboot_required.stat.exists
+          ansible.builtin.reboot:
