@@ -1,0 +1,19 @@
+# Version
+actual_version: 26.9.0
+
+# User
+actual_user_name: "{{ ansible_user_id }}"
+actual_user_id: "{{ ansible_user_uid }}"
+actual_group_name: "{{ actual_user_name }}"
+actual_group_id: "{{ actual_user_id }}"
+
+# Login
+actual_login_method: password
+actual_login_methods: ["{{ actual_login_method }}"]
+
+# OpenID
+actual_openid_discovery_url: null
+actual_openid_client_id: null
+actual_openid_client_secret: null
+actual_openid_hostname: null
+actual_openid_method: null

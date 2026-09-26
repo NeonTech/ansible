@@ -1,0 +1,64 @@
+- name: Create group "{{ actual_group_name }}"
+  ansible.builtin.group:
+    name: "{{ actual_group_name }}"
+    gid: "{{ actual_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ actual_user_name }}"
+  ansible.builtin.user:
+    name: "{{ actual_user_name }}"
+    uid: "{{ actual_user_id }}"
+    group: "{{ actual_group_name }}"
+    system: true
+    create_home: true
+    home: /etc/actual
+    shell: /usr/sbin/nologin
+    state: present
+
+- name: Create data directory
+  ansible.builtin.file:
+    path: /var/lib/actual
+    owner: "{{ actual_user_name }}"
+    group: "{{ actual_group_name }}"
+    mode: "0700" # drwx------
+    state: directory
+
+- name: Install version "{{ actual_version }}"
+  community.general.npm:
+    name: "@actual-app/sync-server"
+    version: "{{ actual_version }}"
+    global: true
+    state: present
+  notify:
+    - Restart systemd service
+
+- name: Create symbolic link
+  ansible.builtin.file:
+    src: /usr/local/nodejs/bin/actual-server
+    dest: /usr/local/bin/actual-server
+    state: link
+
+- name: Template config.json
+  ansible.builtin.template:
+    src: config.json.j2
+    dest: /etc/actual/config.json
+    owner: "{{ actual_user_name }}"
+    group: "{{ actual_group_name }}"
+    mode: "0600" # -rw-------
+  notify:
+    - Restart systemd service
+
+- name: Create systemd service
+  ansible.builtin.template:
+    src: actual.service.j2
+    dest: /etc/systemd/system/actual.service
+    mode: "0644" # -rw-r--r--
+  notify:
+    - Restart systemd service
+
+- name: Enable and start systemd service
+  ansible.builtin.systemd_service:
+    name: actual
+    enabled: true
+    state: started

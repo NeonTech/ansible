@@ -71,7 +71,7 @@
         path: "{{ item }}"
         owner: "{{ gitea_user_name }}"
         group: "{{ gitea_group_name }}"
-        mode: "0700" # rwx------
+        mode: "0700" # drwx------
         state: directory
       loop:
         - /var/lib/gitea/custom

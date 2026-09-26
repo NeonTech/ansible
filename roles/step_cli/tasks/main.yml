@@ -42,7 +42,7 @@
     - name: Register binaries
       ansible.builtin.find:
         path: /usr/local/step/bin
-        file_type: file
+        file_type: any
       register: step_cli_bin
     - name: Create symbolic links with binaries
       become: true

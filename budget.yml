@@ -1,0 +1,10 @@
+- name: Budget
+  hosts: ct-budget
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - actual
+    - nginx
+    - certbot

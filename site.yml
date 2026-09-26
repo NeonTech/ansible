@@ -19,6 +19,8 @@
 # region Applications
 - name: Authentik
   ansible.builtin.import_playbook: authentik.yml
+- name: Budget
+  ansible.builtin.import_playbook: budget.yml
 - name: Git
   ansible.builtin.import_playbook: git.yml
 - name: Ingress

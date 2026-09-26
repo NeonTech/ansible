@@ -1,0 +1,15 @@
+[Unit]
+Description=Actual
+After=network.target
+
+[Service]
+Type=simple
+User={{ actual_user_name }}
+Group={{ actual_group_name }}
+WorkingDirectory=/var/lib/actual
+ExecStart=/usr/local/bin/actual-server --config /etc/actual/config.json
+Restart=always
+RestartSec=2s
+
+[Install]
+WantedBy=multi-user.target

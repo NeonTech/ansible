@@ -1,0 +1,16 @@
+{
+{% if actual_openid_method is not none %}
+  "openId": {
+    "discoveryURL": "{{ actual_openid_discovery_url }}",
+    "client_id": "{{ actual_openid_client_id }}",
+    "client_secret": "{{ actual_openid_client_secret }}",
+    "server_hostname": "{{ actual_openid_hostname }}",
+    "authMethod": "{{ actual_openid_method }}"
+  },
+{% endif %}
+  "dataDir": "/var/lib/actual",
+  "serverFiles": "/var/lib/actual/server-files",
+  "userFiles": "/var/lib/actual/user-files",
+  "loginMethod": "{{ actual_login_method }}",
+  "allowedLoginMethods": {{ actual_login_methods | to_json }}
+}

@@ -1,0 +1,13 @@
+# User
+actual_user_name: actual # LDAP
+actual_user_id: 2090 # LDAP
+
+# Login
+actual_login_method: openid
+
+# OpenID
+actual_openid_discovery_url: https://authentik.neontech.dev/application/o/actual/
+actual_openid_client_id: j71RoWUc7KVF7NrvLtwWZxwlQCwrpkugs2b3hVQv
+actual_openid_client_secret: "{{ vault_actual_openid_client_secret }}"
+actual_openid_hostname: https://budget.neontech.dev
+actual_openid_method: openid

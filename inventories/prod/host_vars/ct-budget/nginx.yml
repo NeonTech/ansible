@@ -1,0 +1,43 @@
+nginx_http:
+  budget.neontech.dev: |
+    upstream actual {
+      server localhost:5006;
+      # Improve performance by keeping some connections alive.
+      keepalive 10;
+    }
+
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name budget.neontech.dev;
+
+      include acme_webroot;
+
+      location / {
+        return 301 https://$host$request_uri;
+      }
+    }
+
+    server {
+      listen 443 ssl;
+      listen [::]:443 ssl;
+      server_name budget.neontech.dev;
+
+      include ssl;
+      include hsts;
+
+      location / {
+        proxy_pass http://actual;
+
+        # Prevents header duplication between Upstream and Proxy
+        proxy_hide_header Cross-Origin-Embedder-Policy;
+        proxy_hide_header Cross-Origin-Opener-Policy;
+
+        # Explicitly set mandatory security headers
+        add_header Cross-Origin-Embedder-Policy "require-corp" always;
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Origin-Agent-Cluster "?1" always;
+
+        include proxy_params;
+      }
+    }

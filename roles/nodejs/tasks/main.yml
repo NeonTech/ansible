@@ -1,0 +1,49 @@
+- name: Register version
+  ansible.builtin.command: node --version
+  register: nodejs_version_cmd
+  changed_when: false
+  ignore_errors: true
+
+- name: (Re)install
+  when: nodejs_version_cmd.rc != 0 or nodejs_version_cmd.stdout != "v" + nodejs_version
+  block:
+    - name: Create temporary download file
+      ansible.builtin.tempfile:
+        suffix: "{{ nodejs_download_filename }}"
+        state: file
+      register: nodejs_download_file
+    - name: Download "{{ nodejs_download_filename }}"
+      ansible.builtin.get_url:
+        url: https://nodejs.org/dist/v{{ nodejs_version }}/{{ nodejs_download_filename }}
+        checksum: "{{ nodejs_download_checksum }}"
+        dest: "{{ nodejs_download_file.path }}"
+        mode: "0600" # -rw-------
+    - name: Uninstall previous version
+      ansible.builtin.file:
+        path: /usr/local/nodejs
+        state: absent
+    - name: Install version "{{ nodejs_version }}"
+      ansible.builtin.unarchive:
+        src: "{{ nodejs_download_file.path }}"
+        remote_src: true
+        dest: /usr/local
+    - name: Delete temporary download file
+      ansible.builtin.file:
+        path: "{{ nodejs_download_file.path }}"
+        state: absent
+    - name: Rename installation directory
+      ansible.builtin.command:
+        cmd: mv /usr/local/node-v{{ nodejs_version }}-{{ nodejs_os }}-{{ nodejs_arch }} /usr/local/nodejs
+        removes: /usr/local/node-v{{ nodejs_version }}-{{ nodejs_os }}-{{ nodejs_arch }}
+        creates: /usr/local/nodejs
+    - name: Register binaries
+      ansible.builtin.find:
+        path: /usr/local/nodejs/bin
+        file_type: any
+      register: nodejs_bin
+    - name: Create symbolic links with binaries
+      ansible.builtin.file:
+        src: "{{ item.path }}"
+        dest: /usr/local/bin/{{ item.path | basename }}
+        state: link
+      loop: "{{ nodejs_bin.files }}"

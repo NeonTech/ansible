@@ -34,7 +34,7 @@
     - name: Register binaries
       ansible.builtin.find:
         path: /usr/local/go/bin
-        file_type: file
+        file_type: any
       register: go_bin
     - name: Create symbolic links with binaries
       ansible.builtin.file:
