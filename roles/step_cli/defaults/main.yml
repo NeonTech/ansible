@@ -1,8 +1,8 @@
 # Version
-step_cli_version: 0.30.6
+step_cli_version: 0.31.0
 step_cli_os: linux
 step_cli_arch: amd64
 
 # Download
 step_cli_download_filename: step_{{ step_cli_os }}_{{ step_cli_version }}_{{ step_cli_arch }}.tar.gz
-step_cli_download_checksum: sha256:e44a5dc5f880a694b24a0f2941a69a81b0bc6ee053170fdfde18453d4d5816de
+step_cli_download_checksum: sha256:a7e13726efa8782f3d5459174dacf602ab3514b9431f2d42a6a75950b7685e5f

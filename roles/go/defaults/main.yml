@@ -1,8 +1,8 @@
 # Version
-go_version: 1.27.1
+go_version: 1.27.3
 go_os: linux
 go_arch: amd64
 
 # Download
 go_download_filename: go{{ go_version }}.{{ go_os }}-{{ go_arch }}.tar.gz
-go_download_checksum: sha256:63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445
+go_download_checksum: sha256:65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40
