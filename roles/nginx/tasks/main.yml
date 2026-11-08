@@ -82,6 +82,19 @@
         - /etc/nginx/uwsgi_params
         - /etc/nginx/win-utf
         - /var/www/html
+    # NGINX configurations with hostname(s) in upstream may fail on startup if
+    # DNS is not resolvable yet (e.g. container boot). This issue is usually
+    # temporary so try restarting on failure every second with 60 attempts.
+    - name: Create systemd drop-in directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/nginx.service.d
+        mode: "0755" # drwxr-xr-x
+        state: directory
+    - name: Create restart.conf
+      ansible.builtin.copy:
+        src: restart.conf
+        dest: /etc/systemd/system/nginx.service.d/restart.conf
+        mode: "0644" # -rw-r--r--
     # "ssl" configuration
     - name: Template acme_webroot
       ansible.builtin.template:
