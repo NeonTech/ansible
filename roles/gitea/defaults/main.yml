@@ -8,8 +8,8 @@ gitea_download_filename: gitea-{{ gitea_version }}-{{ gitea_os }}-{{ gitea_arch 
 gitea_download_checksum: sha256:5f834e8f04986f3b9206cf14743b5a6e6996ceddc238dac6409866ebda2a0686
 
 # User
-gitea_user_name: "{{ ansible_user_id }}"
-gitea_user_id: "{{ ansible_user_uid }}"
+gitea_user_name: gitea
+gitea_user_id: "{{ mandatory(msg='default value') }}"
 gitea_group_name: "{{ gitea_user_name }}"
 gitea_group_id: "{{ gitea_user_id }}"
 

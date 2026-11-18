@@ -6,7 +6,7 @@ technitium_dns_download_filename: DnsServerPortable.tar.gz
 technitium_dns_download_checksum: sha256:51f2d4ebaf156a85035e820afde5e1d428f1920a37d7f0c65203fb1766917e08
 
 # User
-technitium_dns_user_name: "{{ ansible_user_id }}"
-technitium_dns_user_id: "{{ ansible_user_uid }}"
+technitium_dns_user_name: technitium-dns
+technitium_dns_user_id: "{{ mandatory(msg='default value') }}"
 technitium_dns_group_name: "{{ technitium_dns_user_name }}"
 technitium_dns_group_id: "{{ technitium_dns_user_id }}"

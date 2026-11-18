@@ -1,6 +1,6 @@
 # User
-authentik_user_name: "{{ ansible_user_id }}"
-authentik_user_id: "{{ ansible_user_uid }}"
+authentik_user_name: authentik
+authentik_user_id: "{{ mandatory(msg='default value') }}"
 authentik_group_name: "{{ authentik_user_name }}"
 authentik_group_id: "{{ authentik_user_id }}"
 

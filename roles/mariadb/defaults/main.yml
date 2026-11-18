@@ -1,8 +1,8 @@
-mariadb_version: 12.3.3
+mariadb_version: 12.3.4
 
 # User
-mariadb_user_name: "{{ ansible_user_id }}"
-mariadb_user_id: "{{ ansible_user_uid }}"
+mariadb_user_name: mysql
+mariadb_user_id: "{{ mandatory(msg='default value') }}"
 mariadb_group_name: "{{ mariadb_user_name }}"
 mariadb_group_id: "{{ mariadb_user_id }}"
 

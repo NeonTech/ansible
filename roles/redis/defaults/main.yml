@@ -1,6 +1,6 @@
 # User
-redis_user_name: "{{ ansible_user_id }}"
-redis_user_id: "{{ ansible_user_uid }}"
+redis_user_name: redis
+redis_user_id: "{{ mandatory(msg='default value') }}"
 redis_group_name: "{{ redis_user_name }}"
 redis_group_id: "{{ redis_user_id }}"
 

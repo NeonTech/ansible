@@ -1,6 +1,6 @@
 # User
-podman_rootless_user_name: "{{ ansible_user_id }}"
-podman_rootless_user_id: "{{ ansible_user_uid }}"
+podman_rootless_user_name: podman
+podman_rootless_user_id: "{{ mandatory(msg='default value') }}"
 podman_rootless_user_home: /home/{{ podman_rootless_user_name }}
 
 # subuid

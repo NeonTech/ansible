@@ -3,8 +3,8 @@ fluxcord_git_url: https://git.gay/Fluxcord/core.git
 fluxcord_git_version: 51a478af319fa78598f338d0d31c77db830f51e7
 
 # User
-fluxcord_user_name: "{{ ansible_user_id }}"
-fluxcord_user_id: "{{ ansible_user_uid }}"
+fluxcord_user_name: fluxcord
+fluxcord_user_id: "{{ mandatory(msg='default value') }}"
 fluxcord_group_name: "{{ fluxcord_user_name }}"
 fluxcord_group_id: "{{ fluxcord_user_id }}"
 

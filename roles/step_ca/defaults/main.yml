@@ -11,8 +11,8 @@ step_ca_port: 443
 step_ca_fingerprint: c8ad3b1721b84e4915e53fe1e5a763a5bdd3beabfaf42005542906a7829f27af
 
 # User
-step_ca_user_name: "{{ ansible_user_id }}"
-step_ca_user_id: "{{ ansible_user_uid }}"
+step_ca_user_name: step-ca
+step_ca_user_id: "{{ mandatory(msg='default value') }}"
 step_ca_group_name: "{{ step_ca_user_name }}"
 step_ca_group_id: "{{ step_ca_user_id }}"
 

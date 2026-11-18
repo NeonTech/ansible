@@ -2,8 +2,8 @@
 actual_version: 26.11.0
 
 # User
-actual_user_name: "{{ ansible_user_id }}"
-actual_user_id: "{{ ansible_user_uid }}"
+actual_user_name: actual
+actual_user_id: "{{ mandatory(msg='default value') }}"
 actual_group_name: "{{ actual_user_name }}"
 actual_group_id: "{{ actual_user_id }}"
 
