@@ -1,0 +1,8 @@
+- name: Fluxcord
+  hosts: ct-fluxcord
+  gather_facts: false
+  roles:
+    - pve_lxc
+    - os
+    - ca
+    - fluxcord

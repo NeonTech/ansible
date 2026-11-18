@@ -1,0 +1,12 @@
+- name: Install version "{{ pnpm_version }}"
+  community.general.npm:
+    name: pnpm
+    version: "{{ pnpm_version }}"
+    global: true
+    state: present
+
+- name: Create symbolic link
+  ansible.builtin.file:
+    src: /usr/local/nodejs/bin/pnpm
+    dest: /usr/local/bin/pnpm
+    state: link

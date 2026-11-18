@@ -1,0 +1,16 @@
+# User
+fluxcord_user_name: fluxcord # LDAP
+fluxcord_user_id: 2092 # LDAP
+
+# General
+fluxcord_admin_account_ids:
+  - "1478748549823828260" # danthonywalker#0001 (Fluxer)
+  - "135995653095555073" # danthonywalker (Discord)
+
+# Fluxer
+fluxcord_fluxer_bot_token: "{{ vault_fluxcord_fluxer_bot_token }}"
+fluxcord_fluxer_emoji_guild_id: "1572452269683646464"
+
+# Discord
+fluxcord_discord_bot_token: "{{ vault_fluxcord_discord_bot_token }}"
+fluxcord_discord_client_id: "1572448873149112461"

@@ -1,0 +1,91 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    update_cache: true
+    name:
+      - git
+      - g++
+      - libssl-dev
+      - make
+    state: present
+
+- name: Create group "{{ fluxcord_group_name }}"
+  ansible.builtin.group:
+    name: "{{ fluxcord_group_name }}"
+    gid: "{{ fluxcord_group_id }}"
+    system: true
+    state: present
+
+- name: Create user "{{ fluxcord_user_name }}"
+  ansible.builtin.user:
+    name: "{{ fluxcord_user_name }}"
+    uid: "{{ fluxcord_user_id }}"
+    group: "{{ fluxcord_group_name }}"
+    system: true
+    create_home: true
+    home: /home/{{ fluxcord_user_name }}
+    shell: /bin/bash
+    state: present
+
+- name: Create installation directory
+  ansible.builtin.file:
+    path: /etc/fluxcord
+    owner: "{{ fluxcord_user_name }}"
+    group: "{{ fluxcord_group_name }}"
+    mode: "0700" # drwx------
+    state: directory
+
+- name: Create data directory
+  ansible.builtin.file:
+    path: /var/lib/fluxcord
+    owner: "{{ fluxcord_user_name }}"
+    group: "{{ fluxcord_group_name }}"
+    mode: "0700" # drwx------
+    state: directory
+
+- name: Checkout version "{{ fluxcord_git_version }}"
+  become: true
+  become_method: ansible.builtin.su
+  become_user: "{{ fluxcord_user_name }}"
+  notify:
+    - Restart systemd service
+  ansible.builtin.git:
+    repo: "{{ fluxcord_git_url }}"
+    dest: /etc/fluxcord
+    version: "{{ fluxcord_git_version }}"
+    force: true
+  register: fluxcord_git
+
+- name: Install dependencies
+  become: true
+  become_method: ansible.builtin.su
+  become_user: "{{ fluxcord_user_name }}"
+  # noqa no-handler
+  when: fluxcord_git.changed
+  ansible.builtin.command:
+    cmd: pnpm install --prod --frozen-lockfile
+    chdir: /etc/fluxcord
+  changed_when: true
+
+- name: Template config.js
+  notify:
+    - Restart systemd service
+  ansible.builtin.template:
+    src: config.js.j2
+    dest: /etc/fluxcord/config.js
+    owner: "{{ fluxcord_user_name }}"
+    group: "{{ fluxcord_group_name }}"
+    mode: "0600" # -rw-------
+
+- name: Create systemd service
+  notify:
+    - Restart systemd service
+  ansible.builtin.template:
+    src: fluxcord.service.j2
+    dest: /etc/systemd/system/fluxcord.service
+    mode: "0644" # -rw-r--r--
+
+- name: Enable and start systemd service
+  ansible.builtin.systemd_service:
+    name: fluxcord
+    enabled: true
+    state: started

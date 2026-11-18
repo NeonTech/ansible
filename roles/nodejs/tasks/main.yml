@@ -1,3 +1,9 @@
+- name: Install required packages
+  ansible.builtin.apt:
+    update_cache: true
+    name: libatomic1
+    state: present
+
 - name: Register version
   ansible.builtin.command: node --version
   register: nodejs_version_cmd

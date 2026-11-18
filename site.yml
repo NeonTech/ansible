@@ -21,6 +21,8 @@
   ansible.builtin.import_playbook: authentik.yml
 - name: Budget
   ansible.builtin.import_playbook: budget.yml
+- name: Fluxcord
+  ansible.builtin.import_playbook: fluxcord.yml
 - name: Git
   ansible.builtin.import_playbook: git.yml
 - name: Ingress

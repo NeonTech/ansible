@@ -1,6 +1,7 @@
 ct-budget
 ct-ca
 ct-dns
+ct-fluxcord
 ct-git
 ct-ingress
 ct-jellyfin

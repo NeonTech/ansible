@@ -1,0 +1,79 @@
+const Config = {
+  // The base URL of the Fluxer API. Change this only if you're using a self-hosted instance.
+  // FluxerAPIBaseURL: "https://example.com/api",
+  FluxerAPIBaseURL: {{ fluxcord_fluxer_api_base_url | to_json }},
+
+  // The path for the bot's data directory. Probably do not touch if you're using Docker.
+  DataFolderPath: "/var/lib/fluxcord",
+
+  // The database encryption token. If you're just running a instance for yourself
+  // you don't really need to set this.
+  // NOTE: Only applies to SQLite. Ignored when PostgresConnectionString is set.
+  DatabaseEncryptionToken: {{ fluxcord_sqlite_encryption_token | to_json }},
+
+  // Optional. When set, PostgreSQL is used instead of SQLite.
+  // When empty/unset, SQLite (DataFolderPath + "/fluxcord.db") is used.
+  // The DatabaseEncryptionToken is ignored in Postgres mode, and
+  // `pnpm run migrate:to-postgres` can copy your existing SQLite data
+  // (decrypting it first if needed) into Postgres.
+  // Example: "postgres://user:password@localhost:5432/fluxcord"
+  PostgresConnectionString: {{ fluxcord_postgresql_connection | to_json }},
+
+  // The Discord bot token
+  DiscordBotToken: {{ fluxcord_discord_bot_token | to_json }},
+
+  // Additional bot tokens for voice bridging multiple voice channels at the same time. Optional.
+  DiscordVoiceTokens: {{ fluxcord_discord_voice_tokens | to_json }},
+
+  // The Discord client ID
+  DiscordClientId: {{ fluxcord_discord_client_id | to_json }},
+
+  // The Fluxer bot token
+  FluxerBotToken: {{ fluxcord_fluxer_bot_token | to_json }},
+
+  // The Fluxer temporary emoji store community ID
+  FluxerTempEmojiGuildId: {{ fluxcord_fluxer_emoji_guild_id | to_json }},
+
+  // The admin account IDs. Allows accessing admin commands, and
+  // also allows verifying bridging without having Manage Channel perms.
+  AdminAccountIds: {{ fluxcord_admin_account_ids | to_json }},
+
+  // The start line of the per-server bios of the bot.
+  // Changes every bot start
+  FluxerBioStart: {{ fluxcord_fluxer_bio_start | to_json }},
+  DiscordBioStart: {{ fluxcord_discord_bio_start | to_json }},
+
+  // Set to false to keep the bio you set on the bot's application page.
+  AutomaticBioEnabled: {{ fluxcord_automatic_bio | to_json }},
+
+  // The footer of every embed sent by Fluxcord. Optional.
+  EmbedFooterContent: {{ fluxcord_embed_footer_content | to_json }},
+
+  // Enables Fluxcord Analytics. This will send your instance details every hot even gonna explain it
+  TypingIndicatorEnabled: {{ fluxcord_typing_indicator | to_json }},
+
+  // The prefix of the bot
+  BotPrefix: {{ fluxcord_bot_prefix | to_json }},
+
+  // The port the voice runner WebSocket server listens on.
+  RunnerWsPort: {{ fluxcord_runner_ws_port }},
+
+  // Secret shared between the core bot and voice runners. Set to a long random string.
+  RunnerSecret: {{ fluxcord_runner_secret | to_json }},
+
+  // Healthcheck. Returns 200 when both bots are online.
+  // otherwise 503. Used by Docker HEALTHCHECK / compose healthcheck.
+  // Set HealthcheckEnabled to false to disable.
+  HealthcheckEnabled: {{ fluxcord_healthcheck | to_json }},
+  HealthcheckHost: {{ fluxcord_healthcheck_host | to_json }},
+  HealthcheckPort: {{ fluxcord_healthcheck_port }},
+  // Optional. When set, a request with "Authorization: Bearer <token>" also gets the version,
+  // Discord latency, guild and shard counts, and Fluxer guild count. Without it, the response is unchanged.
+  HealthcheckToken: {{ fluxcord_healthcheck_token | to_json }},
+
+  // Enable voice channel bridging. Manage mappings with setup and unbridge commands.
+  // Requires the voice repository.
+  VoiceBridgingEnabled: {{ fluxcord_voice_bridging | to_json }},
+};
+
+export default Config;
