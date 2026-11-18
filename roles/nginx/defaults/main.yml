@@ -1,6 +1,6 @@
 # User
 nginx_user_name: nginx
-nginx_user_id: "{{ mandatory(msg='default value') }}"
+nginx_user_id: "{{ mandatory(msg='nginx_user_id is required') }}"
 nginx_group_name: "{{ nginx_user_name }}"
 nginx_group_id: "{{ nginx_user_id }}"
 

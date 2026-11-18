@@ -4,7 +4,7 @@ fluxcord_git_version: 51a478af319fa78598f338d0d31c77db830f51e7
 
 # User
 fluxcord_user_name: fluxcord
-fluxcord_user_id: "{{ mandatory(msg='default value') }}"
+fluxcord_user_id: "{{ mandatory(msg='fluxcord_user_id is required') }}"
 fluxcord_group_name: "{{ fluxcord_user_name }}"
 fluxcord_group_id: "{{ fluxcord_user_id }}"
 
@@ -30,12 +30,12 @@ fluxcord_healthcheck_token: ""
 
 # Fluxer
 fluxcord_fluxer_api_base_url: https://fluxer.com/api
-fluxcord_fluxer_bot_token: "{{ mandatory(msg='default secret') }}"
-fluxcord_fluxer_emoji_guild_id: "{{ mandatory(msg='default value') }}"
+fluxcord_fluxer_bot_token: "{{ mandatory(msg='fluxcord_fluxer_bot_token (secret) is required') }}"
+fluxcord_fluxer_emoji_guild_id: "{{ mandatory(msg='fluxcord_fluxer_emoji_guild_id is required') }}"
 fluxcord_fluxer_bio_start: ""
 
 # Discord
-fluxcord_discord_bot_token: "{{ mandatory(msg='default secret') }}"
+fluxcord_discord_bot_token: "{{ mandatory(msg='fluxcord_discord_bot_token (secret) is required') }}"
 fluxcord_discord_voice_tokens: []
-fluxcord_discord_client_id: "{{ mandatory(msg='default value') }}"
+fluxcord_discord_client_id: "{{ mandatory(msg='fluxcord_discord_client_id is required') }}"
 fluxcord_discord_bio_start: ""

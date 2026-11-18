@@ -1,6 +1,6 @@
 # User
 redis_user_name: redis
-redis_user_id: "{{ mandatory(msg='default value') }}"
+redis_user_id: "{{ mandatory(msg='redis_user_id is required') }}"
 redis_group_name: "{{ redis_user_name }}"
 redis_group_id: "{{ redis_user_id }}"
 

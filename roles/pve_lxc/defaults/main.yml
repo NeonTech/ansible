@@ -2,22 +2,22 @@
 pve_lxc_api_host: localhost
 pve_lxc_api_port: 8006
 pve_lxc_api_user: root@pam
-pve_lxc_api_token_id: "{{ mandatory(msg='default value') }}"
-pve_lxc_api_token: "{{ mandatory(msg='default secret') }}"
+pve_lxc_api_token_id: "{{ mandatory(msg='pve_lxc_api_token_id is required') }}"
+pve_lxc_api_token: "{{ mandatory(msg='pve_lxc_api_token (secret) is required') }}"
 
 # General
-pve_lxc_node: "{{ mandatory(msg='default value') }}"
-pve_lxc_vmid: "{{ mandatory(msg='default value') }}"
+pve_lxc_node: "{{ mandatory(msg='pve_lxc_node is required') }}"
+pve_lxc_vmid: "{{ mandatory(msg='pve_lxc_vmid is required') }}"
 pve_lxc_hostname: "{{ inventory_hostname }}"
-pve_lxc_ssh_public_key_file: "{{ mandatory(msg='default value') }}"
+pve_lxc_ssh_public_key_file: "{{ mandatory(msg='pve_lxc_ssh_public_key_file is required') }}"
 
 # Template
 pve_lxc_template: debian-13-standard_13.1-2_amd64.tar.zst
 pve_lxc_template_type: debian
 
 # Storage
-pve_lxc_storage: "{{ mandatory(msg='default value') }}"
-pve_lxc_storage_fs: "{{ mandatory(msg='default value') }}"
+pve_lxc_storage: "{{ mandatory(msg='pve_lxc_storage is required') }}"
+pve_lxc_storage_fs: "{{ mandatory(msg='pve_lxc_storage_fs is required') }}"
 
 # Disks
 pve_lxc_disk_volume_storage: "{{ pve_lxc_storage }}"

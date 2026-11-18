@@ -3,7 +3,7 @@ actual_version: 26.11.0
 
 # User
 actual_user_name: actual
-actual_user_id: "{{ mandatory(msg='default value') }}"
+actual_user_id: "{{ mandatory(msg='actual_user_id is required') }}"
 actual_group_name: "{{ actual_user_name }}"
 actual_group_id: "{{ actual_user_id }}"
 

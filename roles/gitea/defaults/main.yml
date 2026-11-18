@@ -9,7 +9,7 @@ gitea_download_checksum: sha256:5f834e8f04986f3b9206cf14743b5a6e6996ceddc238dac6
 
 # User
 gitea_user_name: gitea
-gitea_user_id: "{{ mandatory(msg='default value') }}"
+gitea_user_id: "{{ mandatory(msg='gitea_user_id is required') }}"
 gitea_group_name: "{{ gitea_user_name }}"
 gitea_group_id: "{{ gitea_user_id }}"
 
@@ -25,11 +25,11 @@ gitea_database_password: null
 gitea_database_ssl_mode: null
 
 # Security
-gitea_security_secret_key: "{{ mandatory(msg='default secret') }}"
-gitea_security_internal_token: "{{ mandatory(msg='default secret') }}"
+gitea_security_secret_key: "{{ mandatory(msg='gitea_security_secret_key (secret) is required') }}"
+gitea_security_internal_token: "{{ mandatory(msg='gitea_security_internal_token (secret) is required') }}"
 
 # OAuth2
-gitea_oauth2_jwt_secret: "{{ mandatory(msg='default secret') }}"
+gitea_oauth2_jwt_secret: "{{ mandatory(msg='gitea_oauth2_jwt_secret (secret) is required') }}"
 
 # Service
 gitea_service_registration: true

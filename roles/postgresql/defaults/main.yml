@@ -2,14 +2,14 @@ postgresql_version: 18
 
 # User
 postgresql_user_name: postgres
-postgresql_user_id: "{{ mandatory(msg='default value') }}"
+postgresql_user_id: "{{ mandatory(msg='postgresql_user_id is required') }}"
 postgresql_group_name: "{{ postgresql_user_name }}"
 postgresql_group_id: "{{ postgresql_user_id }}"
 
 # Login
 postgresql_database: "{{ postgresql_user_name }}"
 postgresql_username: "{{ postgresql_user_name }}"
-postgresql_password: "{{ mandatory(msg='default secret') }}"
+postgresql_password: "{{ mandatory(msg='postgresql_password (secret) is required') }}"
 
 # SSL
 postgresql_ssl_ca: null

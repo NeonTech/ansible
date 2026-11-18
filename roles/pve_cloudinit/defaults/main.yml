@@ -2,14 +2,14 @@
 pve_cloudinit_api_host: localhost
 pve_cloudinit_api_port: 8006
 pve_cloudinit_api_user: root@pam
-pve_cloudinit_api_token_id: "{{ mandatory(msg='default value') }}"
-pve_cloudinit_api_token: "{{ mandatory(msg='default secret') }}"
+pve_cloudinit_api_token_id: "{{ mandatory(msg='pve_cloudinit_api_token_id is required') }}"
+pve_cloudinit_api_token: "{{ mandatory(msg='pve_cloudinit_api_token (secret) is required') }}"
 
 # General
-pve_cloudinit_node: "{{ mandatory(msg='default value') }}"
-pve_cloudinit_vmid: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_node: "{{ mandatory(msg='pve_cloudinit_node is required') }}"
+pve_cloudinit_vmid: "{{ mandatory(msg='pve_cloudinit_vmid is required') }}"
 pve_cloudinit_hostname: "{{ inventory_hostname }}"
-pve_cloudinit_ssh_public_key_file: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_ssh_public_key_file: "{{ mandatory(msg='pve_cloudinit_ssh_public_key_file is required') }}"
 
 # Image
 pve_cloudinit_image_url: https://cloud.debian.org/images/cloud/trixie/20251006-2257/debian-13-generic-amd64-20251006-2257.qcow2
@@ -19,8 +19,8 @@ pve_cloudinit_image_type: l26
 pve_cloudinit_image_disk_size: 16G
 
 # Storage
-pve_cloudinit_storage: "{{ mandatory(msg='default value') }}"
-pve_cloudinit_storage_fs: "{{ mandatory(msg='default value') }}"
+pve_cloudinit_storage: "{{ mandatory(msg='pve_cloudinit_storage is required') }}"
+pve_cloudinit_storage_fs: "{{ mandatory(msg='pve_cloudinit_storage_fs is required') }}"
 
 # CPU
 pve_cloudinit_cpu: x86-64-v4

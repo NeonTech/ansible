@@ -1,6 +1,6 @@
 # User
 podman_rootless_user_name: podman
-podman_rootless_user_id: "{{ mandatory(msg='default value') }}"
+podman_rootless_user_id: "{{ mandatory(msg='podman_rootless_user_id is required') }}"
 podman_rootless_user_home: /home/{{ podman_rootless_user_name }}
 
 # subuid
@@ -16,4 +16,4 @@ podman_rootless_subgid_start: "{{ podman_rootless_subuid_start }}"
 podman_rootless_subgid_count: "{{ podman_rootless_subuid_count }}"
 
 # SSH
-podman_rootless_ssh_public_key_file: "{{ mandatory(msg='default value') }}"
+podman_rootless_ssh_public_key_file: "{{ mandatory(msg='podman_rootless_ssh_public_key_file is required') }}"

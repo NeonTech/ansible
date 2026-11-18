@@ -7,6 +7,6 @@ technitium_dns_download_checksum: sha256:51f2d4ebaf156a85035e820afde5e1d428f1920
 
 # User
 technitium_dns_user_name: technitium-dns
-technitium_dns_user_id: "{{ mandatory(msg='default value') }}"
+technitium_dns_user_id: "{{ mandatory(msg='technitium_dns_user_id is required') }}"
 technitium_dns_group_name: "{{ technitium_dns_user_name }}"
 technitium_dns_group_id: "{{ technitium_dns_user_id }}"
